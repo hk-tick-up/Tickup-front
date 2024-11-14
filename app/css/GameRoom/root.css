@@ -5,6 +5,7 @@
 * {
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 @font-face {
     font-family: 'Youth';
@@ -17,10 +18,53 @@
     .youth * {
     font-family: 'Youth', sans-serif;
     }
+
+@font-face {
+    font-family: 'Freesentation-9Black';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
 /* css 적용 여부 확인용 폰트 */
 @font-face {
     font-family: 'SBAggroB';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+}
+
+
+.custom-color-gray{
+    color: #3C3D37;
+}
+
+.custom-bacground-color-blue{
+    background-color: #064889;
+    opacity: 69%;
+}
+
+.border-rounded{
+    border-radius: 14px;
+}
+
+.custom-img{
+    padding: 30px;
+    border-radius: 14px;
+    display: inline-block;
+    margin: 0 0 15px 0;
+}
+
+.custom-img img {
+    display: block;
+}
+
+.select-random-btn {
+    background-color: #064889;
+    opacity: 69%;
+}
+
+.select-together-btn{
+    background-color: #4F94D8;
+    opacity: 84%;
 }
