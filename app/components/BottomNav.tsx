@@ -14,9 +14,17 @@ import myImage from '../../public/images/My.png';
 import { BaseSyntheticEvent, useEffect } from "react";
 
 export default function BottomNav() {
-  const MINT = 'invert(62%) sepia(98%) saturate(1682%) hue-rotate(132deg) brightness(99%) contrast(93%)';
+  // CSS filter generator by Barrett Sonntag
+  // #09D2CF
+  // const MINT = 'invert(62%) sepia(98%) saturate(1682%) hue-rotate(132deg) brightness(99%) contrast(93%)';
+  // #000000
   const BLACK = 'invert(0%) sepia(100%) saturate(0%) hue-rotate(7deg) brightness(95%) contrast(102%)';
+  // #0F6A49
+  const GREEN = 'invert(27%) sepia(18%) saturate(2802%) hue-rotate(116deg) brightness(103%) contrast(88%)';
 
+  const BASECOLOR = GREEN;
+
+  // 첫 실행 시 홈 버튼 색상 변경
   useEffect(() => {
     const homeButton = document.querySelector('#home') as HTMLElement;
     if (homeButton instanceof HTMLElement) {
@@ -24,11 +32,12 @@ export default function BottomNav() {
       const pFromElem = homeButton.lastElementChild as HTMLParagraphElement;
 
       if(homeButton !== null)
-        imgFromElem.style.filter = MINT;
-        pFromElem.style.filter = MINT;
+        imgFromElem.style.filter = BASECOLOR;
+        pFromElem.style.filter = BASECOLOR;
     }
   },[]);
 
+  // 색상 변경
   const selectMenu = (e:BaseSyntheticEvent) => {
     const imgTag = e.currentTarget.firstElementChild;
     const imgs = e.currentTarget.parentElement.children;
@@ -38,12 +47,9 @@ export default function BottomNav() {
       const pFromElem = elem.lastElementChild;
       let color;
       if(imgFromElem == imgTag){
-        // CSS filter generator by Barrett Sonntag
-        // #09D2CF
-        color = MINT;
+        color = BASECOLOR;
       }
       else {
-        // #000000
         color = BLACK;
       }
       imgFromElem.style.filter = color;
