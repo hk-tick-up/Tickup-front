@@ -1,0 +1,18 @@
+a {
+    cursor: pointer;
+}
+
+.position-back-button {
+    text-align: left;
+    padding: 5em 0 0 1em;
+    margin: 0 0 -8em 0;
+    overflow: hidden;
+}
+
+.runnig-img-position {
+    margin: 45px 0 0 0;
+}
+
+.position-discription {
+    margin: 30px 0 0 0;
+}

@@ -2,16 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-}
-
-p {
-    line-height: 1.2;
-}
-
 @font-face {
     font-family: 'Youth';
     font-style: normal;
@@ -31,6 +21,20 @@ p {
     font-style: normal;
 }
 
+* {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+p {
+    line-height: 1.2;
+}
+
 .custom-color-gray{
     color: #3C3D37;
+}
+
+.custom-title-font {
+    font-size: 30px;
 }
