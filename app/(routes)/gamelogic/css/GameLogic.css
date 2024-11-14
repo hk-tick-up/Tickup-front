@@ -1,0 +1,40 @@
+.container {
+    @apply min-h-screen pt-16;
+}
+
+
+.content {
+    @apply max-w-7xl mx-auto py-6 sm:px-6 lg:px-8;
+}
+
+.investment-card {
+    @apply bg-gray-100 shadow overflow-hidden sm:rounded-lg p-4 sm:p-6;
+}
+
+.investment-item {
+    @apply mb-4 p-4 border rounded-lg;
+}
+
+.investment-name {
+    @apply text-lg font-medium text-gray-900;
+}
+
+.investment-amount {
+    @apply mt-1 text-sm text-gray-600;
+}
+
+.investment-profit {
+    @apply mt-1 text-sm;
+}
+
+.text-profit-positive {
+    @apply text-green-600;
+}
+
+.text-profit-negative {
+    @apply text-red-600;
+}
+
+.no-investments {
+    @apply text-gray-500;
+}
