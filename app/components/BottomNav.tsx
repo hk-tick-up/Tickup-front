@@ -31,11 +31,12 @@ export default function BottomNav() {
       const imgFromElem = homeButton.firstElementChild as HTMLImageElement;
       const pFromElem = homeButton.lastElementChild as HTMLParagraphElement;
 
-      if(homeButton !== null)
+      if(homeButton !== null){
         imgFromElem.style.filter = BASECOLOR;
         pFromElem.style.filter = BASECOLOR;
+      }
     }
-  },[]);
+  },[BASECOLOR]);
 
   // 색상 변경
   const selectMenu = (e:BaseSyntheticEvent) => {
