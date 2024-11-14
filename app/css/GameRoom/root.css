@@ -7,6 +7,11 @@
     padding: 0;
     text-align: center;
 }
+
+p {
+    line-height: 1.2;
+}
+
 @font-face {
     font-family: 'Youth';
     font-style: normal;
@@ -26,26 +31,8 @@
     font-style: normal;
 }
 
-/* css 적용 여부 확인용 폰트 */
-@font-face {
-    font-family: 'SBAggroB';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroB.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-
 .custom-color-gray{
     color: #3C3D37;
-}
-
-.custom-bacground-color-blue{
-    background-color: #064889;
-    opacity: 69%;
-}
-
-.border-rounded{
-    border-radius: 14px;
 }
 
 .custom-img{
@@ -53,18 +40,32 @@
     border-radius: 14px;
     display: inline-block;
     margin: 0 0 15px 0;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
 }
 
 .custom-img img {
     display: block;
+    opacity: 100%;
 }
 
 .select-random-btn {
-    background-color: #064889;
-    opacity: 69%;
+    background-color: rgba(6, 72, 137, 0.73);
 }
 
-.select-together-btn{
-    background-color: #4F94D8;
-    opacity: 84%;
+.select-random-btn:hover {
+    background-color: rgba(6, 72, 137, 0.84);
+    box-shadow: 0px 0px 0px;
 }
+
+.select-together-btn {
+    background-color: rgba(79, 148, 216, 0.69);
+}
+
+.select-together-btn:hover {
+    background-color: rgba(79, 148, 216, 0.85);
+    box-shadow: 0px 0px 0px;
+}
+
+
