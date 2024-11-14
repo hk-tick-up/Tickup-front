@@ -38,9 +38,9 @@
 
 .nav-link-active {
     @apply
-    bg-black
-    text-white
-    ;
+    bg-[#5189C1]
+    text-white;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.2);
 }
 
 .nav-link-inactive {

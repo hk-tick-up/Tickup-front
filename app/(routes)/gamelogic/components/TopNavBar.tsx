@@ -6,10 +6,10 @@ const TopNavBar = () => {
   return (
     <nav className="top-nav-bar">
       <div className="nav-container">
-        <NavLink href="/" active>내 투자</NavLink>
-        <NavLink href="/market">주식</NavLink>
-        <NavLink href="/ranking">랭킹</NavLink>
-        <NavLink href="/tiki">티키(챗봇)</NavLink>
+        <NavLink href="/gamelogic/myinvest" active>내 투자</NavLink>
+        <NavLink href="/gamelogic/market">주식</NavLink>
+        <NavLink href="/gamelogic/ranking">랭킹</NavLink>
+        <NavLink href="/gamelogic/ticki">티키(챗봇)</NavLink>
       </div>
     </nav>
   );
