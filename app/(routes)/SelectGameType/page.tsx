@@ -1,10 +1,12 @@
 // 게임방식 선택하는 페이지
 import React from 'react'
-import '../../css/GameRoom/root.css';
+import '../../css/GameRoom/root.css'
+import '../../css/GameRoom/selectGame.css';
+import Link from "next/link";
 
 export default function Component() {
     return (
-        <div className="bg-gray-100 flex-1 flex flex-col items-center py-5">
+        <div className="bg-gray-100 flex flex-1 flex-col items-center justify-center min-h-screen py-5">
             <div className="font-[Freesentation-9Black] text-2xl">
                 <p>모의 투자 게임으로</p>
                 <p>나만의 투자 시작하기!</p>
@@ -15,15 +17,19 @@ export default function Component() {
             </div>
             <div className="flex justify-center space-x-10">
                 <div>
-                    <button className="">
-                        <img src="/images/GameRoom/dice.png" className="custom-img select-random-btn" />
-                        <p className="font-[Youth] text-lg">랜덤 매칭</p>
+                    <button>
+                        <Link href="/game/random">
+                            <img src="/images/GameRoom/dice.png" className="custom-img select-random-btn" />
+                            <p className="font-[Youth] text-lg">랜덤 매칭</p>
+                        </Link>
                     </button>
                 </div>
                 <div>
-                    <button className=''>
-                        <img src="/images/GameRoom/together.png" className="custom-img select-together-btn" />
-                        <p className="font-[Youth] text-lg">함께 하기</p>
+                    <button>
+                        <Link href="/game/together">
+                            <img src="/images/GameRoom/together.png" className="custom-img select-together-btn" />
+                            <p className="font-[Youth] text-lg">함께 하기</p>
+                        </Link>
                         </button>
                 </div>
             </div>
