@@ -1,34 +1,38 @@
-import Link from 'next/link';
-import React from 'react';
-import '../css/TopNavBar.css'
+'use client'
 
-const TopNavBar = () => {
+import Link from 'next/link'
+import React from 'react'
+import styles from '../css/TopNavBar.module.css'
+
+export default function TopNavBar() {
   return (
-    <nav className="top-nav-bar">
-      <div className="nav-container">
-        <NavLink href="/gamelogic/myinvest" active>내 투자</NavLink>
-        <NavLink href="/gamelogic/market">주식</NavLink>
-        <NavLink href="/gamelogic/ranking">랭킹</NavLink>
-        <NavLink href="/gamelogic/ticki">티키(챗봇)</NavLink>
+    <nav className={styles.topNavBar}>
+      <div className={styles.navContainer}>
+        <Link 
+          href="/gamelogic/myinvest"
+          className={`${styles.navLink} ${styles.navLinkActive}`}
+        >
+          내 투자
+        </Link>
+        <Link 
+          href="/gamelogic/stockinfo"
+          className={styles.navLink}
+        >
+          시장
+        </Link>
+        <Link 
+          href="/gamelogic/ranking"
+          className={styles.navLink}
+        >
+          랭킹
+        </Link>
+        <Link 
+          href="/gamelogic/ticki"
+          className={styles.navLink}
+        >
+          티키
+        </Link>
       </div>
     </nav>
-  );
-};
-
-type NavLinkProps = {
-  href: string;
-  children: React.ReactNode;
-  active?: boolean;
-};
-
-const NavLink = ({ href, children, active = false }: NavLinkProps) => {
-  return (
-    <Link href={href} passHref>
-      <div className={`nav-link ${active ? 'nav-link-active' : 'nav-link-inactive'}`}>
-        {children}
-      </div>
-    </Link>
-  );
-};
-
-export default TopNavBar;
+  )
+}

@@ -1,16 +1,20 @@
-import TopBar from './components/TopNavBar'
+import TopNavBar from './components/TopNavBar';
+import GameProgressBar from './components/GameProgressBar';
+//import '../../../public/css/fontawesome.css';
+//import '../../../public/css/all.css';
 
-export default function RootLayout({
+export default function GameLogicLayout({
     children,
 }: {
     children: React.ReactNode
 }) {
     return (
-        <html lang="ko">
-            <body>
-                <TopBar />
-                <main>{children}</main>
-            </body>
-        </html>
+
+        <>
+            <GameProgressBar />
+            <TopNavBar />
+            <main>{children}</main>
+        </>
+
     )
 }

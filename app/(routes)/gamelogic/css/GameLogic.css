@@ -1,5 +1,6 @@
 .container {
     @apply min-h-screen pt-16;
+    margin-top: 100px;
 }
 
 

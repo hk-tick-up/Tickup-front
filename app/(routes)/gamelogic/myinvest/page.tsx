@@ -14,6 +14,7 @@ export default function Home() {
     const [investments, setInvestments] = useState<Investment[]>([]);
 
     useEffect(() => {
+        // 화면 출력 예시를 위한 dummy data
         const dummyData = [
             { id: 1, name: '나이키', amount: 1000000, profit: 50000 },
             { id: 2, name: '애플', amount: 2000000, profit: -30000 },
