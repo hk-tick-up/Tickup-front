@@ -18,28 +18,90 @@
 
 .game-btn:hover {
     background-color: #24609b;
-    box-shadow: none;
+}
+
+.cancle-btn {
+    background-color: #C62E2E;
+    color: aliceblue;
+    padding: 8px 17px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0px 2px 2px rgb(60, 61, 55, 0.6);
+}
+
+.cancle-btn:hover {
+    background-color: #9f2727;
+}
+
+.not-yet {
+    background-color: rgb(156 163 175);
+    color: rgb(229 231 235);
+    padding: 8px 17px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.user-list-container {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    align-items: center;
+    max-width: 28rem;
+    width: 100%;
+    padding: 1em 0;
+}
+
+ul {
+    width: 100%;
+    margin: 0 0 4rem 0;
 }
 
 ul li {
     border-bottom: 1px solid #24609b;
-    padding: 3px 5px;
     display: flex;
     align-items: center;
+    margin: 0 30px;
+    padding: 13px;
+    justify-content: space-around;
+}
+
+.room-code {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    margin: 7rem 0 3rem;
+    font-size: 23px;
+}
+
+.room-code-copy{
+    background-color: none;
+    padding: 1px;
+}
+
+.room-code-copy:hover{
+    background-color: #DDD;
+    padding: 1px;
+    border-radius: 6px;
 }
 
 .status-wait {
     margin: 0 5px;
     background-color:coral;
-    padding: 2px 10px;
-    border-radius: 20px;
+    padding: 6px 10px;
+    border-radius: 18px;
     color: white;
+    font-weight: bold;
+    font-size: 14px;
 }
 
 .status-ready {
     margin: 0 5px;
     background-color:rgb(211, 80, 255);
-    padding: 2px 10px;
-    border-radius: 20px;
+    padding: 6px 10px;
+    border-radius: 18px;
     color: white;
+    font-weight: bold;
+    font-size: 14px;
 }
