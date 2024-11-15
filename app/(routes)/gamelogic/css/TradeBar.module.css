@@ -1,0 +1,29 @@
+.tradeBar {
+    @apply fixed bottom-0 left-0 right-0 w-full justify-center;
+    z-index: 10; /* 다른 요소 위로 올리기 */
+}
+
+.tradeContainer {
+    @apply flex justify-between items-center;
+    @apply max-w-screen-lg mx-auto;
+    padding: 0.5rem 1rem 1.5rem 1rem;
+}
+
+.sellButton, .buyButton {
+    @apply flex-1 text-center justify-center bg-white rounded-full text-gray-800 font-semibold;
+    margin: 0 0.5rem;
+}
+
+.sellButton {
+    @apply bg-red-500;
+}
+
+.buyButton {
+    @apply bg-blue-500;
+}
+
+.tradeName {
+    @apply font-semibold text-white;
+    padding: 0.2rem;
+}
+

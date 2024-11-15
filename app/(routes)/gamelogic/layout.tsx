@@ -19,10 +19,10 @@ export default async function GameLogicLayout({
 
 
     return (
-        <>
+        <div>
             <GameProgressBar initialTurn={initialTurn} initialTotalTurns={initialTotalTurns} />
             <TopNavBar />
             <main>{children}</main>
-        </>
+        </div>
     );
 }
