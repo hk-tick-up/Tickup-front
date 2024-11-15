@@ -5,7 +5,7 @@ import '../../../css/GameRoom/ramdomMatching.css'
 export default function Component() {
     return (
         <div className='relatve container'>
-            <div className='bg-gray-100 position-back-button fixed w-full'>
+            <div className='position-back-button fixed w-full'>
                 <a href="/game"><img src="../images/back.png" /></a>
             </div>
             <div className='bg-gray-100 flex flex-1 flex-col items-center justify-center'>

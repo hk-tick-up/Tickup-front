@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       {
         source: '/game/together',
         destination: '/SelectGameType/PlayWithFriends',
+      },
+      {
+        source: '/game/room',
+        destination: '/GameWaitingRoom',
       }
     ];
   },

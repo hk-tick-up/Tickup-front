@@ -42,6 +42,14 @@ a {
     flex-direction: column;
 }
 
+.box-position {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
 .custom-color-gray{
     color: #3C3D37;
 }
