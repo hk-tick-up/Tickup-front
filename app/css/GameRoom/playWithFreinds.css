@@ -23,6 +23,11 @@ input {
     box-shadow: 0px 2px 2px rgb(60, 61, 55, 0.6);
 }
 
+.join-button:hover, .share-button:hover {
+    background-color: #24609b;
+    box-shadow: none;
+}
+
 .share-button {
     background-color: #286DB1;
     color: aliceblue;
