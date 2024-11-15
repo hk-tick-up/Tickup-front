@@ -17,14 +17,14 @@ export default function Component() {
             <div className='user-list-position'>
                 <ul>
                     <li>1</li>
-                    <li>1</li>
-                    <li>1</li>
+                    <li>1<p className='status-ready'>준비완료</p></li>
+                    <li>1 <p className='status-wait'>대기중</p></li>
                     <li>1</li>
                     <li>1</li>
                 </ul>
             </div>
             <div className='box-position'>
-                <div>시작하기</div>
+                <div className='game-btn'>시작하기</div>
             </div>
         </div>
     )
