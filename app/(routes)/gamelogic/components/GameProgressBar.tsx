@@ -1,65 +1,58 @@
-'use client'
+'use client';
 
-import React, { useState, useEffect } from 'react'
-import Image from 'next/image'
-import styles from '../css/GameProgressBar.module.css'
-// import { io, Socket } from 'socket.io-client' // 주석 처리
+import { FormEvent } from "react";
+import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { io, Socket } from 'socket.io-client';
+import styles from '../css/GameProgressBar.module.css';
 
 interface GameProgressBarProps {
-    initialTurn: number
-    initialTotalTurns: number
+    initialTurn: number;
+    initialTotalTurns: number;
 }
 
 export default function GameProgressBar({ initialTurn, initialTotalTurns }: GameProgressBarProps) {
-    const [turn, setTurn] = useState(initialTurn)
-    const [totalTurns, setTotalTurns] = useState(initialTotalTurns)
+    const [turn, setTurn] = useState(initialTurn);
+    const [totalTurns, setTotalTurns] = useState(initialTotalTurns);
+    const [socket, setSocket] = useState<Socket | null>(null);
 
-    //UI 확인 위헤 웹소켓 부분 주석처리
+  // 웹소켓 연결 설정
+    useEffect(() => {
+        const newSocket = io('http://your-spring-boot-server-url'); // 실제 서버 URL로 변경
+        setSocket(newSocket);
 
-    // const [socket, setSocket] = useState<Socket | null>(null) // 주석 처리
+        return () => {
+        newSocket.disconnect();
+        };
+    }, []);
 
+    // 웹소켓 이벤트 리스너 설정
+    useEffect(() => {
+        if (!socket) return;
+
+        socket.on('turnUpdate', (data: { turn: number; totalTurns: number }) => {
+            setTurn(data.turn);
+            setTotalTurns(data.totalTurns);
+        });
+        
+        socket.on('error', (error) => {
+            console.error('WebSocket error:', error);
+        });
+        
+        return () => {
+            socket.off('turnUpdate');
+            socket.off('error');
+        };
+    }, [socket]);
     
-    // useEffect(() => {
-    //     const newSocket = io('http://your-spring-boot-server-url')
-    //     setSocket(newSocket)
-
-    //     return () => {
-    //         newSocket.disconnect()
-    //     }
-    // }, [])
-
-    // useEffect(() => {
-    //     if (!socket) return
-
-    //     socket.on('turnUpdate', (data: { turn: number, totalTurns: number }) => {
-    //         setTurn(data.turn)
-    //         setTotalTurns(data.totalTurns)
-    //     })
-
-    //     socket.on('error', (error) => {
-    //         console.error('WebSocket error:', error)
-    //     })
-
-    //     return () => {
-    //         socket.off('turnUpdate')
-    //         socket.off('error')
-    //     }
-    // }, [socket])
-    
-
     return (
         <div className={styles.container}>
             <button className={styles.exitButton}>
-                <Image 
-                    src="/images/gamelogic/exitgame_icon.png" 
-                    alt="Exit" 
-                    width={24} 
-                    height={24} 
-                />
+                <Image src="/images/exitgame_icon.png" alt="Exit" width={24} height={24} />
             </button>
             <div className={styles.turnCounter}>
                 Turn {turn}/{totalTurns}
             </div>
         </div>
-    )
+    );
 }

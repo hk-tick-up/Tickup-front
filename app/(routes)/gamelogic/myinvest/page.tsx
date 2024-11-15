@@ -10,7 +10,7 @@ interface Investment {
     profit: number;
 }
 
-export default function Home() {
+export default function Myinvest() {
     const [investments, setInvestments] = useState<Investment[]>([]);
 
     useEffect(() => {
