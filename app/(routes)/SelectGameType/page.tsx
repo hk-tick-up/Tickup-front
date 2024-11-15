@@ -8,7 +8,7 @@ import BottomNav from '../../components/BottomNav';
 export default function Component() {
     return (
         <>
-            <div className="bg-gray-100 flex flex-1 flex-col items-center justify-center min-h-screen py-5">
+            <div className="flex-1 items-center justify-center py-5 container">
                 <div className="font-[Freesentation-9Black] custom-title-font">
                     <p>모의 투자 게임으로</p>
                     <p>나만의 투자 시작하기!</p>

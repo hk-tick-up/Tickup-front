@@ -35,6 +35,13 @@ a {
     cursor: pointer;
 }
 
+.container {
+    background-color: rgb(243 244 246);
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
 .custom-color-gray{
     color: #3C3D37;
 }
@@ -45,7 +52,7 @@ a {
 
 .position-back-button {
     text-align: left;
-    padding: 3em 2em 1em;
+    padding: 3.5em 2em 1em;
     overflow: hidden;
     box-sizing: border-box;
 }
