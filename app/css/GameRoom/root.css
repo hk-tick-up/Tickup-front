@@ -31,10 +31,21 @@ p {
     line-height: 1.2;
 }
 
+a {
+    cursor: pointer;
+}
+
 .custom-color-gray{
     color: #3C3D37;
 }
 
 .custom-title-font {
     font-size: 30px;
+}
+
+.position-back-button {
+    text-align: left;
+    padding: 3em 2em 1em;
+    overflow: hidden;
+    box-sizing: border-box;
 }
