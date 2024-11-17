@@ -1,34 +1,46 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function searchResult(){
   const searchParams = useSearchParams();
-  // const data = JSON.parse(router.query.data as string);
   const singleParam = searchParams.get('data');
+  const response = JSON.parse(singleParam as string).data;
+
+  const [mode, setMode] = useState('');
 
   useEffect(()=>{
-    console.log(JSON.parse(singleParam as string));
+    console.log(response);
     
+    switch(response.mode){
+      case "keyword":
+        setMode('keyword');
+        break;
+      case "category":
+        setMode('category');
+        break;
+      default:
+    }
   });
-
-  // const renderContent = () => {
-  //   switch (data[0]) {
-  //     case "keyword":
-  //       return <div></div>;
-  //     case "category":
-  //       return <div></div>;
-  //     default:
-  //       return null;
-  //     }
-  // }
 
   return (
     <>
-      renderContent()
-      <br/>
-      {singleParam}
+      {mode === "keyword" &&
+        <>
+        <div>by keyword</div>
+        <div>{response.self.word}</div>
+        <div>{response.self.english}</div>
+        <div>{response.self.description}</div>
+        <div>relate words</div>
+        </>
+      }
+      {mode === "category" &&
+        <div>by category</div>
+      }
+      {mode === "" &&
+        <div>wrong access</div>
+      }
     </>
   );
 }
