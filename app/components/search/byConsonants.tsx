@@ -12,7 +12,7 @@ export default function ByConsonants() {
   };
 
   return (
-    <div>
+    <div className="flex">
       <button title="switchLanguage" onClick={onSwitchLanguage} className="w-10 h-6 border border-black">가/A</button>
       {language ? <Korean /> : <Alphabet />}
     </div>

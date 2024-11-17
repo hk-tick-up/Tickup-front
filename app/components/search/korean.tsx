@@ -1,14 +1,38 @@
-export default function Korean(){
-  // map에 (가~하:integer) 꼴로 저장
-  // map 사용해서 반복해서 버튼 배치
+import axios from "axios";
+import { BaseSyntheticEvent } from "react";
 
-  const onSearchByConsonant = () => {
+export default function Korean(){
+  const consonants = "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ";
+  const conso_array = [...consonants];
+
+  const base_url = "http://localhost:3000/api/v1/studies";
+
+  const onSearchByConsonant = async (e:BaseSyntheticEvent) => {
     // bottomnav 참고해서 타겟 잡고
-    // map 값 확인해서 자동적으로 axios
+    // inner 값 확인해서 자동적으로 axios
+
+    const button = e.currentTarget;
+    e.preventDefault();
+    // console.log(button.innerText);
+
+    const response = await axios.get(base_url+
+      "/search/category/"+button.innerText);
+
+    // response
+    // 0. category
+    // 1. 카테고리에 속한 단어 목록
+    //   - 단어, 영단어, 뜻(한 문장)
+
+    // 카테고리 페이지로 리다이렉트
   }
+
   return(
   <div>
-    <button title="category" onClick={onSearchByConsonant} className="w-10 h-6 border border-black">가/A</button>
+    {
+      conso_array.map((element, index)=>(
+        <button key={index} title="category" onClick={onSearchByConsonant} className="w-6 h-6 border border-black">{element}</button>
+      ))
+    }
   </div>
   )
 }
