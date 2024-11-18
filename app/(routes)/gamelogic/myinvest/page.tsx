@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from "next/image";
 import '../css/GameLogic.css';
 
 interface MyInvestment {
@@ -28,7 +29,7 @@ export default function Myinvest() {
         // 초기값 설정
         userId: 1, //test용 초기 dummydata
         myStockBalance: 1144,
-        profit: -443,
+        profit: 443,
         balance: 1456354,
         previousBalance: 300000,
     });
@@ -36,8 +37,8 @@ export default function Myinvest() {
     useEffect(() => {
         // 화면 출력 예시를 위한 dummy data
         const userInvestments: MyInvestment[] = [
-            { userId: 1, companyId: 1, name: '나이키', image: './images/gamelogic/dummy_nike_logo.png', amount: 1000000, profit: -489, profitPercentage: -32.4, shareHold: 2},
-            { userId: 1, companyId: 2, name: '애플', image: './images/gamelogic/dummy_apple_logo.png', amount: 2000000, profit: -489, profitPercentage: -32.4, shareHold: 10 },
+            { userId: 1, companyId: 1, name: '나이키', image: '/images/gamelogic/dummy_nike_logo.png', amount: 1000000, profit: -489, profitPercentage: -32.4, shareHold: 2},
+            { userId: 1, companyId: 2, name: '애플', image: '/images/gamelogic/dummy_apple_logo.png', amount: 2000000, profit: -489, profitPercentage: -32.4, shareHold: 10 },
         ];
 
         setInvestments(userInvestments);
@@ -61,28 +62,46 @@ export default function Myinvest() {
                     >{stockBalance.profit.toLocaleString()}원</p>
                 </div>
 
+                {/* Investment List */}
                 <div className="investment-card">
-                    {investments.length > 0 ? (
-                        investments.map((investment) => (
-                            <div key={investment.companyId} className="investment-item">
-                                <Image src={investment.image} alt={investment.name}/>
+                    {investments.map((investment) => (
+                    <div
+                        key={investment.companyId}
+                        className="investment-item"
+                    >
+                        <div className="investment-image">
+                        <Image
+                            src={investment.image}
+                            alt={investment.name}
+                            width={45}
+                            height={45}
+                        />
+                        </div>
 
-                                <h2 className="investment-name">{investment.name}</h2>
-                                <p className="investment-amount">투자 금액: {investment.amount.toLocaleString()}원</p>
-                                <p
-                                    className={`investment-profit ${
-                                        investment.profit >= 0
-                                            ? 'text-profit-positive'
-                                            : 'text-profit-negative'
-                                    }`}
-                                >
-                                    수익: {investment.profit.toLocaleString()}원
-                                </p>
+                        <div className="flex-1">
+                        <div className="flex justify-between items-start">
+                            <div>
+                            <p className="text-medium pb-1">{investment.name}</p>
+                            <p className="text-sub">{investment.shareHold}주</p>
                             </div>
-                        ))
-                    ) : (
-                        <p className="no-investments">투자 내역이 없습니다.</p>
-                    )}
+                            <div className="text-right">
+                            <p className="text-medium pb-1">
+                                {investment.amount.toLocaleString()} 원
+                            </p>
+                            <p className={`'text-profit-large' ${
+                                investment.profit >=0 
+                                ? 'text-profit-positive'
+                                : 'text-profit-negative'
+                            }`}>
+                                {investment.profit.toLocaleString()}원 (
+                                {investment.profitPercentage}%)
+                            </p>
+                            
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    ))}
                 </div>
                     
                 <div className='my-balance'>
@@ -90,6 +109,10 @@ export default function Myinvest() {
                     <p className='text-amount-large'>{stockBalance.balance.toLocaleString()}원</p>
 
                 </div>
+
+
+
+
             </div>
         </div>
     );

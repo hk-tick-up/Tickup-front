@@ -10,7 +10,6 @@
 }
 
 /* 텍스트 스타일  */
-
 .text-medium {
     @apply font-semibold text-lg;
 }
@@ -23,7 +22,7 @@
     @apply text-red-600 font-bold text-lg;
 }
 .text-profit-negative-large {
-    @apply text-blue-500 font-bold;
+    @apply text-blue-500 font-bold text-lg;
 }
 .text-profit-positive {
     @apply text-red-600 font-bold;
@@ -31,17 +30,25 @@
 .text-profit-negative {
     @apply text-blue-500 font-bold;
 }
+.text-sub{
+    @apply text-sm text-gray-500;
+}
 .investment-profit {
     @apply mt-1 text-sm;
 }
 
 /* 카드 스타일 */
 .investment-card {
-    @apply bg-gray-100 shadow overflow-hidden rounded-2xl p-5 my-5 bg-[#EEF4F9];
+    @apply bg-[#EEF4F9] shadow overflow-hidden rounded-2xl p-5 my-5;
 }
 
-.investment-item {
-    @apply py-4 rounded-lg;
+.investment-item{
+    @apply flex items-center py-3 first:pt-0 last:pb-0;
+
+}
+
+.investment-image {
+    @apply items-center justify-center mr-4;
 }
 
 .investment-name {
