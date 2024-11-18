@@ -11,6 +11,5 @@
 }
 
 .main-container{
-    /* @apply pt-40 max-w-screen-lg mx-auto px-5; */
     @apply  max-w-screen-lg mx-auto px-5 flex-1 w-full overflow-y-auto;
 }

@@ -11,7 +11,7 @@
 
 /* 텍스트 스타일  */
 
-.text-title-medium {
+.text-medium {
     @apply font-semibold text-lg;
 }
 .text-amount-large {
@@ -41,7 +41,7 @@
 }
 
 .investment-item {
-    @apply p-4 rounded-lg;
+    @apply py-4 rounded-lg;
 }
 
 .investment-name {
