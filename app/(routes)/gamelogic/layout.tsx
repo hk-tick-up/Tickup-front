@@ -1,5 +1,6 @@
 import TopNavBar from './components/TopNavBar';
 import GameProgressBar from './components/GameProgressBar';
+import './css/layout.css'
 
 export default async function GameLogicLayout({
     children,
@@ -22,7 +23,10 @@ export default async function GameLogicLayout({
         <div>
             <GameProgressBar initialTurn={initialTurn} initialTotalTurns={initialTotalTurns} />
             <TopNavBar />
-            <main>{children}</main>
+            <main className='main-container'>
+                본문 내용 시작
+                {children}
+            </main>
         </div>
     );
 }
