@@ -1,13 +1,21 @@
-export default function TodayWord() {
+type TodayWordType = {
+  word: string;
+  english: string;
+  description: string;
+}
+
+export default function TodayWord({data}:{data: TodayWordType}) {
   // 무작위 단어 axios
+  console.log(data);
+  
 
   return (
     <div className="border border-black">
       <img alt="icon"/>
-      <div>오늘의 단어</div>
-      <p>단어</p>
-      <p>영어로</p>
-      <p>설명</p>
+      <p>오늘의 단어</p>
+      <p>{data.word}</p>
+      <p>{data.english}</p>
+      <p>{data.description}</p>
     </div>
   );
 }

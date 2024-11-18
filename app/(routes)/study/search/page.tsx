@@ -3,11 +3,11 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from "react";
 
-export default function searchResult(){
+export default function SearchResult(){
   const searchParams = useSearchParams();
   const singleParam = searchParams.get('data');
-  const response = JSON.parse(singleParam as string).data;
-
+  const response = JSON.parse(singleParam as string);
+  
   const [mode, setMode] = useState('');
 
   useEffect(()=>{
@@ -22,7 +22,7 @@ export default function searchResult(){
         break;
       default:
     }
-  });
+  }, [response]);
 
   return (
     <>

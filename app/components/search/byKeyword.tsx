@@ -18,13 +18,15 @@ export default function ByKeyword(){
   const onSearchClicked = async (e:BaseSyntheticEvent) => {
     // keyword로 (유사)단어 검색
 
-    const input = e.currentTarget.parentElement.firstElementChild;
+    // const input = e.currentTarget.parentElement.firstElementChild;
+    const input = keyword;
     e.preventDefault();
     // console.log(input);
     // console.log(input.value);
 
-    const response = await axios.get(`${base_url}/search/keyword?query=${input.value}`);
-console.log(response.data);
+    // const response = await axios.get(`${base_url}/search/keyword?query=${input.value}`);
+    const response = await axios.get(`${base_url}/search/keyword?query=${input}`);
+    // console.log(response.data);
 
     const body = response.data;
     // response
@@ -35,7 +37,7 @@ console.log(response.data);
 
     // 단어 페이지로 리다이렉트
     const params = new URLSearchParams({
-      data: JSON.stringify(response.data)
+      data: JSON.stringify(body)
     });
     router.push(`/study/search?${params.toString()}`);
   }
