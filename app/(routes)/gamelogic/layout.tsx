@@ -20,11 +20,16 @@ export default async function GameLogicLayout({
 
 
     return (
-        <div>
-            <GameProgressBar initialTurn={initialTurn} initialTotalTurns={initialTotalTurns} />
-            <TopNavBar />
+        <div className='screen'>
+            <div className='header'>
+                <GameProgressBar initialTurn={initialTurn} initialTotalTurns={initialTotalTurns} />
+                <TopNavBar />
+            </div>
+            
+            <div className='space-between'/>
+            
             <main className='main-container'>
-                본문 내용 시작
+                {/* 본문 내용 시작 */}
                 {children}
             </main>
         </div>
