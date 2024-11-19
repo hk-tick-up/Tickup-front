@@ -11,7 +11,7 @@
 }
 
 .main-container{
-    @apply  max-w-screen-lg mx-auto px-5 flex-1 w-full overflow-y-auto;
+    @apply max-w-screen-lg mx-auto px-5 flex-1 w-full overflow-y-auto;
 }
 
 .collapsible-content {

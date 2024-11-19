@@ -1,6 +1,6 @@
 .tradeBar {
     @apply fixed bottom-0 left-0 right-0 w-full justify-center;
-    z-index: 10; /* 다른 요소 위로 올리기 */
+    /* z-index: 10; 다른 요소 위로 올리기 */
 }
 
 .tradeContainer {
