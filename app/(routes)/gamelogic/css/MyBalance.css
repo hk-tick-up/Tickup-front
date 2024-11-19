@@ -1,0 +1,55 @@
+.my-balance {
+    @apply flex flex-col bg-white rounded-lg pt-5;
+}
+
+/* 잔고 섹션 */
+.balance-header {
+    @apply flex flex-col mb-4;
+}
+
+.text-medium {
+    @apply text-base font-bold text-gray-800;
+}
+
+.text-amount-large {
+    @apply text-3xl font-extrabold text-black;
+}
+
+/* 토글 버튼 */
+.balance-toggle-button {
+    @apply flex items-center gap-1 text-sm text-gray-500 cursor-pointer transition-colors;
+}
+
+.balance-toggle-button:hover {
+    @apply text-gray-700;
+}
+
+/* 토글 아이콘 */
+.toggle-icon {
+    @apply h-4 w-4 transition-transform;
+}
+
+.icon-rotated {
+    @apply rotate-180;
+}
+
+/* 토글 내용 */
+.toggle-content {   
+    @apply mt-4 mx-2;
+}
+
+.history-item {
+    @apply flex justify-between items-center py-2 border-b border-gray-200;
+}
+
+.history-turn {
+    @apply text-sm text-gray-600;
+}
+
+.sell-amount {
+    @apply text-sm text-blue-500;
+}
+
+.buy-amount {
+    @apply text-sm text-red-500;
+}

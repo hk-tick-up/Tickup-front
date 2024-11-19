@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from "next/image";
 import '../css/GameLogic.css';
+import MyBalance from '../components/MyBalance';
 
 interface MyInvestment {
     userId: number;
@@ -56,8 +57,8 @@ export default function Myinvest() {
                     <p className='text-amount-large'>{stockBalance.myStockBalance.toLocaleString()}원</p>
                     <p className={`'text-profit-large' ${
                         stockBalance.profit >=0 
-                            ? 'text-profit-positive-large'
-                            : 'text-profit-negative-large'
+                            ? 'text-profit-positive-large mt-1'
+                            : 'text-profit-negative-large mt-1'
                     }`}
                     >{stockBalance.profit.toLocaleString()}원</p>
                 </div>
@@ -103,13 +104,8 @@ export default function Myinvest() {
                     </div>
                     ))}
                 </div>
-                    
-                <div className='my-balance'>
-                    <p className='text-medium'>내 잔고</p>
-                    <p className='text-amount-large'>{stockBalance.balance.toLocaleString()}원</p>
 
-                </div>
-
+                <MyBalance />
 
 
 
