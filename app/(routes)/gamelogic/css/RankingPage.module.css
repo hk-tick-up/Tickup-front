@@ -1,6 +1,6 @@
 /* 페이지 스타일 */
 .container {
-    @apply flex flex-col min-h-screen;
+    @apply flex flex-col min-h-screen mt-4;
 }
 
 .content {
