@@ -1,0 +1,72 @@
+.container {
+    @apply flex flex-col min-h-screen;
+}
+
+.tradeBarContainer {
+    @apply flex justify-between px-4 py-4 bg-white;
+    /* gap: vw; */
+}
+
+.categoryItem {
+    @apply flex flex-col items-center cursor-pointer;
+}
+
+.categoryIconContainer {
+    @apply w-14 h-14 rounded-lg flex items-center justify-center;
+}
+
+.categoryIconActive {
+    @apply bg-[#5189C1];
+}
+
+.categoryIconInactive {
+    @apply bg-gray-100;
+}
+
+.iconActive {
+    @apply text-white;
+}
+
+.iconInactive {
+    @apply text-gray-600;
+}
+
+.categoryLabel {
+    @apply text-xs mt-2;
+}
+
+.stockHeader {
+    @apply text-xl font-bold my-2;
+}
+
+.stockPrice {
+    @apply text-3xl font-bold mb-1;
+}
+
+.priceChangePositive {
+    @apply text-red-500 mb-6;
+}
+
+.priceChangeNegative {
+    @apply text-blue-500 mb-6;
+}
+
+.chartContainer {
+    @apply h-32 m-6;
+}
+
+.newsSection {
+    @apply bg-[#EEF4F9] rounded-lg p-4;
+}
+
+.newsHeader {
+    @apply text-base font-semibold mt-2 mb-4 flex items-center;
+}
+
+.newsContent {
+    @apply space-y-3 ml-4;
+}
+
+.newsItem {
+    @apply text-sm text-gray-700 leading-relaxed;
+}

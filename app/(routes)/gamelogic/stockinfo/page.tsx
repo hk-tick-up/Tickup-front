@@ -4,25 +4,26 @@ import { useState } from 'react'
 import { Smartphone, Pill, TrendingUp, Truck } from 'lucide-react'
 import { Line } from 'react-chartjs-2'
 import {
-Chart as ChartJS,
-CategoryScale,
-LinearScale,
-PointElement,
-LineElement,
-Title,
-Tooltip,
-Legend,
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
 } from 'chart.js'
 import TradeBar from '../components/TradeBar'
+import styles from '../css/StockInfoPage.module.css'
 
 ChartJS.register(
-CategoryScale,
-LinearScale,
-PointElement,
-LineElement,
-Title,
-Tooltip,
-Legend
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
 )
 
 // 차트 더미 데이터
@@ -66,112 +67,124 @@ const newsData = {
 }
 
 export default function StockInfo() {
-const [selectedCategory, setSelectedCategory] = useState('A IT')
+    const [selectedCategory, setSelectedCategory] = useState('A IT')
 
-const categoryIcons = {
+    const categoryIcons = {
     'A IT': Smartphone,
     'B 레버': TrendingUp,
     'C 제약': Pill,
     'D 유통': Truck,
-}
+    }
 
-const chartOptions = {
+    const chartOptions = {
     responsive: true,
     plugins: {
-    legend: {
+        legend: {
         display: false,
-    },
-    title: {
+        },
+        title: {
         display: false,
-    },
+        },
     },
     scales: {
-    x: {
+        x: {
         display: false,
-    },
-    y: {
+        },
+        y: {
         display: false,
-    },
+        },
     },
     elements: {
-    line: {
+        line: {
         tension: 0.4,
-    },
-    point: {
+        },
+        point: {
         radius: 0,
+        },
     },
-    },
-}
+    }
 
-const getChartData = (category) => ({
+    const getChartData = (category) => ({
     labels: ['', '', '', '', '', '', '', '', '', ''],
     datasets: [
-    {
+        {
         data: chartData[category],
         borderColor: 'rgb(0, 0, 0)',
         borderWidth: 2,
-    },
+        },
     ],
-})
+    })
 
-return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
-    <TradeBar />
-    
-    {/* 종목 카테고리 */}
-    <div className="flex justify-between px-4 py-6 bg-white">
+    return (
+    <div className={styles.container}>
+        <TradeBar />
+
+        {/* 종목 카테고리 */}
+        <div className={styles.tradeBarContainer}>
         {Object.entries(categoryIcons).map(([category, Icon]) => (
-        <div
+            <div
             key={category}
-            className="flex flex-col items-center cursor-pointer"
+            className={styles.categoryItem}
             onClick={() => setSelectedCategory(category)}
-        >
-            <div className={`w-14 h-14 rounded-lg flex items-center justify-center ${
-            selectedCategory === category ? 'bg-blue-500' : 'bg-gray-100'
-            }`}>
-            <Icon className={`w-6 h-6 ${
-                selectedCategory === category ? 'text-white' : 'text-gray-600'
-            }`} />
+            >
+            <div
+                className={`${styles.categoryIconContainer} ${
+                selectedCategory === category
+                    ? styles.categoryIconActive
+                    : styles.categoryIconInactive
+                }`}
+            >
+                <Icon
+                className={`${
+                    selectedCategory === category
+                    ? styles.iconActive
+                    : styles.iconInactive
+                }`}
+                />
             </div>
-            <span className="text-xs mt-1">{category}</span>
-        </div>
+            <span className={styles.categoryLabel}>{category}</span>
+            </div>
         ))}
-    </div>
-
-    {/* 주가 정보 */}
-    <div className="px-4 py-6">
-        <h1 className="text-xl font-bold mb-2">{selectedCategory} 주가</h1>
-        <div className="text-3xl font-bold mb-1">
-        {stockInfo[selectedCategory].price.toLocaleString()}원
         </div>
-        <div className={`${
-        stockInfo[selectedCategory].change > 0 ? 'text-red-500' : 'text-blue-500'
-        } mb-6`}>
-        {stockInfo[selectedCategory].change > 0 ? '+' : ''}
-        {stockInfo[selectedCategory].change.toLocaleString()}원 (
-        {stockInfo[selectedCategory].changePercent}%)
+
+        {/* 주가 정보 */}
+        <div>
+        <h1 className={styles.stockHeader}>{selectedCategory} 주가</h1>
+        <div className={styles.stockPrice}>
+            {stockInfo[selectedCategory].price.toLocaleString()}원
+        </div>
+        <div
+            className={`${
+            stockInfo[selectedCategory].change > 0
+                ? styles.priceChangePositive
+                : styles.priceChangeNegative
+            }`}
+        >
+            {stockInfo[selectedCategory].change > 0 ? '+' : ''}
+            {stockInfo[selectedCategory].change.toLocaleString()}원 (
+            {stockInfo[selectedCategory].changePercent}%)
         </div>
 
         {/* 차트 */}
-        <div className="h-32 mb-6">
-        <Line options={chartOptions} data={getChartData(selectedCategory)} />
+        <div className={styles.chartContainer}>
+            <Line options={chartOptions} data={getChartData(selectedCategory)} />
         </div>
 
         {/* 뉴스 섹션 */}
-        <div className="bg-gray-50 rounded-lg p-4">
-        <h2 className="text-sm font-medium mb-3 flex items-center">
+        <div className={styles.newsSection}>
+            <h2 className={styles.newsHeader}>
             <span className="mr-2">📰</span>
             오늘의 시장 상황
-        </h2>
-        <div className="space-y-3">
+            </h2>
+            <div className={styles.newsContent}>
             {newsData[selectedCategory].map((news) => (
-            <p key={news.id} className="text-sm text-gray-600 leading-relaxed">
+                <p key={news.id} className={styles.newsItem}>
                 {news.content}
-            </p>
+                </p>
             ))}
+            </div>
         </div>
         </div>
     </div>
-    </div>
-)
+    )
 }
