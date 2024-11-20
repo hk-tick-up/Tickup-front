@@ -39,35 +39,35 @@ export default function SignUp(){
   }
   return (
     <div className="flex flex-col items-center">
-      <div className="border border-black p-2 w-1/2 max-w-96">
-        <form onSubmit={onSignUp} className="flex flex-col items-center space-y-2">
-          <div>
-            <label htmlFor="userId" className="inline-block w-20 text-right">ID</label>
-            <input id="userId" type="text" placeholder=" user id" className="border border-black ml-2 w-52" required/>
+      <div className="border border-black p-2 w-2/3 max-w-xl min-w-xs">
+        <form onSubmit={onSignUp} className="flex flex-col items-center space-y-2 w-full">
+          <div className="w-full px-2">
+            <label htmlFor="userId" className="inline-block w-20 text-right pr-2">ID</label>
+            <input id="userId" type="text" placeholder=" user id" className="border border-black w-full max-w-52" required/>
           </div>
-          <div>
-            <label htmlFor="password" className="inline-block w-20 text-right">password</label>
-            <input id="password" type="password" placeholder=" password" className="border border-black ml-2 w-52" required/>
+          <div className="w-full px-2">
+            <label htmlFor="password" className="inline-block w-20 text-right pr-2">password</label>
+            <input id="password" type="password" placeholder=" password" className="border border-black w-full max-w-52" required/>
           </div>
-          <div>
-            <label htmlFor="nickname" className="inline-block w-20 text-right">nickname</label>
-            <input id="nickname" type="text" placeholder=" nickname" className="border border-black ml-2 w-52" required/>
+          <div className="w-full px-2">
+            <label htmlFor="nickname" className="inline-block w-20 text-right pr-2">nickname</label>
+            <input id="nickname" type="text" placeholder=" nickname" className="border border-black w-full max-w-52" required/>
           </div>
-          <div>
-            <label htmlFor="age" className="inline-block w-20 text-right">age</label>
-            <input id="age" type="number" defaultValue={0} className="border border-black ml-2 w-52" max={200} min={0} required/>
+          <div className="w-full px-2">
+            <label htmlFor="age" className="inline-block w-20 text-right pr-2">age</label>
+            <input id="age" type="number" defaultValue={0} className="border border-black w-full max-w-52" max={200} min={0} required/>
           </div>
-          <div>
-            <label htmlFor="gender" className="inline-block w-20 text-right">gender</label>
-            <select id="gender" className="border border-black ml-2 w-52" defaultValue="" required>
+          <div className="w-full px-2">
+            <label htmlFor="gender" className="inline-block w-20 text-right pr-2">gender</label>
+            <select id="gender" className="border border-black w-full max-w-52" defaultValue="" required>
               <option value="" disabled>성별</option>
               <option value="MALE">남자</option>
               <option value="FEMALE">여자</option>
             </select>
           </div>
-          <div>
-            <label htmlFor="job" className="inline-block w-20 text-right">job</label>
-            <input id="job" type="text" placeholder=" job" className="border border-black ml-2 w-52" required/>
+          <div className="w-full px-2">
+            <label htmlFor="job" className="inline-block w-20 text-right pr-2">job</label>
+            <input id="job" type="text" placeholder=" job" className="border border-black w-full max-w-52" required/>
           </div>
           <button type="submit" title="회원가입" value="회원가입" className="border border-black m-2 p-2">회원가입</button>
         </form>
