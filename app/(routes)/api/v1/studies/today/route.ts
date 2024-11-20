@@ -15,7 +15,7 @@ export async function GET() {
         },
         todayquiz: {
           quiznumber: "1",
-          quiz: "오늘의퀴즈",
+          quiz: "오늘의문제",
           answers: {
             1: "선택지1",
             2: "선택지2",

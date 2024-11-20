@@ -13,9 +13,9 @@ export default function TodayWord({data}:{data: TodayWordType}) {
     <div className="border border-black">
       <img alt="icon"/>
       <p>오늘의 단어</p>
-      <p>{data.word}</p>
-      <p>{data.english}</p>
-      <p>{data.description}</p>
+      <p>단어: {data.word}</p>
+      <p>영어: {data.english}</p>
+      <p>설명: {data.description}</p>
     </div>
   );
 }
