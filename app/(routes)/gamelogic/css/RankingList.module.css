@@ -32,7 +32,7 @@
 }
 
 .totalAmount {
-    @apply font-medium text-gray-600 ;
+    @apply font-medium text-gray-600;
 }
 
 .expandButton {

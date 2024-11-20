@@ -68,7 +68,7 @@ return (
                 <span className={styles.userName}>{user.username}</span>
                 <div className={styles.assetInfo}>
                 <span className={styles.totalAmount}>
-                    {formatAmount(user.totalAmount)}원
+                    평가금액 {formatAmount(user.totalAmount)}원
                 </span>
                 <button
                     onClick={() =>
