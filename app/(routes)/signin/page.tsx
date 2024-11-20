@@ -9,7 +9,7 @@ export default function SignIn(){
     
     const formElement = e.target.closest('form');
     const data = new URLSearchParams();
-    data.append("id", formElement.userId.value);
+    data.append("username", formElement.userId.value);
     data.append("password", formElement.password.value);
     console.log(data);
 
