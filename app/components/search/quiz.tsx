@@ -1,6 +1,6 @@
 import { BaseSyntheticEvent } from "react";
 
-type TodayQuizType = {
+type QuizType = {
   quiznumber: number;
   quiz: string;
   answers: {
@@ -9,7 +9,13 @@ type TodayQuizType = {
   answer: number;
 }
 
-export default function TodayQuiz({data}:{data: TodayQuizType}) {
+export default function Quiz(props:{
+      data: QuizType, 
+      selected:(data:{quizIndex:number, answer:number})=>void,
+      quizIndex: number
+    }
+  ) {
+  const data = props.data;
   // 무작위 단어 axios
 
   // console.log(data);
@@ -20,11 +26,12 @@ export default function TodayQuiz({data}:{data: TodayQuizType}) {
   // data.answer: 정답은 선택지1
   
   
-  // 오늘의 퀴즈는 진행도 체크 제외
+  // 난이도 별 퀴즈는 진행도 체크
 
   const changeChoicesColor = (target:HTMLButtonElement, buttons:HTMLCollection, color:string) => {
     for(let i=0; i<buttons.length; i++){
       const button = buttons.item(i) as HTMLButtonElement;
+      
       if(target === button)
         button.style.border = "2px solid "+color;
       else
@@ -32,23 +39,21 @@ export default function TodayQuiz({data}:{data: TodayQuizType}) {
     }
   };
   const onButtonClick = (e:BaseSyntheticEvent) => {
-    const target = e.target;
+    const target:HTMLButtonElement = e.target;
+    if(!target.parentElement) return;
     const buttons: HTMLCollection = target.parentElement.children;
-    const answer = data.answer.toString();
 
-    if(e.target.name === answer){
-      changeChoicesColor(target, buttons, "green");
-    }
-    else{
-      changeChoicesColor(target, buttons, "red");
-    }
-    
+    changeChoicesColor(target, buttons, "yellow");
+
+    const selectedAnswer = target.getAttribute("name");
+    if(selectedAnswer)
+      props.selected({quizIndex: props.quizIndex, answer: +selectedAnswer});
   }
 
   return (
     <div className="border border-black">
       <img alt="icon"/>
-      <div>오늘의 퀴즈</div>
+      <div>난이도 별 퀴즈</div>
       <p>문제ID: {data.quiznumber}</p>
       <p>문제: {data.quiz}</p>
       <div className="flex flex-col">

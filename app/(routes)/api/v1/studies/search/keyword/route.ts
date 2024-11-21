@@ -12,9 +12,13 @@ export async function GET() {
       {
         mode: "keyword",
         self: {
-          word: "some word",
-          english: "in english",
-          description: "description of word"
+          words:[
+            {
+              word: "단어1",
+              english: "영어1",
+              description: "설명1"
+            }
+          ]
         }
       },
       { status: 200 }

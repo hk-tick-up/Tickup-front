@@ -6,7 +6,7 @@ type TodayWordType = {
 
 export default function TodayWord({data}:{data: TodayWordType}) {
   // 무작위 단어 axios
-  console.log(data);
+  // console.log(data);
   
 
   return (

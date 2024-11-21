@@ -17,7 +17,7 @@ export default function StudyMainpage() {
     (async () => {
       try{
         const response = await axios(`${base_url}/today`);
-        console.log(response.data);
+        // console.log(response.data);
         const quiz = response.data.todayquiz;
         const word = response.data.todayword;
         setTodayQuiz(quiz);
