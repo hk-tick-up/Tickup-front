@@ -1,9 +1,44 @@
+'use client';
+
 import React from 'react'
+import { useState } from "react";
 import '../../../css/GameRoom/root.css'
 import '../../../css/GameRoom/playWithFreinds.css'
 import BottomNav from '../../../components/BottomNav';
+import Link from "next/link";
+import { NextRequest } from 'next/server';
+
+const creatRoom = async () => {
+    const response = await fetch("http://localhost:8080/api/v1/gameroom/create", {
+        method: "POST",
+        headers: ({
+            "Content-Type" : "application/json"
+        }),
+        body: JSON.stringify({
+            "gameType": "Basic",
+            "userRole": "user"
+        })
+    });
+    console.log(await response.json());
+};
+
+
+export async function POST(request: NextRequest) {
+    const data = await request.json();
+    return Response.json(data);
+}
 
 export default function Component() {
+    const [gameRoomId, setGameRoomId] = useState("");
+    const joinRoom = async () => {
+        const response = await fetch(`http://localhost:8080/api/v1/gameroom/join/${gameRoomId}`, {
+            method: "POST",
+            headers: ({
+                "Content-Type": "application/json"
+            })
+        })
+    }
+
     return (
         <>
             <div className='relatve container'>
@@ -22,15 +57,21 @@ export default function Component() {
                         </div>
                         <div>
                             <div className='flex space-x-3 items-center'>
-                                <input placeholder='초대코드를 입력하세요'/>
-                                <div><button className='join-button'>입장</button></div>
+                                <input value={gameRoomId} onChange={(e) => setGameRoomId(e.target.value)} placeholder='초대코드를 입력하세요' type="text" />
+                                <div>
+                                    <Link href="/game/room">
+                                    <button onClick={joinRoom} className='join-button'>입장</button>
+                                    </Link>
+                                    </div>
                             </div>
                         </div>
                     </div>
                     <div className='font-[Youth] custom-color-gray share-box'>
                         <p className='adjustment-position'>함께 하고 싶은 친구를 불러주세요!</p>
                         <div>
-                            <button className='share-button'>코드를 만들어 공유하기</button>
+                            <Link href="/game/room">
+                            <button onClick={creatRoom} className='share-button'>코드를 만들어 공유하기</button>
+                            </Link>
                         </div>
                     </div>
                 </div>
