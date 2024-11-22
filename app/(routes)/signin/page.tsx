@@ -12,7 +12,6 @@ export default function SignIn(){
       "id": formElement.userId.value,
       "password": formElement.password.value
     };
-    console.log(data);
 
     axios.post("http://localhost:8000/api/v1/users/sign-in", data, {
       headers: {
@@ -22,10 +21,23 @@ export default function SignIn(){
     })
     .then(response => {
       console.log(response.data);
+      sessionStorage.setItem("bearer", response.data);
       // 로그인 성공
-      // 세션에 id, nickname 저장: 다시 axios, id에 대응하는 nickname 불러오기
-      sessionStorage.setItem("id", response.data.id);
-      sessionStorage.setItem("nickname", response.data.nickname);
+      
+      // 세션에 id, nickname 저장: 다시 axios, id nickname 불러와 세션스토리지에 저장하기
+      axios.get("http://localhost:8000/api/v1/users/self", {
+        headers: {
+          "Authorization": `Bearer ${response.data}`
+        }
+      })
+      .then(res => {
+        console.log(res.data);
+        sessionStorage.setItem("id", res.data.id);
+        sessionStorage.setItem("nickname", res.data.nickname);
+      })
+      .catch(error => {
+        console.error(error);
+      });
       // 리다이렉트(어디로?)
     })
     .catch(error => {
