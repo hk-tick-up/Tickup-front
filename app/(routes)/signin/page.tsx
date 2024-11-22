@@ -8,20 +8,25 @@ export default function SignIn(){
     e.preventDefault();
     
     const formElement = e.target.closest('form');
-    const data = new URLSearchParams();
-    data.append("username", formElement.userId.value);
-    data.append("password", formElement.password.value);
+    const data = {
+      "id": formElement.userId.value,
+      "password": formElement.password.value
+    };
     console.log(data);
 
     axios.post("http://localhost:8000/api/v1/users/sign-in", data, {
       headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          "Content-Type": "application/json",
       },
       withCredentials: true
     })
     .then(response => {
       console.log(response.data);
-      // 로그인 성공, 리다이렉트(어디로?)
+      // 로그인 성공
+      // 세션에 id, nickname 저장: 다시 axios, id에 대응하는 nickname 불러오기
+      sessionStorage.setItem("id", response.data.id);
+      sessionStorage.setItem("nickname", response.data.nickname);
+      // 리다이렉트(어디로?)
     })
     .catch(error => {
       console.error(error);
