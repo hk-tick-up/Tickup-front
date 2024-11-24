@@ -1,20 +1,30 @@
 'use client';
 
-import { FormEvent } from "react";
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { io, Socket } from 'socket.io-client';
+import { WebSocketContext } from '../layout';
 import styles from '../css/GameProgressBar.module.css';
 
 interface GameProgressBarProps {
     initialTurn: number;
-    initialTotalTurns: number;
+    // initialTotalTurns: number; -> api로 한 번만 호출로 변경
 }
 
-export default function GameProgressBar({ initialTurn, initialTotalTurns }: GameProgressBarProps) {
-    const [turn, setTurn] = useState(initialTurn);
-    const [totalTurns, setTotalTurns] = useState(initialTotalTurns);
-    const [socket, setSocket] = useState<Socket | null>(null);
+export default function GameProgressBar({ initialTurn }: GameProgressBarProps) {
+    const [turn, setTurn] = useState(initialTurn); // 현재 턴 수
+    const [totalTurns, setTotalTurns] = useState(0); // 총 턴 수 (api)
+    const [remainingTime, setRemainingTime] = useState(0); // 제한 시간
+    const { stompClient } = useContext(WebSocketContext);
+
+    // 총 턴 수 가져오기
+    useEffect(() => {
+        async function fetchTotalTurns() {
+            try {
+                const response = await fetch("http://localhost:8080/api/v1/gamelogic/total-turns");
+            }
+        }
+    })
 
   // 웹소켓 연결 설정
     useEffect(() => {
