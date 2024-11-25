@@ -1,7 +1,7 @@
 'use client';
 
 import TodayWord from "@/app/components/search/todayWord"
-import Search from "../../components/search/search"
+import Search from "@/app/components/search/search"
 import TodayQuiz from "@/app/components/search/todayQuiz";
 import MoveToQuiz from "@/app/components/search/moveToQuiz";
 import { useEffect, useState } from "react";
