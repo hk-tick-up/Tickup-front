@@ -11,25 +11,29 @@ export default function Profile(){
   const friendIcon = "/images/linkTo/friend.png";
   const researchIcon = "/images/linkTo/personResearch.png";
   const [point, setPoint] = useState<number>(0);
+  const [nickname, setNickname] = useState<string | null>("");
 
   useEffect(()=>{
-    axios.get("http://localhost:8000/api/v1/users/self", {
+    setNickname(sessionStorage.getItem("nickname"));
+
+    axios.get("http://localhost:8000/api/v1/users/point", {
       headers: {
         "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
       }
     })
     .then(res => {
       console.log(res.data);
-      setPoint(res.data.point);
+      setPoint(res.data);
     })
     .catch(error => {
-      console.error(error);
+      // console.error(error);
+      console.log(error);
     });
   }, [])
 
   return (
     <div className="py-5 w-full flex flex-col items-center">
-      <p className="py-3">{sessionStorage.getItem("id")}님 환영합니다!</p>
+      <p className="py-3">{nickname}님 환영합니다!</p>
       <p>
         <span className="py-3 text-[#666666]">누적포인트 </span>
         <span className="text-[#286DB1]">{point}p</span>
@@ -59,7 +63,6 @@ export default function Profile(){
           <img className="inline pl-1" src={researchIcon} alt="icon"/>
         </p>
       </>}/>
-      <div className="h-[100px]"></div>
     </div>
   )
 }
