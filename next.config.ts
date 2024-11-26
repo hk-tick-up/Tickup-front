@@ -8,12 +8,20 @@ const nextConfig: NextConfig = {
         destination: '/SelectGameType',
       },
       {
-        source: '/game/random',
-        destination: '/SelectGameType/RandomMatching',
+        source: '/game/loading',
+        destination: '/SelectGameType/LoadingPage',
       },
       {
         source: '/game/together',
         destination: '/SelectGameType/PlayWithFriends',
+      },
+      {
+        source: '/game/waiting/:gameRoomCode',
+        destination: '/GameWaitingRoom/:gameRoomCode',
+      },
+      {
+        source: '/game/waiting',
+        destination: '/GameWaitingRoom',
       }
     ];
   },
