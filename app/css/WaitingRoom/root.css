@@ -22,10 +22,15 @@
 }
 
 @font-face {
-    font-family: 'Pretendard-Regular';
-    src: url('/fonts/static/Pretendard-ExtraBold.otf') format('oft'),
-    /* font-weight: ExtraBold; */
+    font-family: 'Pretendard';
+    src: url('/fonts/static/Pretendard-Regular.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
 
+.font-design {
+    font-family: 'Pretendard';
+    font-weight: 600;
 }
 
 * {
@@ -71,3 +76,4 @@ a {
     overflow: hidden;
     box-sizing: border-box;
 }
+

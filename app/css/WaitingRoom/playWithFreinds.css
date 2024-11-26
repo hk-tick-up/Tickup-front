@@ -1,3 +1,10 @@
+/* @font-face {
+    font-family: 'Pretendard';
+    src: url('/fonts/static/Pretendard-Regular.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+} */
+
 .middle-components-position {
     padding : 3em 0 1em 0;
     display: flex;
@@ -16,8 +23,9 @@ input {
 .join-button {
     background-color: #286DB1;
     color: aliceblue;
-    padding: 8px 17px;
+    padding: 8px 17px 7px;
     border-radius: 15px;
+    font-family: 'Pretendard';
     font-weight: bold;
     font-size: 18px;
     box-shadow: 0px 2px 2px rgb(60, 61, 55, 0.6);
@@ -26,20 +34,24 @@ input {
 .join-button:hover, .share-button:hover {
     background-color: #24609b;
     box-shadow: none;
+    font-family: 'Pretendard';
+    font-weight: bold;
 }
 
 .share-button {
     background-color: #286DB1;
     color: aliceblue;
-    padding: 10px 35px;
+    padding: 10px 35px 8px;
     border-radius: 18px;
+    font-family: 'Pretendard';
     font-weight: bold;
+    font-size: 18px;
     box-shadow: 0px 2px 2px rgb(60, 61, 55, 0.6);
 }
 
 .notice-text {
     font-size: 20px;
-    padding: 0.2rem 0 0 0;
+    padding: 0 0 0 0;
 }
 
 .share-box {
@@ -47,8 +59,5 @@ input {
 }
 
 .adjustment-position {
-    margin: 0 0 10px 0;
-    font-family: 'Pretendard-Regular';
-    /* font-family: 'Youth'; */
-    font-weight:600
+    margin: 0 0 8px 0;
 }

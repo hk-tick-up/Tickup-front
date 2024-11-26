@@ -140,11 +140,11 @@ export default function Component() {
                         <p>모의 투자 게임으로</p>
                         <p>나만의 투자 시작하기!</p>
                     </div>
-                    <div className='font-[Pretendard-Regular] custom-color-gray middle-components-position'>
+                    <div className='font-design custom-color-gray middle-components-position'>
                         <div className='adjustment-position'>
                             <div className='flex items-center'>
                                 <img src='/images/WaitingRoom/hands.png' className='pr-1 h-6' alt="손" />
-                                <div className='notice-text'>친구와 함께 플레이 해요</div>
+                                <div className='notice-text font-design'>친구와 함께 플레이 해요</div>
                             </div>
                         </div>
                         <form onSubmit={joinRoom}>
@@ -161,8 +161,8 @@ export default function Component() {
                             </div>
                         </form>
                     </div>
-                    <div className='font-[Youth] custom-color-gray share-box'>
-                        <p className='adjustment-position'>함께 하고 싶은 친구를 불러주세요!</p>
+                    <div className='custom-color-gray share-box'>
+                        <p className='adjustment-position font-design text-lg'>함께 하고 싶은 친구를 불러주세요!</p>
                         <div>
                             <button onClick={handleCreateRoom} className='share-button'>코드를 만들어 공유하기</button>
                         </div>
