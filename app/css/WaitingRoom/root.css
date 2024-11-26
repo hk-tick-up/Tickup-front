@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Youth';
+    font-style: normal;
+    font-weight: 400;
+    src: url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff2') format('woff2'),
+    url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff') format('woff');
+    }
+    
+    .youth * {
+    font-family: 'Youth', sans-serif;
+    }
+
+@font-face {
+    font-family: 'Freesentation-9Black';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('/fonts/static/Pretendard-ExtraBold.otf') format('oft'),
+    /* font-weight: ExtraBold; */
+
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+p {
+    line-height: 1.2;
+}
+
+a {
+    cursor: pointer;
+}
+
+.container {
+    background-color: rgb(243 244 246);
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.box-position {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-color-gray{
+    color: #3C3D37;
+}
+
+.custom-title-font {
+    font-size: 30px;
+}
+
+.position-back-button {
+    text-align: left;
+    padding: 3.5em 2em 1em;
+    overflow: hidden;
+    box-sizing: border-box;
+}
