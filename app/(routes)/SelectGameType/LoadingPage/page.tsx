@@ -1,6 +1,6 @@
 import React from 'react'
-import '../../../css/GameRoom/root.css'
-import '../../../css/GameRoom/ramdomMatching.css'
+import '../../../css/WaitingRoom/root.css'
+import '../../../css/WaitingRoom/ramdomMatching.css'
 
 export default function Component() {
     return (
@@ -14,7 +14,7 @@ export default function Component() {
                     <p>나만의 투자 시작하기!</p>
                 </div>
                 <div className='runnig-img-position'>
-                    <img src='/images/GameRoom/running.png' />
+                    <img src='/images/WaitingRoom/running.png' />
                 </div>
                 <div className='font-[Youth] custom-color-gray position-discription'>
                     <p>게임을 함께 할 플레이어들을 매칭중입니다.</p>

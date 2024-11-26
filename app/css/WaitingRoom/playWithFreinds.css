@@ -48,4 +48,7 @@ input {
 
 .adjustment-position {
     margin: 0 0 10px 0;
+    font-family: 'Pretendard-Regular';
+    /* font-family: 'Youth'; */
+    font-weight:600
 }

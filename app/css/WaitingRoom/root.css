@@ -21,6 +21,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('/fonts/static/Pretendard-ExtraBold.otf') format('oft'),
+    /* font-weight: ExtraBold; */
+
+}
+
 * {
     margin: 0;
     padding: 0;
