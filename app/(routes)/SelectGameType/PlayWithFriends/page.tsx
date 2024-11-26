@@ -1,51 +1,67 @@
 'use client';
 
 import React, { useState } from 'react'
-import '../../../css/GameRoom/root.css'
-import '../../../css/GameRoom/playWithFreinds.css'
+import { useRouter } from 'next/navigation';
+import Link from "next/link";
 import BottomNav from '../../../components/BottomNav';
 import Modal from '../../../components/Modal';
-import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import '../../../css/WaitingRoom/root.css'
+import '../../../css/WaitingRoom/playWithFreinds.css'
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
 const createRoom = async () => {
     try {
-        const response = await fetch("http://localhost:8080/api/v1/gameroom/create", {
+        const url = `${API_BASE_URL}/api/v1/waiting-room/create-private`;
+        console.log('요청 URL:', url);
+
+        const requestBody = {
+            GameType: "BASIC",
+            userRole: "User"
+        };
+
+        console.log('요청 본문:', JSON.stringify(requestBody));
+
+        const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-                "gameType": "Basic",
-                "userRole": "user"
-            })
+            body: JSON.stringify(requestBody)
         });
 
-        const text = await response.text();
+        console.log('응답 상태:', response.status);
+        console.log('응답 헤더:', Object.fromEntries(response.headers.entries()));
+
+        const responseData = await response.text();
+        console.log('응답 본문:', responseData);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}, body: ${responseData}`);
+        }
+
         let data;
         try {
-            data = JSON.parse(text);
-        } catch (e) {
-            throw new Error(text);
+            data = JSON.parse(responseData);
+        } catch (error) {
+            console.error('JSON 파싱 실패:', error);
+            throw new Error('서버로부터 잘못된 응답 형식');
         }
-        if (!response.ok) {
-            throw new Error(data.message || text || "방 생성에 실패하였습니다." );
-        }
-        console.log(data);
 
-        return data.gameRoomId;
-    } catch (error: unknown) {
-        console.error("방 생성 중에 오류가 발생하였습니다.");
-        if (error instanceof Error) {
-            throw error;
+        console.log('파싱된 응답 데이터:', data);
+        if (data && data.gameRoomCode) {
+            return data.gameRoomCode;
         } else {
-            throw new Error("알 수 없는 오류가 발생했습니다.");
+            throw new Error('서버 응답에 방 코드가 없습니다');
         }
+    } catch (error) {
+        console.error("방 생성 중 오류 발생:", error);
+        throw error;
     }
 };
 
 export default function Component() {
-    const [gameRoomId, setGameRoomId] = useState("");
+    const [gameRoomCode, setGameRoomCode] = useState("");
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
@@ -53,47 +69,62 @@ export default function Component() {
     const joinRoom = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:8080/api/v1/gameroom/join/${gameRoomId}`, {
+            const url = `${API_BASE_URL}/api/v1/waiting-room/join-private/${gameRoomCode}`;
+            console.log('요청 URL:', url);
+
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
-                }
+                    "Content-Type": "application/json",
+                },
             });
             
-            const text = await response.text();
-            let data;
-            try {
-                data = JSON.parse(text);
-            } catch (e) {
-                throw new Error(text);
-            }
+            console.log('응답 상태:', response.status);
+            console.log('응답 헤더:', Object.fromEntries(response.headers.entries()));
+
+            const responseData = await response.text();
+            console.log('응답 본문:', responseData);
 
             if (!response.ok) {
-                throw new Error(data.message || text || "방 입장에 실패했습니다.");
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            router.push('/game/room');
-        } catch (error : unknown) {
-            console.error("방 입장 중 오류 발생:", error);
-            if (error instanceof Error) {
-                setErrorMessage(error.message);
-            } else {
-                setErrorMessage("알 수 없는 오류가 발생했습니다.");
+            let data;
+            try {
+                data = JSON.parse(responseData);
+            } catch (error) {
+                console.error('JSON 파싱 실패:', error);
+                throw new Error('서버로부터 잘못된 응답 형식');
             }
+
+            console.log('파싱된 응답 데이터:', data);
+            if (data && data.gameRoomCode) {
+                console.log(`/game/waiting/${data.gameRoomCode}로 이동 중...`);
+                router.push(`/game/waiting/${data.gameRoomCode}`);
+            } else {
+                throw new Error('서버 응답에 방 코드가 없습니다');
+            }
+        } catch (error) {
+            console.error("방 입장 중 오류 발생:", error);
+            setErrorMessage(error instanceof Error ? error.message : "방 입장 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
             setIsModalOpen(true);
         }
     };
 
     const handleCreateRoom = async () => {
         try {
-            const newRoomId = await createRoom();
-            router.push(`/game/room?id=${newRoomId}`);
-        } catch (error: unknown) {
-            if(error instanceof Error) {
-                setErrorMessage(error.message);
+            console.log('방 생성 시작...');
+            const newRoomCode = await createRoom();
+            console.log('방 생성 성공, 코드:', newRoomCode);
+            if (newRoomCode) {
+                console.log(`/game/waiting/${newRoomCode}로 이동 중...`);
+                router.push(`/game/waiting/${newRoomCode}`);
             } else {
-                setErrorMessage("알 수 없는 오류가 발생했습니다.");
+                throw new Error('방 코드가 undefined입니다');
             }
+        } catch (error) {
+            console.error("방 생성 중 오류 발생:", error);
+            setErrorMessage(error instanceof Error ? error.message : "서버 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
             setIsModalOpen(true);
         }
     };
@@ -102,23 +133,25 @@ export default function Component() {
         <>
             <div className='relative container'>
                 <div className='position-back-button fixed w-full'>
-                    <Link href="/game"><img src="../images/back.png" alt="뒤로 가기" /></Link>
+                    <Link href="/game"><img src="/images/back.png" alt="뒤로 가기" /></Link>
                 </div>
                 <div className='box-position'>
                     <div className="font-[Freesentation-9Black] custom-title-font">
                         <p>모의 투자 게임으로</p>
                         <p>나만의 투자 시작하기!</p>
                     </div>
-                    <div className='font-[Youth] custom-color-gray middle-components-position'>
+                    <div className='font-[Pretendard-Regular] custom-color-gray middle-components-position'>
                         <div className='adjustment-position'>
-                            <div className='flex items-center'><img src='../images/GameRoom/hands.png' className='pr-1 h-6' alt="손" />
-                            <div className='notice-text'>친구와 함께 플레이 해요</div></div>
+                            <div className='flex items-center'>
+                                <img src='/images/WaitingRoom/hands.png' className='pr-1 h-6' alt="손" />
+                                <div className='notice-text'>친구와 함께 플레이 해요</div>
+                            </div>
                         </div>
                         <form onSubmit={joinRoom}>
                             <div className='flex space-x-3 items-center'>
                                 <input 
-                                    value={gameRoomId} 
-                                    onChange={(e) => setGameRoomId(e.target.value)} 
+                                    value={gameRoomCode} 
+                                    onChange={(e) => setGameRoomCode(e.target.value)} 
                                     placeholder='초대코드를 입력하세요' 
                                     type="text" 
                                 />
