@@ -7,12 +7,12 @@
   font-style: normal;
   font-weight: 400;
   src: url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff2') format('woff2'),
-  url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff') format('woff');
-  }
-  
-  .youth * {
+        url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff') format('woff');
+}
+
+.youth * {
   font-family: 'Youth', sans-serif;
-  }
+}
 
 @font-face {
   font-family: 'Freesentation-9Black';
@@ -23,7 +23,7 @@
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('/fonts/static/Pretendard-Regular.otf') format('opentype');
+  src: url('/fonts/static/Pretendard-Regular.otf') format('otf');
   font-weight: 600;
   font-style: normal;
 }
@@ -33,16 +33,48 @@
   padding: 0;
 }
 
+.logo-size {
+  width: 130px;
+}
+
+.logo-position {
+  padding: 0 0 0 25px;
+}
+
 .splash-title {
   color: #286DB1;
   font-family: 'Pretendard';
   font-weight: bold;
   font-size: 18px;
-  padding: 15px 0 0 0;
+  text-align: center;
 }
 
-.logo-size {
-  width: 130px;
+.splash-content {
+  color: #286DB1;
+  font-family: 'Pretendard';
+  font-weight: bold;
+  font-size: 15px;
+  padding: 16px 0 0 0;
+  text-align: center;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 390px; 
+}
+
+.splash-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
 
 .main-root { 
@@ -147,7 +179,6 @@ footer {
   background-color: rgba(238,242,245, 0.5);
   border-radius: 10px;
   padding: 15px 8px 15px 18px;
-  /* box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5); */
   margin : 2em 0 0 0;
   justify-content: space-between;
 }
@@ -171,3 +202,4 @@ footer {
   width: 15px;
   margin-right: 10px;
 }
+
