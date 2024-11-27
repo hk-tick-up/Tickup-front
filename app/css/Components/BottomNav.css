@@ -15,7 +15,7 @@
 }
 
 .nav-standardization{
-  padding: 2.5em 1.5em 2em;
+  padding: 2em 1.5em 2em;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -36,3 +36,4 @@
   font-size: 14px;
   margin: 8px 0 0 0;
 }
+

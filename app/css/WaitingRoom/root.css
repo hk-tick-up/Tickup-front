@@ -2,32 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-    font-family: 'Youth';
-    font-style: normal;
-    font-weight: 400;
-    src: url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff2') format('woff2'),
-    url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff') format('woff');
-    }
-    
-    .youth * {
-    font-family: 'Youth', sans-serif;
-    }
-
-@font-face {
-    font-family: 'Freesentation-9Black';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Pretendard';
-    src: url('/fonts/static/Pretendard-Regular.otf') format('opentype');
-    font-weight: 600;
-    font-style: normal;
-}
-
 .font-design {
     font-family: 'Pretendard';
     font-weight: 600;

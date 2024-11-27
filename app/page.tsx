@@ -1,101 +1,104 @@
-import Image from "next/image";
 
-export default function Home() {
+
+import Link from 'next/link'
+import BottomNav from './components/BottomNav'
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <>
+      <div className="main-root">
+        {/* 헤더 */}
+        <header>
+          <div className='main-title'>
+            TickUp
+          </div>
+          <div className='user-summary'>
+            <div>
+              김한토님 반가워요
+            </div>
+            <div className='flex'>
+              <div><img src='/images/icon/money.png' className='money-icon-position' /></div>
+              <div>Point</div>
+            </div>
+          </div>
+        </header>
+        <section className='py-5'> Banner?</section>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+        {/* 메인 카드 섹션 */}
+        <main>
+          <div className='flex py-5 gap-5 items-center'> 
+            <Link href ="/game">
+              <div className='main-block main-game-btn'>
+                <div className='cutom-title'>
+                  <p>모의투자</p>
+                  <p>게임하기</p>
+                </div>
+                <div>
+                  <img src='/images/group_1.png' />
+                </div>
+              </div>
+            </Link>
+            <div className='side-block'>
+              <div className='mini-block'>
+                <div>오늘의 금융 퀴즈</div>
+                <div className='inblock-icon'><img src='/images/books.png' /></div>
+              </div>
+              <div className='mini-block'>
+                <div>친구들과 토론하기</div>
+                <div className='inblock-icon'><img src='/images/speech_bubble.png' /></div>
+              </div>
+            </div>
+          </div>
+          <div className='other-service-block'>
+            <div>이런 서비스도 있어요</div>
+            <div className='blank1'></div>
+          </div>
+        </main>
+
+        {/* 하단 배너 */}
+        <footer>
+          <div className='footer-block-big'>
+            <div>
+              <p>게임을 플레이하면</p>
+              <p>결과에 따른 분석 리포트를 보여드려요!</p>
+            </div>
+            <div className='flex'>
+              <p className='footer-announce'>분석 리포트로 투자 추가 공부하기</p>
+              <p><img src='/images/detective.png' className='footer-icon-detective'/></p>
+            </div>
+          </div>
+          <div> <img src='/images/icon/right-arrow.png'className="footer-icon-arrow " /> </div>
+          
+        </footer>
+        {/* <Link href="/analysis" className="block">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="font-semibold mb-2">게임을 플레이하면</p>
+                <p className="font-semibold">결과에 따라 분석 리포트를 보여드려요!</p>
+                <div className="text-sm text-gray-500 mt-2">
+                  분석 리포트로 투자 추가 공부하기 👨‍🎓
+                </div>
+              </div>
+              <svg
+                className="w-6 h-6 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </div>
+          </div>
+        </Link> */}
+      </div>
+      <BottomNav />
+    </>
+  )
 }
+
