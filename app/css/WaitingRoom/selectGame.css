@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-img{
+    padding: 30px;
+    border-radius: 14px;
+    display: inline-block;
+    margin: 0 0 15px 0;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-img img {
+    display: block;
+    opacity: 100%;
+}
+
+.select-random-btn {
+    background-color: rgba(6, 72, 137, 0.73);
+}
+
+.select-random-btn:hover {
+    background-color: rgba(6, 72, 137, 0.84);
+    box-shadow: 0px 0px 0px;
+}
+
+.select-together-btn {
+    background-color: rgba(79, 148, 216, 0.69);
+}
+
+.select-together-btn:hover {
+    background-color: rgba(79, 148, 216, 0.85);
+    box-shadow: 0px 0px 0px;
+}
+
