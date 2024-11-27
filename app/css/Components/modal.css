@@ -5,7 +5,9 @@
     font-family: 'Pretendard';
     font-size: 18px;
     font-weight: 600;
-    padding: 2em 2em 1.2em 2em;
+    padding: 2em 0 1.2em 0;
+    /* max-width: 320px; */
+    width: 50%;
 }
 
 
@@ -23,8 +25,4 @@
     background-color: #24609b;
     font-family: 'Pretendard';
     font-weight: bold;
-}
-
-.test{
-    margin: 0 0 10px 0;
 }
