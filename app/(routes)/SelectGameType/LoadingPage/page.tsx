@@ -1,6 +1,6 @@
 import React from 'react'
 import '../../../css/WaitingRoom/root.css'
-import '../../../css/WaitingRoom/ramdomMatching.css'
+import '../../../css/WaitingRoom/loading.css'
 
 export default function Component() {
     return (
@@ -16,7 +16,7 @@ export default function Component() {
                 <div className='runnig-img-position'>
                     <img src='/images/WaitingRoom/running.png' />
                 </div>
-                <div className='font-[Youth] custom-color-gray position-discription'>
+                <div className='font-design text-lg custom-color-gray position-discription'>
                     <p>게임을 함께 할 플레이어들을 매칭중입니다.</p>
                     <p>잠시만 기다려주세요.</p>
                 </div>

@@ -56,7 +56,7 @@ export default function Component() {
                     <p>모의 투자 게임으로</p>
                     <p>나만의 투자 시작하기!</p>
                 </div>
-                <div className="font-[Youth] py-8 custom-color-gray">
+                <div className="font-design text-xl py-7 custom-color-gray">
                     <p>원하는 게임 방식을 선택하면</p>
                     <p>모의 투자 게임이 시작돼요</p>
                 </div>
@@ -64,14 +64,14 @@ export default function Component() {
                     <div>
                         <button onClick={matching} disabled={isLoading}>
                             <img src="/images/WaitingRoom/dice.png" className="custom-img select-random-btn" />
-                            <p className="font-[Youth] text-lg">랜덤 매칭</p>
+                            <p className="font-design text-lg">랜덤 매칭</p>
                         </button>
                     </div>
                     <div>
                         <Link href="/game/together">
                             <button>
                                 <img src="/images/WaitingRoom/together.png" className="custom-img select-together-btn" />
-                                <p className="font-[Youth] text-lg">함께 하기</p>
+                                <p className="font-design text-lg">함께 하기</p>
                             </button>
                         </Link>
                     </div>

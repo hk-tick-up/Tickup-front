@@ -1,0 +1,30 @@
+
+.modal-screen{
+    background-color: white;
+    border-radius: 18px;
+    font-family: 'Pretendard';
+    font-size: 18px;
+    font-weight: 600;
+    padding: 2em 2em 1.2em 2em;
+}
+
+
+.modal-btn{
+    background-color: #24609b;
+    border-radius: 13px;
+    font-family: 'Pretendard';
+    font-weight: bold;
+    font-size: 16px;
+    color: aliceblue;
+    padding: 7px 15px;
+}
+
+.modal-button:hover {
+    background-color: #24609b;
+    font-family: 'Pretendard';
+    font-weight: bold;
+}
+
+.test{
+    margin: 0 0 10px 0;
+}
