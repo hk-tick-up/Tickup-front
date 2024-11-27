@@ -1,98 +1,159 @@
 'use client';
 
-
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useWebSocket } from '../context/WebSocketContext';
 import Image from 'next/image';
-import { WebSocketContext } from '../layout';
 import styles from '../css/GameProgressBar.module.css';
 import { usePathname } from 'next/navigation';
 
 interface GameProgressBarProps {
     initialTurn: number;
-    // initialTotalTurns: number; -> api로 한 번만 호출로 변경
 }
 
 export default function GameProgressBar({ initialTurn }: GameProgressBarProps) {
-    const [turn, setTurn] = useState(initialTurn); // 현재 턴 수
-    // 하드 코딩된 값들 수정 필요
-    const [totalTurns, setTotalTurns] = useState(5); // 총 턴 수 (api) - 하드 코딩 5
-    const [remainingTime, setRemainingTime] = useState(300); // 제한 시간 - 하드 코딩 300
-    const { stompClient } = useContext(WebSocketContext);
+    const [turn, setTurn] = useState(initialTurn);
+    const [totalTurns, setTotalTurns] = useState<number>(0);
+    const [remainingTime, setRemainingTime] = useState<number>(0);
+    const [updatingTurn, setUpdatingTurn] = useState(false); // 턴 업데이트 중 여부
+    const { stompClient } = useWebSocket();
 
-     // usePathname으로 URL에서 gameroomid 추출
-     const pathname = usePathname();
-     const gameroomid = pathname.split('/')[2]; // '/gamelogic/1/myinvest'에서 '1' 추출
+    const pathname = usePathname();
+    const gameroomid = pathname.split('/')[2];
 
-     useEffect(() => {
-        console.log('Room ID:', gameroomid);
-    }, [gameroomid]);
+    console.log('Attempting WebSocket subscription to:', `/topic/game-room/${gameroomid}/game-process`);
 
-    // 총 턴 수 가져오기 (화면 출력 위해 잠시 주석처리)
-    // useEffect(() => {
-    //     async function fetchTotalTurns() {
-    //         if(!gameroomid) {   
-    //             console.warn('roomid not available');
-    //             return;
-    //         }
-
-    //         try {
-    //             const response = await fetch("http://localhost:8080/api/v1/gamelogic/total-turns");
-    //             const data = await response.json();
-    //             setTotalTurns(data.totalTurns);
-    //         } catch (error) {
-    //             console.error('Failed to fetch total turns: ', error);
-    //         }
-    //     }
-
-    //     fetchTotalTurns();
-    // }, [gameroomid]);
+    // 초기 게임 상태 가져오기
     useEffect(() => {
-        async function fetchTotalTurns() {
-            console.warn('Fetching totalTurns is skipped in hardcoded mode.');
-            setTotalTurns(5); // 하드코딩된 값
+        async function fetchInitGameProcess() {
+            if (!gameroomid) {
+                console.warn('Room ID not available');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/gamelogic/${gameroomid}/init-game-process`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ gameType: 'BASIC' }),
+                });
+
+                if (!response.ok) {
+                    console.error('Failed to fetch initial game process:', response.statusText);
+                    return;
+                }
+
+                const data = await response.json();
+                setTotalTurns(data.totalTurns);
+                setRemainingTime(data.remainingTime);
+                setTurn(data.currentTurn || initialTurn);
+
+                console.log('Initial game process fetched:', data);
+            } catch (error) {
+                console.error('Failed to fetch initial game process:', error);
+            }
         }
 
-        fetchTotalTurns();
-    }, []);
+        fetchInitGameProcess();
+    }, [gameroomid]);
 
+    // WebSocket 구독 및 메시지 처리
+    useEffect(() => {
+        if (stompClient && gameroomid) {
+            const onConnect = () => {
+                console.log('WebSocket connected:', stompClient.connected);
 
-    // 웹소켓 통신
-    // useEffect(() => {
-    //     if (!stompClient || !gameroomid) {
-    //         console.warn('WebSocket or roomid not ready');
-    //         return;
-    //     }
-        
-    //     const subscription = stompClient.subscribe(`/topic/${gameroomid}/game-progress`, (message) => {
-    //         const data = JSON.parse(message.body);
-    //         setTurn(data.turn); // 현재 턴 업데이트
-    //         setRemainingTime(data.remainingTime); // 제한 시간 업데이트
-    //     });
+                // 구독 로직
+                const subscription = stompClient.subscribe(
+                    `/topic/game-room/${gameroomid}/game-process`,
+                    (message) => {
+                        try {
+                            const data = JSON.parse(message.body);
+                            console.log('WebSocket message received:', data);
 
-    //     return () => {
-    //         subscription.unsubscribe();
-    //     };
-    // }, [stompClient, gameroomid]);
-    
-    // 웹소켓 통신 (하드코딩된 값으로 대체)
-     useEffect(() => {
-        console.warn('WebSocket communication is skipped in hardcoded mode.');
+                            if (data.currentTurn !== undefined && data.remainingTime !== undefined) {
+                                setTurn(data.currentTurn);
+                                setRemainingTime(data.remainingTime);
+                            } else {
+                                console.warn('Invalid WebSocket message structure:', data);
+                            }
+                        } catch (error) {
+                            console.error('Error processing WebSocket message:', error);
+                        }
+                    }
+                );
 
-        // 하드코딩된 턴 및 제한 시간 감소 로직
-        const timer = setInterval(() => {
-            setRemainingTime((prev) => (prev > 0 ? prev - 1 : 0));
-        }, 1000);
+                console.log('Subscribed to WebSocket topic:', `/topic/game-room/${gameroomid}/game-process`);
 
-        return () => clearInterval(timer);
-    }, []);
+                return () => {
+                    console.log('Unsubscribing from WebSocket topic');
+                    subscription.unsubscribe();
+                };
+            };
 
-    
+            // 연결 상태에 따른 구독 처리
+            if (stompClient.connected) {
+                onConnect();
+            } else {
+                stompClient.onConnect = onConnect;
+            }
+        } else {
+            console.warn('WebSocket is not connected. Unable to subscribe.');
+        }
 
-    // 로딩 상태 처리
-    if (!gameroomid || !stompClient) {
-        return <div>Loading...</div>;
+        return () => {
+            if (stompClient) {
+                console.log('Disconnecting WebSocket');
+                stompClient.deactivate();
+            }
+        };
+    }, [stompClient, gameroomid]);
+
+    // 로컬 카운트다운 및 서버 턴 업데이트 요청
+    useEffect(() => {
+        let timer: NodeJS.Timeout | null = null;
+
+        if (remainingTime > 0) {
+            timer = setInterval(() => {
+                setRemainingTime((prev) => Math.max(prev - 1, 0));
+            }, 1000);
+        } else if (remainingTime === 0 && !updatingTurn) {
+            updateTurn();
+        }
+
+        return () => {
+            if (timer) {
+                clearInterval(timer);
+                console.log('Cleared interval for countdown');
+            }
+        };
+    }, [remainingTime]);
+
+    async function updateTurn() {
+        setUpdatingTurn(true); // 턴 업데이트 중 플래그 설정
+
+        try {
+            const response = await fetch(`http://localhost:8080/api/v1/gamelogic/${gameroomid}/update-turn`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+
+            if (!response.ok) {
+                console.error('Failed to advance turn:', response.statusText);
+            } else {
+                const data = await response.json();
+                console.log('Turn successfully advanced:', data);
+            }
+        } catch (error) {
+            console.error('Error updating turn:', error);
+        } finally {
+            setUpdatingTurn(false); // 플래그 해제
+        }
     }
-    
+
+    if (!gameroomid || remainingTime === null || totalTurns === null) {
+        return <div>Loading game room...</div>;
+    }
+
     return (
         <div className={styles.container}>
             <button className={styles.exitButton}>
