@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import '../../css/main.css'
 
 // import { Logo } from '@/components/logo'
 // import { motion } from 'framer-motion'
@@ -19,7 +20,7 @@ export default function SplashPage() {
     // }, [router])
 
     return (
-        <div className="splash-main bg-gradient-to-b from-white via-blue-100 to-blue-200">
+        <div className="main-root bg-gradient-to-b from-white via-blue-100 to-blue-200">
             <div className="content-wrapper">
                 <div>
                     <div className='logo-position'> 

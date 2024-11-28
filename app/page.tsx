@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import BottomNav from './components/BottomNav'
+import './css/main.css'
 
 export default function HomePage() {
   return (

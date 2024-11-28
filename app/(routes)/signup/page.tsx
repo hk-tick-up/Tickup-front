@@ -3,6 +3,8 @@
 import axios from "axios"
 import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
+import { ArrowLeft } from 'lucide-react';
+import '../../css/User/SignUp.css'
 
 export default function SignUp(){
   const router = useRouter();
@@ -38,40 +40,69 @@ export default function SignUp(){
     });
   }
   return (
-    <div className="flex flex-col items-center">
-      <div className="border border-black p-2 w-2/3 max-w-xl min-w-xs">
-        <form onSubmit={onSignUp} className="flex flex-col items-center space-y-2 w-full">
-          <div className="w-full px-2">
-            <label htmlFor="userId" className="inline-block w-20 text-right pr-2">ID</label>
-            <input id="userId" type="text" placeholder=" user id" className="border border-black w-full max-w-52" required/>
-          </div>
-          <div className="w-full px-2">
-            <label htmlFor="password" className="inline-block w-20 text-right pr-2">password</label>
-            <input id="password" type="password" placeholder=" password" className="border border-black w-full max-w-52" required/>
-          </div>
-          <div className="w-full px-2">
-            <label htmlFor="nickname" className="inline-block w-20 text-right pr-2">nickname</label>
-            <input id="nickname" type="text" placeholder=" nickname" className="border border-black w-full max-w-52" required/>
-          </div>
-          <div className="w-full px-2">
-            <label htmlFor="age" className="inline-block w-20 text-right pr-2">age</label>
-            <input id="age" type="number" defaultValue={0} className="border border-black w-full max-w-52" max={200} min={0} required/>
-          </div>
-          <div className="w-full px-2">
-            <label htmlFor="gender" className="inline-block w-20 text-right pr-2">gender</label>
-            <select id="gender" className="border border-black w-full max-w-52" defaultValue="" required>
-              <option value="" disabled>성별</option>
-              <option value="MALE">남자</option>
-              <option value="FEMALE">여자</option>
-            </select>
-          </div>
-          <div className="w-full px-2">
-            <label htmlFor="job" className="inline-block w-20 text-right pr-2">job</label>
-            <input id="job" type="text" placeholder=" job" className="border border-black w-full max-w-52" required/>
-          </div>
-          <button type="submit" title="회원가입" value="회원가입" className="border border-black m-2 p-2">회원가입</button>
-        </form>
+    <div className="signup-root">
+      <div>
+        <button onClick={() => router.back()} className="back-btn">
+          <ArrowLeft className="w-5 h-5 mr-1" />
+          <p className="pt-1">뒤로가기</p>
+        </button>
       </div>
+
+      <form onSubmit={onSignUp} className="signup-form-main">
+        <div className="input-group">
+          <div className="input-title">아이디</div>
+          <input id="userId" type="text" placeholder="아이디" required />
+        </div>
+
+        <div className="input-group">
+          <div className="input-title">비밀번호</div>
+          <input id="password" type="password" placeholder="비밀번호" required />
+        </div>
+
+        <div className="input-group">
+          <div className="input-title">비밀번호 확인</div>
+          <input type="password" placeholder="비밀번호 확인" required />
+        </div>
+
+        <div className="input-group">
+          <div className="input-title">닉네임</div>
+          <input id="nickname" type="text" placeholder="닉네임" required />
+        </div>
+
+        <div className="input-group">
+          <div className="input-title">생년월일</div>
+          <input id="age" type="text" placeholder="YYYYDDMM" maxLength={8}/>
+        </div>
+
+        <div className="input-group">
+          <div className="input-title">성별</div>
+          <div className="gender-select">
+            <label>
+              <input type="radio" name="gender" value="MALE" required />
+              <span>남성</span>
+            </label>
+            <label>
+              <input type="radio" name="gender" value="FEMALE" required />
+              <span>여성</span>
+            </label>
+          </div>
+        </div>
+
+        <div className="input-group">
+          <div className="input-title">직업</div>
+          <select id="job" className="input-field" required>
+            <option value="">직업 선택</option>
+            <option value="student">학생</option>
+            <option value="employee">회사원</option>
+            <option value="self-employed">자영업</option>
+            <option value="other">기타</option>
+          </select>
+        </div>
+
+        <button type="submit" className="submit-button">
+          TickUp 시작하기
+        </button>
+      </form>
     </div>
-  )
+  );
 }

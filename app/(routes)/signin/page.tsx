@@ -64,15 +64,15 @@ export default function SignIn(){
 
   return (
     <>
-    <div className="splash-main bg-gradient-to-b from-white via-blue-100 to-blue-200">
+    <div className="main-root bg-gradient-to-b from-white via-blue-100 to-blue-200">
       <div className='logo-position'> 
         <img src="/images/logo.png" className='logo-size' alt="로고" /> 
       </div>
       <div className="sign-in-main">
         <form onSubmit={onSignIn} className="sign-in-main">
-          <div><input id="userId" type="text" placeholder="아이디" required/></div>
-          <div><input id="password" type="password" placeholder="비밀번호" required/></div>
-          <div><button type="submit" title="로그인" value="로그인">로그인</button> </div>
+          <div><input id="userId" type="text" placeholder="아이디" className='sign-in-input' required/></div>
+          <div><input id="password" type="password" placeholder="비밀번호" className='sign-in-input' required/></div>
+          <div><button type="submit" title="로그인" value="로그인" className='sign-in-btn'>로그인</button> </div>
         </form>
           <Link href="/signup"><div className="link-style">회원가입</div></Link>
       </div>
