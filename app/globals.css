@@ -2,20 +2,204 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@font-face {
+  font-family: 'Youth';
+  font-style: normal;
+  font-weight: 400;
+  src: url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff2') format('woff2'),
+        url('//fastly.jsdelivr.net/korean-webfonts/1/orgs/othrs/kywa/Youth/Youth.woff') format('woff');
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.youth * {
+  font-family: 'Youth', sans-serif;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+@font-face {
+  font-family: 'Freesentation-9Black';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2404@1.0/Freesentation-9Black.woff2') format('woff2');
+  font-weight: 900;
+  font-style: normal;
 }
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/static/Pretendard-Regular.otf') format('otf');
+  font-weight: 600;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.logo-size {
+  width: 120px;
+}
+
+.logo-position {
+  padding: 0 0 0 25px;
+}
+
+.splash-title {
+  color: #286DB1;
+  font-family: 'Pretendard';
+  font-weight: bold;
+  font-size: 18px;
+  text-align: center;
+}
+
+.splash-content {
+  color: #286DB1;
+  font-family: 'Pretendard';
+  font-weight: bold;
+  font-size: 15px;
+  padding: 16px 0 0 0;
+  text-align: center;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 390px; 
+}
+
+.splash-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.main-root { 
+  padding: 3em 1.5em 0 1.5em;
+  min-height: 100vh;
+}
+
+header {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 10px 0;
+}
+
+.main-title {
+  font-family: 'Freesentation-9Black';
+  color: #24609b;
+  font-size: 26px;
+  padding: 0 0 8px 0;
+}
+
+.user-summary{
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-size: 18px;
+}
+
+.money-icon-position {
+  margin: 1px 3px 0;
+}
+
+.main-block{
+  flex: 1;
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-size: 18px;
+  background-color: rgba(243,248,253, 0.5);
+  border-radius: 10px;
+  padding: 22px 8px 5px 18px;
+  box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5)
+}
+
+.mini-block{
+  flex: 1;
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-size: 18px;
+  background-color: rgba(243,248,253, 0.5);
+  border-radius: 10px;
+  padding: 15px 8px 5px 18px;
+  box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5)
+}
+
+.side-block {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 15px;
+}
+
+.main-game-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inblock-icon {
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  padding: 6px;
+}
+
+.cutom-title {
+  display: flex;
+  flex-direction: column;
+  gap: 18px
+}
+
+.other-service-block {
+  flex: 1;
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-size: 18px;
+  background-color: rgba(243,248,253, 0.5);
+  border-radius: 10px;
+  padding: 15px 8px 5px 18px;
+  box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5)
+}
+
+.blank1 {
+  padding: 50px 0;
+}
+
+footer {
+  display: flex;
+  align-items: center;
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-size: 18px;
+  background-color: rgba(238,242,245, 0.5);
+  border-radius: 10px;
+  padding: 15px 8px 15px 18px;
+  margin : 2em 0 0 0;
+  justify-content: space-between;
+}
+
+.footer-block-big {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-announce {
+  color: #686D76;
+}
+
+.footer-icon-detective {
+  width: 27px;
+  margin: 1px 0 0 3px;
+}
+
+.footer-icon-arrow {
+  width: 15px;
+  margin-right: 10px;
+}
+
