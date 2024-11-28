@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
 
 export default function Korean(){
@@ -7,8 +6,6 @@ export default function Korean(){
   const conso_array = [...consonants];
 
   const base_url = "http://localhost:3000/api/v1/studies";
-
-  const router = useRouter();
 
   const onSearchByConsonant = async (e:BaseSyntheticEvent) => {
     // bottomnav 참고해서 타겟 잡고
@@ -23,15 +20,7 @@ export default function Korean(){
     // response
     // 0. category
     // 1. 카테고리에 속한 단어 목록
-    //   - 단어, 영단어, 뜻(한 문장)
-
-    // 카테고리 페이지로 리다이렉트
-    router.push(`/study/search?data=${JSON.stringify(
-      {
-        mode: "category",
-        self: response.data
-      }
-    )}`);
+    //   - 단어, 영문한문, 뜻
   }
 
   return(
