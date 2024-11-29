@@ -19,7 +19,7 @@ export default function MyInfo(){
   const [user, setUser] = useState<User>({id:"",password:"",nickname:"",age:0,gender:"",job:""});
 
   const getUserInfo = () => {
-    axios.get("http://localhost:8000/api/v1/users/userinfo",
+    axios.get("http://localhost:8005/api/v1/users/userinfo",
       {headers: {Authorization: `Bearer ${sessionStorage.getItem("bearer")}`}}
     ).then(response => {
       console.log(response.data);
@@ -41,7 +41,7 @@ export default function MyInfo(){
     e.preventDefault();
     // axios password
     const formElement = e.target.closest('form');
-    axios.post("http://localhost:8000/api/v1/users/verifypassword",
+    axios.post("http://localhost:8005/api/v1/users/verifypassword",
       {password: formElement.password.value}, 
       {headers: {Authorization: `Bearer ${sessionStorage.getItem("bearer")}`}}
     ).then(response => {
@@ -64,7 +64,7 @@ export default function MyInfo(){
     };
     console.log(data);
 
-    axios.put("http://localhost:8000/api/v1/users/userinfo", data,
+    axios.put("http://localhost:8005/api/v1/users/userinfo", data,
       {headers:{Authorization:`Bearer ${sessionStorage.getItem("bearer")}`}}
     )
     .then(response => {

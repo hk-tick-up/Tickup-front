@@ -3,13 +3,14 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
 import Modal from '../../components/Modal';
 import '../../css/User/SignIn.css';
 
 export default function SignIn(){
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
@@ -22,7 +23,7 @@ export default function SignIn(){
       "password": formElement.password.value
     };
 
-    axios.post("http://localhost:8000/api/v1/users/sign-in", data, {
+    axios.post("http://localhost:8005/api/v1/users/sign-in", data, {
       headers: {
           "Content-Type": "application/json",
       },
@@ -36,7 +37,7 @@ export default function SignIn(){
       setIsModalOpen(true);
       
       // 세션에 id, nickname 저장: 다시 axios, id nickname 불러와 세션스토리지에 저장하기
-      axios.get("http://localhost:8000/api/v1/users/self", {
+      axios.get("http://localhost:8005/api/v1/users/self", {
         headers: {
           "Authorization": `Bearer ${response.data}`
         }
@@ -46,7 +47,8 @@ export default function SignIn(){
         sessionStorage.setItem("id", res.data.id);
         sessionStorage.setItem("nickname", res.data.nickname);
         // 리다이렉트
-        router.push("/my");
+        if(searchParams.get("back")) router.back()
+        else router.push("/my");
       })
       .catch(error => {
         console.error(error);

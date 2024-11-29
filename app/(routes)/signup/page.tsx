@@ -21,7 +21,7 @@ export default function SignUp(){
     };
     console.log(data);
 
-    axios.post("http://localhost:8000/api/v1/users/sign-up", data)
+    axios.post("http://localhost:8005/api/v1/users/sign-up", data)
     .then(response => {
       console.log(response.data);
       // Info: Account Created at 2024-11-20T11:21:39.368112
