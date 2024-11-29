@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
 
@@ -18,23 +18,34 @@ export const useWebSocket = () => {
 
 export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [stompClient, setStompClient] = useState<Client | null>(null);
+    const clientRef = useRef<Client | null>(null);
 
     useEffect(() => {
-        const socket = new SockJS('http://localhost:8080/ws');
-        const client = new Client({
-            webSocketFactory: () => socket as any,
-            reconnectDelay: 5000,
-            heartbeatIncoming: 4000,
-            heartbeatOutgoing: 4000,
-            onConnect: () => console.log('WebSocket connected'),
-            onStompError: (error) => console.error('STOMP error', error),
-        });
+        if (!clientRef.current) {
+            const socket = new SockJS('http://localhost:8080/ws', null, {
+                withCredentials: true,
+            });
 
-        client.activate();
-        setStompClient(client);
+            const client = new Client({
+                webSocketFactory: () => socket as any,
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
+                onConnect: () => console.log('WebSocket connected'),
+                onStompError: (error) => console.error('STOMP error', error),
+            });
+
+            client.activate();
+            clientRef.current = client;
+            setStompClient(client);
+        }
 
         return () => {
-            client.deactivate();
+            if (clientRef.current?.active) {
+                console.log('Deactivating WebSocket client');
+                clientRef.current.deactivate();
+                clientRef.current = null;
+            }
         };
     }, []);
 
