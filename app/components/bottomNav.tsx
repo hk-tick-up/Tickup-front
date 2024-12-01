@@ -1,8 +1,8 @@
-// app/components/BottomNav.tsx
+// app/components/bottomNav.tsx
 
 'use client';
 
-import '../css/Components/BottomNav.css';
+import '../css/Components/bottomNav.css';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
