@@ -2,6 +2,7 @@
 
 import axios from "axios"
 import { useRouter } from "next/navigation";
+import { BaseSyntheticEvent } from "react";
 
 export default function Withdrawal(){
   const router = useRouter();
@@ -20,6 +21,11 @@ export default function Withdrawal(){
     })
   }
 
+  const goBack = (e:BaseSyntheticEvent) => {
+    e.preventDefault();
+    router.back();
+  }
+
   return (
     <div>
       <h1>회원탈퇴</h1>
@@ -27,6 +33,7 @@ export default function Withdrawal(){
       <p>7일의 유예기간 중에는 서비스 이용이 제한되며, 탈퇴를 무를 수 있습니다.</p>
       <p>회원탈퇴 버튼을 누른 즉시 로그아웃되며, 서비스 이용이 제한됩니다.</p>
       <button onClick={requestMembershipWithdrawal}>회원탈퇴</button>
+      <button onClick={goBack}>돌아가기</button>
     </div>
   )
 }
