@@ -23,7 +23,7 @@ export default function SignUp(){
     };
     console.log(data);
 
-    axios.post("http://localhost:8000/api/v1/users/sign-up", data)
+    axios.post("http://localhost:8005/api/v1/users/sign-up", data)
     .then(response => {
       console.log(response.data);
       // Info: Account Created at 2024-11-20T11:21:39.368112
@@ -59,10 +59,10 @@ export default function SignUp(){
           <input id="password" type="password" placeholder="비밀번호" required />
         </div>
 
-        <div className="input-group">
+        {/* <div className="input-group">
           <div className="input-title">비밀번호 확인</div>
           <input type="password" placeholder="비밀번호 확인" required />
-        </div>
+        </div> */}
 
         <div className="input-group">
           <div className="input-title">닉네임</div>

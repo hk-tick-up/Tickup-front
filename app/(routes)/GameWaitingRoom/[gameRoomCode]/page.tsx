@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
+import { useSocket } from '@/app/hooks/useSocket';
 import { useParams, useRouter } from 'next/navigation';
 import Link from "next/link";
 import io, { Socket } from 'socket.io-client';
@@ -10,78 +11,79 @@ import '../../../css/WaitingRoom/gameWaitingRoom.css'
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3007';
 
 interface User {
-    id: number;
+    id: string;
     nickname: string;
     status: '대기중' | '준비완료';
 }
 
 export default function WaitingRoom() {
     const [users, setUsers] = useState<User[]>([]);
-    const [isReady, setIsReady] = useState(false);
-    const [socket, setSocket] = useState<Socket | null>(null);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const router = useRouter();
     const params = useParams();
     const gameRoomCode = params.gameRoomCode as string;
 
-    useEffect(() => {
-        console.log('Connecting to socket server:', SOCKET_URL);
-        const newSocket = io(SOCKET_URL, {
-            transports: ['websocket'],
-            upgrade: false,
-            forceNew: true,
-            query: { gameRoomCode }
-        });
+    const { socket, isConnected, error, reconnect } = useSocket(gameRoomCode);
 
-        newSocket.on('connect', () => {
-            console.log('Socket connected successfully');
+    const joinRoom = useCallback(() => {
+        if (socket && isConnected) {
+            console.log('Attempting to join room');
+            const nickname = sessionStorage.getItem("nickname") || '알 수 없음';
             const initialUser: User = {
-                id: parseInt(newSocket.id, 10),
-                nickname: '나',
+                id: socket.id,
+                nickname: nickname,
                 status: '대기중'
             };
             setCurrentUser(initialUser);
-            newSocket.emit('joinRoom', { gameRoomCode, user: initialUser });
-        });
+            socket.emit('joinRoom', { gameRoomCode, user: initialUser });
+        }
+    }, [socket, isConnected, gameRoomCode]);
 
-        newSocket.on('connect_error', (error) => {
-            console.error('Socket connection error:', error);
-        });
+    useEffect(() => {
+        if (isConnected) {
+            joinRoom();
+        }
+    }, [isConnected, joinRoom]);
 
-        newSocket.on('updateUsers', (updatedUsers: User[]) => {
-            console.log('Received updated users:', updatedUsers);
-            setUsers(updatedUsers);
-            const updatedCurrentUser = updatedUsers.find(user => user.id === currentUser?.id);
-            if (updatedCurrentUser) {
-                setCurrentUser(updatedCurrentUser);
-            }
-        });
+    useEffect(() => {
+        if (socket) {
+            socket.on('userJoined', (user: User) => {
+                console.log('User joined:', user);
+                setUsers(prevUsers => [...prevUsers, user]);
+            });
 
-        newSocket.on('gameStart', () => {
-            console.log('Game starting, redirecting...');
-            router.push(`/game/play/${gameRoomCode}`);
-        });
+            socket.on('updateUsers', (updatedUsers: User[]) => {
+                console.log('Users updated:', updatedUsers);
+                setUsers(updatedUsers);
+            });
 
-        setSocket(newSocket);
+            const handleGameStart = () => {
+                console.log('게임 시작, 리다이렉트 중...');
+                router.push(`/game/play/${gameRoomCode}`);
+            };
 
-        return () => {
-            console.log('Disconnecting socket');
-            newSocket.disconnect();
-        };
-    }, [gameRoomCode, router]);
+            socket.on('gameStart', handleGameStart);
 
-    const handleReady = () => {
+            return () => {
+                socket.off('userJoined');
+                socket.off('updateUsers');
+                socket.off('gameStart', handleGameStart);
+            };
+        }
+    }, [socket, router, gameRoomCode]);
+
+    const handleReady = useCallback(() => {
         if (socket && currentUser) {
             const newStatus = currentUser.status === '대기중' ? '준비완료' : '대기중';
             socket.emit('updateStatus', { gameRoomCode, userId: currentUser.id, status: newStatus });
         }
-    };
+    }, [socket, currentUser, gameRoomCode]);
 
-    const handleStart = () => {
+    const handleStart = useCallback(() => {
         if (socket) {
             socket.emit('startGame', { gameRoomCode });
         }
-    };
+    }, [socket, gameRoomCode]);
 
     const copyRoomCode = async () => {
         try {
@@ -94,6 +96,7 @@ export default function WaitingRoom() {
     };
 
     const isHost = currentUser && users.length > 0 && currentUser.id === users[0].id;
+
 
     return (
         <div className="relative container">
@@ -110,22 +113,10 @@ export default function WaitingRoom() {
             </div>
             <div className="user-list-container mx-auto">
                 <ul>
-                    {currentUser && (
-                        <li key={currentUser.id}>
-                            <div className="flex w-full mx-10 justify-between gap-20 items-center">
-                                <div className="flex-1 text-xl">1. {currentUser.nickname}</div> 
-                                <div className="flex-1 flex justify-center">
-                                    <p className={currentUser.status === '대기중' ? 'status-wait' : 'status-ready'}>
-                                        {currentUser.status}
-                                    </p>
-                                </div>
-                            </div>
-                        </li>
-                    )}
-                    {users.filter(user => user.id !== currentUser?.id).map((user, index) => (
+                    {users.map((user, index) => (
                         <li key={user.id}>
                             <div className="flex w-full mx-10 justify-between gap-20 items-center">
-                                <div className="flex-1 text-xl">{index + 2}. {user.nickname}</div> 
+                                <div className="flex-1 text-xl">{index + 1}. {user.nickname}</div> 
                                 <div className="flex-1 flex justify-center">
                                     <p className={user.status === '대기중' ? 'status-wait' : 'status-ready'}>
                                         {user.status}
@@ -157,4 +148,3 @@ export default function WaitingRoom() {
         </div>
     )
 }
-

@@ -1,15 +1,21 @@
 'use client';
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
 import BottomNav from '../../components/BottomNav';
 import '../../css/WaitingRoom/root.css'
 import '../../css/WaitingRoom/selectGame.css';
+import { error } from 'console';
+
+
+// const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:8080/ws';
 
 export default function Component() {
     const [isLoading, setIsLoading] = useState(false);
+    const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
     const router = useRouter();
+    // const { socket, isConnected, error, reconnect } = useSocket(gameRoomCode);
     
     const matching = async () => {
         setIsLoading(true);
@@ -19,8 +25,10 @@ export default function Component() {
             const response = await fetch("http://localhost:8080/api/v1/waiting-room/random-join", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    // 'Accept': 'application/json',
                 },
+                // credentials: 'include',
                 body: JSON.stringify({
                     "GameType": "Basic",
                     "userRole": "user",
@@ -29,25 +37,27 @@ export default function Component() {
             });
 
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
             console.log(data);
-            
-            if (data.id) {
+
+            if(data.id) {
                 router.push(`/game/room/${data.id}`);
             } else {
-                throw new Error('Room ID not found in response');
+                throw new Error('ROOM ID not found in response');
             }
+
         } catch (error) {
-            console.error("Error during matching:", error);
+            console.error("매칭 중 오류:", error);
             alert("매칭 중 오류가 발생했습니다. 다시 시도해 주세요.");
-            router.push('/game');
+            router.push("/game");
         } finally {
             setIsLoading(false);
         }
     };
+
     
     return (
         <>

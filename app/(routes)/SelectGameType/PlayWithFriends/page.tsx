@@ -7,12 +7,13 @@ import BottomNav from '../../../components/BottomNav';
 import Modal from '../../../components/Modal';
 import '../../../css/WaitingRoom/root.css'
 import '../../../css/WaitingRoom/playWithFreinds.css'
+import { useSocket } from '@/app/hooks/useSocket';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8007';
 
 const createRoom = async () => {
     try {
-        const url = `${API_BASE_URL}/api/v1/waiting-room/create-private`;
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/create-private`;
         console.log('요청 URL:', url);
 
         const requestBody = {
@@ -27,6 +28,7 @@ const createRoom = async () => {
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include", // 세션 쿠키를 포함
             body: JSON.stringify(requestBody)
         });
 
@@ -59,6 +61,7 @@ const createRoom = async () => {
         throw error;
     }
 };
+
 
 export default function Component() {
     const [gameRoomCode, setGameRoomCode] = useState("");

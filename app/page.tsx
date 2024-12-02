@@ -1,9 +1,35 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import Link from 'next/link'
 import Image from 'next/image'
 import BottomNav from './components/BottomNav'
+import axios from "axios";
 import './css/main.css'
 
 export default function HomePage() {
+  const [nickname, setNickname] = useState<string | null>("");
+  const [point, setPoint] = useState<number>(0);
+
+  useEffect(()=>{
+    setNickname(sessionStorage.getItem("nickname"));
+
+    axios.get("http://localhost:8005/api/v1/users/point", {
+      headers: {
+        "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
+      }
+    })
+    .then(res => {
+      console.log(res.data);
+      setPoint(res.data);
+    })
+    .catch(error => {
+      // console.error(error);
+      console.log(error);
+    });
+  }, [])
+
+
   return (
     <>
       <div className="main-root">
@@ -14,11 +40,11 @@ export default function HomePage() {
           </div>
           <div className='user-summary'>
             <div>
-              김한토님 반가워요
+            {nickname}님 반가워요
             </div>
             <div className='flex'>
               <div><Image src='/images/icon/money.png' alt="포인트" width={20} height={20} className='money-icon-position' /></div>
-              <div>Point</div>
+              <div>{point}P</div>
             </div>
           </div>
         </header>

@@ -2,6 +2,15 @@
     font-family: 'Pretendard';
 }
 
+.sign-in-root { 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3em 1.5em 0 1.5em;
+    min-height: 100vh;
+}
+
 .sign-in-btn {
     font-weight: bold;
     font-size: 18px;

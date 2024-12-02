@@ -26,6 +26,7 @@
 }
 
 .main-root { 
+    min-height: 100vh;
     padding: 3em 1.5em 0 1.5em;
     min-height: 100vh;
 }
