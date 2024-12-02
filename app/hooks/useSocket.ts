@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from "react"
-import { io, Socket } from 'socket.io-client'
+import { Socket } from 'socket.io-client'
 
 export function useSocket(url: string) {
-    const socektRef = useRef<Socket | null>(null)
+    const socektRef = useRef<typeof Socket | null>(null)
 
     useEffect(() => {
         const socekt = io(url)

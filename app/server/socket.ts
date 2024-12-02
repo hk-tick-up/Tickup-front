@@ -1,7 +1,7 @@
 import { Server as HTTPServer } from 'http'
 import { Server as SocketIOServer } from 'socket.io'
 
-export function initializeSocket(sever: HTTPServer) {
+export function initializeSocket(server: HTTPServer) {
     const io = new SocketIOServer(server, {
         cors: {
             origin: process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
@@ -26,7 +26,11 @@ export function initializeSocket(sever: HTTPServer) {
     return io;
 }
 
-async function startGameService(gameData: any) {
+interface TEMPGAMEDATA {
+  tempData:string;
+}
+
+async function startGameService(gameData: TEMPGAMEDATA) {
     try {
         const response = await fetch(process.env.GAME_SERVICE_URL || 'http://localhost:4000/start', {
             method: 'POST',

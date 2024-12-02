@@ -17,8 +17,8 @@ interface User {
 
 export default function WaitingRoom() {
     const [users, setUsers] = useState<User[]>([]);
-    const [isReady, setIsReady] = useState(false);
-    const [socket, setSocket] = useState<Socket | null>(null);
+    // const [isReady, setIsReady] = useState(false);
+    const [socket, setSocket] = useState<typeof Socket | null>(null);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const router = useRouter();
     const params = useParams();
@@ -44,7 +44,7 @@ export default function WaitingRoom() {
             newSocket.emit('joinRoom', { gameRoomCode, user: initialUser });
         });
 
-        newSocket.on('connect_error', (error) => {
+        newSocket.on('connect_error', (error:{error:string}) => {
             console.error('Socket connection error:', error);
         });
 

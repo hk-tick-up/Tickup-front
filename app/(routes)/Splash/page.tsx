@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+// import { useEffect } from 'react'
+// import { useRouter } from 'next/navigation'
 
 // import { Logo } from '@/components/logo'
 // import { motion } from 'framer-motion'
 
 export default function SplashPage() {
-    const router = useRouter()
+    // const router = useRouter()
 
     // useEffect(() => {
     // // 3초 후에 메인 페이지로 이동

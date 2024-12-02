@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
-import BottomNav from '../../components/BottomNav';
+import BottomNav from '../../components/bottomNav';
 import '../../css/WaitingRoom/root.css'
 import '../../css/WaitingRoom/selectGame.css';
 

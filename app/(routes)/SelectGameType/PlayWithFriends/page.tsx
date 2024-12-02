@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
-import BottomNav from '../../../components/BottomNav';
+import BottomNav from '../../../components/bottomNav';
 import Modal from '../../../components/Modal';
 import '../../../css/WaitingRoom/root.css'
 import '../../../css/WaitingRoom/playWithFreinds.css'
