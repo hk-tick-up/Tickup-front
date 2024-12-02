@@ -104,6 +104,10 @@ export default function SignUp(){
     .then(response => {
       setIsIdDuplicated(response.data);
       console.log(response.data);
+      if(response.data)
+        alert("This ID already exists.");
+      else
+        alert("You can use this ID.");
     })
     .catch(error => {
       console.error(error);
@@ -120,6 +124,10 @@ export default function SignUp(){
     .then(response => {
       setIsNicknameDuplicated(response.data);
       console.log(response.data);
+      if(response.data)
+        alert("This nickname already exists.");
+      else
+        alert("You can use this nickname.");
     })
     .catch(error => {
       console.error(error);

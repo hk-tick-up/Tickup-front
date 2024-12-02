@@ -38,8 +38,12 @@ export default function My () {
             <LinkTo href="/signout" innerContents={<p>로그아웃</p>} />
           </div>
 
+          <div className="my-4">
+            <LinkTo href="/withdrawal" innerContents={<p>회원탈퇴</p>} />
+          </div>
+
           <BottomNav/>
-          <div className="h-[110px]"></div> {/* 하단바 고려 */}
+          <div className="h-[120px]"></div> {/* 하단바 고려 */}
         </>
       }
     </div>
