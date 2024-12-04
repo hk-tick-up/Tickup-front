@@ -10,7 +10,7 @@ import '../../../css/WaitingRoom/gameWaitingRoom.css'
 
 import * as StompJs from "@stomp/stompjs";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3007/ws';
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:8007/ws';
 
 interface User {
     id: string;
@@ -21,18 +21,22 @@ interface User {
 export default function WaitingRoom() {
     const [users, setUsers] = useState<User[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [gameRoomCode, setGameRoomCode] = useState("");
     const [nickname, setNickname] = useState<string | null>("");
     const router = useRouter();
     const params = useParams();
-    const gameRoomCode = params.gameRoomCode as string;
+    const gameRoomId = params.gameRoomId as string;
 
-    const { socket, isConnected } = useWebSocket(gameRoomCode);
+    const { socket, isConnected } = useWebSocket(gameRoomId);
 
 
     useEffect(() => {
         const userId = sessionStorage.getItem('id');
         const nickname = sessionStorage.getItem('nickname');
         const token = sessionStorage.getItem('bearer');
+        const code = sessionStorage.getItem('gameRoomCode');
+
+        if(code != null ) setGameRoomCode(code);
 
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
@@ -64,35 +68,36 @@ export default function WaitingRoom() {
                     setUsers(data.users);
                     break;
                 case 'GAME_START':
-                    router.push(`/game/play/${gameRoomCode}`);
+                    router.push(`/game/play/${gameRoomId}`);
                     break;
             }
         };
-    }, [socket, router, gameRoomCode]);
+    }, [socket, router, gameRoomId]);
 
     const handleReady = useCallback(() => {
         if (socket && currentUser) {
             socket.send(JSON.stringify({
                 type: 'UPDATE_STATUS',
-                gameRoomCode,
+                gameRoomId,
                 userId: currentUser.id,
                 status: currentUser.status === '대기중' ? '준비완료' : '대기중'
             }));
         }
-    }, [socket, currentUser, gameRoomCode]);
+    }, [socket, currentUser, gameRoomId]);
 
     const handleStart = useCallback(() => {
         if (socket) {
             socket.send(JSON.stringify({
                 type: 'START_GAME',
-                gameRoomCode
+                gameRoomId
             }));
         }
-    }, [socket, gameRoomCode]);
+    }, [socket, gameRoomId]);
 
     const copyRoomCode = async () => {
+        const gameRoomCode = sessionStorage.getItem('gameRoomCode');
         try {
-            await navigator.clipboard.writeText(gameRoomCode);
+            await navigator.clipboard.writeText(gameRoomId);
             alert('방 코드가 복사되었습니다.');
         } catch (err) {
             console.error('복사 실패: ', err);
@@ -114,7 +119,7 @@ export default function WaitingRoom() {
         ,debug: console.log
     });
             console.log('Connected: ' + frame);
-            stompClient.subscribe(`/topic/waiting-room/${data.gameRoomId}/leave`, (greeting) => {
+            stompClient.subscribe(`/topic/waiting-room/${gameRoomId}/leave`, (greeting) => {
             console.log(greeting)
             });
         };
@@ -136,7 +141,7 @@ export default function WaitingRoom() {
         <div className="relative container">
             <div className="position-back-button fixed w-full">
                 <Link href="/game">
-                    <img src="/images/exitgame_icon.png" className="w-7" alt="게임 나가기" />
+                    <img src="/images/exitgame_icon.png" className="w-7" alt="게임 나가기" onClick={leaveRoom} />
                 </Link>
             </div>
             <div className="room-code">
