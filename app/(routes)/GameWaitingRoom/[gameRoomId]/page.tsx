@@ -106,43 +106,70 @@ export default function WaitingRoom() {
     };
 
     const leaveRoom = async () => {
-        const stompClient = new StompJs.Client({
-            //localhost
-            brokerURL: "ws://localhost:8007/ws"
-            ,debug: console.log
+        try {
+            const userId = sessionStorage.getItem('id');
+
+            const stompClient = new StompJs.Client({
+                brokerURL: "ws://localhost:8007/ws",
+                debug: console.log
+            });
+    
+            await new Promise((resolve, reject) => {
+                stompClient.onConnect = (frame) => {
+                    console.log('Connected to WebSocket for leaving room');
+                    
+                    // 방 나가기 메시지 전송
+                    stompClient.publish({
+                        destination: `/app/waiting-room/${gameRoomId}/leave`,
+                        body: JSON.stringify({
+                            userId: userId,
+                            gameRoomId: gameRoomId
+                        }),
+                        headers: {
+                            'content-type': 'application/json'
+                        }
+                    });
+    
+                    // 연결 해제 및 리다이렉트
+                    stompClient.deactivate().then(() => {
+                        console.log('WebSocket connection closed');
+                        sessionStorage.removeItem('currentRoomId');
+                        sessionStorage.removeItem('gameRoomCode');
+                        router.push('/game/together');
+                    });
+    
+                    resolve(true);
+            };
+
+            stompClient.onWebSocketError = (error) => {
+                console.error('WebSocket Error:', error);
+                reject(error);
+            };
+
+            stompClient.activate();
         });
 
-        stompClient.onConnect = (frame) => {
-            const stompClient = new StompJs.Client({
-        //localhost
-        brokerURL: "ws://localhost:8007/ws"
-        ,debug: console.log
-    });
-            console.log('Connected: ' + frame);
-            stompClient.subscribe(`/topic/waiting-room/${gameRoomId}/leave`, (greeting) => {
-            console.log(greeting)
-            });
-        };
-        stompClient.onWebSocketError = (error) => {
-            console.error('Error with websocket', error);
-        };
-        
-        stompClient.onStompError = (frame) => {
-            console.error('Broker reported error: ' + frame.headers['message']);
-            console.error('Additional details: ' + frame.body);
-        };
-        
-        stompClient.activate();
+        // 연결 해제 및 세션 정리
+        await stompClient.deactivate();
+        sessionStorage.removeItem('currentRoomId');
+        sessionStorage.removeItem('gameRoomCode');
+        router.push('/game/together');
+
+    } catch (error) {
+        console.error('Error leaving room:', error);
+        router.push('/game/together');
     }
+};
+
     const isHost = currentUser && users.length > 0 && currentUser.id === users[0].id;
 
 
     return (
         <div className="relative container">
             <div className="position-back-button fixed w-full">
-                <Link href="/game">
-                    <img src="/images/exitgame_icon.png" className="w-7" alt="게임 나가기" onClick={leaveRoom} />
-                </Link>
+                <button onClick={leaveRoom}>
+                    <img src="/images/exitgame_icon.png" className="w-7" alt="게임 나가기" />
+                </button>
             </div>
             <div className="room-code">
                 <span className="font-[Freesentation-9Black]">{gameRoomCode}</span>
