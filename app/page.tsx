@@ -14,6 +14,7 @@ export default function HomePage() {
   useEffect(()=>{
     setNickname(sessionStorage.getItem("nickname"));
 
+    //localhost
     axios.get("http://localhost:8005/api/v1/users/point", {
       headers: {
         "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`

@@ -7,6 +7,7 @@ import BottomNav from '../../components/BottomNav';
 import '../../css/WaitingRoom/root.css'
 import '../../css/WaitingRoom/selectGame.css';
 import { error } from 'console';
+import * as StompJs from "@stomp/stompjs";
 
 
 // const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:8080/ws';
@@ -21,18 +22,26 @@ export default function Component() {
         setIsLoading(true);
         router.push('/game/loading');
 
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/random-join`;
+        const token = sessionStorage.getItem('bearer');
+        const userId = sessionStorage.getItem('id');
+        const nickname = sessionStorage.getItem('nickname');
+
+        if(!token || !userId || !nickname) {
+            throw new Error("로그인이 필요합니다.");
+        }
+
         try {
-            const response = await fetch("http://localhost:8080/api/v1/waiting-room/random-join", {
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    // 'Accept': 'application/json',
                 },
-                // credentials: 'include',
+                credentials: 'include',
                 body: JSON.stringify({
                     "GameType": "Basic",
-                    "userRole": "user",
-                    "is_public": true
+                    "userRole": "user"
+                    // ,"is_public": true
                 })
             });
 
@@ -49,6 +58,30 @@ export default function Component() {
                 throw new Error('ROOM ID not found in response');
             }
 
+            const stompClient = new StompJs.Client({
+                //localhost
+                brokerURL: 'ws://localhost:8007/ws'
+                ,debug: console.log
+            });
+            stompClient.onConnect = (frame) => {
+                console.log('Connected: ' + frame);
+                stompClient.subscribe(`/topic/waiting-room/${data.gameRoomCode}`, (greeting) => {
+                    console.log(greeting)
+                });
+            };
+            stompClient.onWebSocketError = (error) => {
+                console.error('Error with websocket', error);
+            };
+
+            stompClient.onStompError = (frame) => {
+                console.error('Broker reported error: ' + frame.headers['message']);
+                console.error('Additional details: ' + frame.body);
+            };
+            
+            stompClient.activate();
+            sessionStorage.setItem('currentRoomCode', data.gameRoomCode);
+
+            return data.gameRoomCode;
         } catch (error) {
             console.error("매칭 중 오류:", error);
             alert("매칭 중 오류가 발생했습니다. 다시 시도해 주세요.");

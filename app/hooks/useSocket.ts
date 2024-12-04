@@ -1,76 +1,54 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
-import io, { Socket } from 'socket.io-client';
+// hooks/useWebSocket.ts
+import { useEffect, useState } from 'react';
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:8007';
+export const useWebSocket = (gameRoomCode: string) => {
+    const [socket, setSocket] = useState<WebSocket | null>(null);
+    const [isConnected, setIsConnected] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-export function useSocket(gameRoomCode: string) {
-  const [isConnected, setIsConnected] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const socketRef = useRef<Socket | null>(null);
+    useEffect(() => {
+        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/ws`);
 
-  const connectSocket = useCallback(() => {
-    console.log(`Attempting to connect to ${SOCKET_URL}`);
-    if (socketRef.current?.connected) {
-      console.log('Socket already connected');
-      return;
-    }
+        // ws.onopen = () => {
+        //     console.log('WebSocket Connected');
+        //     setIsConnected(true);
+        //     // 방 입장 메시지 전송
+        //     ws.send(JSON.stringify({
+        //         type: 'JOIN_ROOM',
+        //         gameRoomCode: gameRoomCode,
+        //         userId: sessionStorage.getItem('id'),
+        //         nickname: sessionStorage.getItem('nickname')
+        //     }));
+        // };
 
-    const newSocket = io(SOCKET_URL, {
-      transports: ['websocket', 'polling'],
-      upgrade: true,
-      reconnection: true,
-      reconnectionAttempts: Infinity,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
-      timeout: 20000,
-      forceNew: true, // Added forceNew
-      query: { gameRoomCode }
-    });
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log('Received message:', data);
+        };
 
-    newSocket.on('connect', () => {
-      console.log('Socket connected successfully');
-      setIsConnected(true);
-      setError(null);
-    });
+        ws.onerror = (error) => {
+            console.error('WebSocket Error:', error);
+            setError('WebSocket connection error');
+        };
 
-    newSocket.on('connect_error', (err) => {
-      console.error('Socket connection error:', err);
-      setIsConnected(false);
-      setError(`연결 오류: ${err.message}. 재연결을 시도합니다...`);
-    });
+        ws.onclose = () => {
+            console.log('WebSocket Disconnected');
+            setIsConnected(false);
+        };
 
-    newSocket.io.on('error', (err) => { // Modified error handling
-      console.error('Socket.IO error:', err);
-    });
+        setSocket(ws);
 
-    newSocket.on('disconnect', (reason) => {
-      console.log('Socket disconnected:', reason);
-      setIsConnected(false);
-      setError(`Disconnected: ${reason}`);
-    });
+        return () => {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'LEAVE_ROOM',
+                    gameRoomCode: gameRoomCode,
+                    userId: sessionStorage.getItem('id')
+                }));
+                ws.close();
+            }
+        };
+    }, [gameRoomCode]);
 
-    socketRef.current = newSocket;
-  }, [gameRoomCode]);
-
-  useEffect(() => {
-    connectSocket();
-
-    return () => {
-      if (socketRef.current) {
-        console.log('Disconnecting socket');
-        socketRef.current.disconnect();
-      }
-    };
-  }, [connectSocket]);
-
-  const reconnect = useCallback(() => {
-    console.log('Attempting to reconnect');
-    if (socketRef.current) {
-      socketRef.current.disconnect();
-    }
-    connectSocket();
-  }, [connectSocket]);
-
-  return { socket: socketRef.current, isConnected, error, reconnect };
-}
-
+    return { socket, isConnected, error };
+};

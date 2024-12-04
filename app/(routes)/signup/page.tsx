@@ -23,6 +23,7 @@ export default function SignUp(){
     };
     console.log(data);
 
+    //localhost
     axios.post("http://localhost:8005/api/v1/users/sign-up", data)
     .then(response => {
       console.log(response.data);

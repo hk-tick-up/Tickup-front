@@ -7,9 +7,11 @@ import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
 import Modal from '../../components/Modal';
 import '../../css/User/SignIn.css';
+// import anxios from "@/app/utils/axios";
 
 const api = axios.create({
-  baseURL: 'http://localhost:8005/api/v1',
+  //localhost
+  baseURL: "http://localhost:8005/api/v1",
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -30,71 +32,61 @@ export default function SignIn() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
-  const onSignIn = async (e: BaseSyntheticEvent) => {
-    e.preventDefault();
+  // SignIn.tsx
+  // src/app/(routes)/signin/page.tsx
 
-    const formElement = e.target.closest("form");
-    const data = {
+// src/app/(routes)/signin/page.tsx
+
+const onSignIn = async (e: BaseSyntheticEvent) => {
+  e.preventDefault();
+
+  const formElement = e.target.closest("form");
+  const data = {
       id: formElement.userId.value,
       password: formElement.password.value,
-    };
+  };
 
-    try {
-      // 로그인 요청
+  try {
       const loginResponse = await api.post("/users/sign-in", data);
-      
-      if (!loginResponse.data) {
-        throw new Error("로그인 응답이 비어있습니다.");
+      console.log("로그인 응답:", loginResponse.data);
+
+      const token = loginResponse.data?.token;
+      const userData = loginResponse.data?.user;
+
+      if (!token || !userData) {
+          throw new Error("로그인 응답 데이터가 올바르지 않습니다.");
       }
 
-      const token = loginResponse.data.token || loginResponse.data;
-      if (!token) {
-        throw new Error("토큰이 없습니다.");
-      }
+      // sessionStorage에 데이터 저장
+      sessionStorage.setItem('bearer', token);
+      sessionStorage.setItem('id', userData.id);
+      sessionStorage.setItem('nickname', userData.nickname);
 
-      // 토큰 저장
-      localStorage.setItem("bearer", token.toString().trim());
+      // 저장 확인을 위한 로그
+      console.log('sessionStorage 저장 상태:', {
+          token: sessionStorage.getItem('bearer'),
+          id: sessionStorage.getItem('id'),
+          nickname: sessionStorage.getItem('nickname')
+      });
 
-      try {
-        // 사용자 정보 요청
-        const userResponse = await api.get("/users/self", {
-          headers: {
-            Authorization: `Bearer ${token.toString().trim()}`
-          }
-        });
+      setModalMessage("로그인 성공했습니다.");
+      setIsModalOpen(true);
 
-        if (userResponse.data && userResponse.data.id && userResponse.data.nickname) {
-          localStorage.setItem("id", userResponse.data.id);
-          localStorage.setItem("nickname", userResponse.data.nickname);
-          
-          setModalMessage("로그인 성공");
-          setIsModalOpen(true);
-
-          // 약간의 지연 후 리다이렉트
-          setTimeout(() => {
-            router.push("/my");
-          }, 1000);
-        } else {
-          throw new Error("사용자 정보가 올바르지 않습니다.");
-        }
-      } catch (userError) {
-        console.error("사용자 정보 조회 실패:", userError);
-        throw new Error("사용자 정보를 가져오는데 실패했습니다.");
-      }
-    } catch (error) {
+      setTimeout(() => {
+          router.push("/my");
+      }, 1000);
+  } catch (error) {
+      console.error("로그인 실패:", error);
       let errorMessage = "로그인에 실패했습니다.";
       
       if (axios.isAxiosError(error)) {
-        console.error("Axios Error:", error.response?.data);
-        errorMessage = error.response?.data?.message || error.message || errorMessage;
-      } else if (error instanceof Error) {
-        errorMessage = error.message;
+          errorMessage = error.response?.data?.message || errorMessage;
       }
-
+      
       setModalMessage(errorMessage);
       setIsModalOpen(true);
-    }
-  };
+  }
+};
 
 
   return (

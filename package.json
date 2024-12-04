@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -19,7 +19,9 @@
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "socket.io": "^4.8.1",
     "socket.io-client": "^4.8.1",
-    "sockjs-client": "^1.6.1"
+    "sockjs": "^0.3.24",
+    "sockjs-client": "^1.6.1",
+    "stomp": "^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^20",
