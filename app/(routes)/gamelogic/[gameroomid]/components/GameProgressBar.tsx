@@ -1,166 +1,183 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useWebSocket } from '../context/WebSocketContext';
 import Image from 'next/image';
 import styles from '../css/GameProgressBar.module.css';
 import { usePathname } from 'next/navigation';
 
-interface GameProgressBarProps {}
 
-export default function GameProgressBar({}: GameProgressBarProps) {
+interface GameStateUpdateRequest {
+    gameRoomId: number;
+    currentTurn: number;
+    playerId: string;
+    clientTime: string;
+}
+
+export default function GameProgressBar() {
     const [turn, setTurn] = useState<number>(0);
     const [totalTurns, setTotalTurns] = useState<number>(0);
     const [remainingTime, setRemainingTime] = useState<number>(0);
-    const [turnStartTime, setTurnStartTime] = useState<string | null>(null);
-    const [updatingTurn, setUpdatingTurn] = useState(false); // 턴 업데이트 중 여부
+    const [turnEndTime, setTurnEndTime] = useState<string | null>(null);
     const { stompClient } = useWebSocket();
-
     const pathname = usePathname();
-    const gameroomid = pathname.split('/')[2];
+    const gameRoomId = pathname.split('/')[2];
 
-    console.log('Attempting WebSocket subscription to:', `/topic/game-room/${gameroomid}/game-process`);
-
-    // WebSocket 구독 및 메시지 처리
+    // 초기 상태 동기화
     useEffect(() => {
-        if (stompClient && gameroomid) {
-            const onConnect = () => {
-                console.log('WebSocket connected:', stompClient.connected);
-
-                // 구독 로직
-                const subscription = stompClient.subscribe(
-                    `/topic/game-room/${gameroomid}/game-process`,
-                    (message) => {
-                        try {
-                            const data = JSON.parse(message.body);
-                            console.log('WebSocket message received:', data);
-
-                            // 메시지 구조에 따라 상태 업데이트
-                            if (
-                                data.currentTurn !== undefined &&
-                                data.totalTurn !== undefined &&
-                                data.remainingTime !== undefined &&
-                                data.currentTurnStartTime !== undefined
-                            ) {
-                                setTurn(data.currentTurn);
-                                setTotalTurns(data.totalTurn);
-                                setTurnStartTime(data.currentTurnStartTime); // 서버의 turnStartTime 사용
-                                syncRemainingTime(data.currentTurnStartTime, data.remainingTime); // 남은 시간 계산
-                            } else {
-                                console.warn('Invalid WebSocket message structure:', data);
-                            }
-                        } catch (error) {
-                            console.error('Error processing WebSocket message:', error);
-                        }
-                    }
-                );
-
-                console.log('Subscribed to WebSocket topic:', `/topic/game-room/${gameroomid}/game-process`);
-
-                return () => {
-                    console.log('Unsubscribing from WebSocket topic');
-                    subscription.unsubscribe();
-                };
-            };
-
-            if (stompClient.connected) {
-                onConnect();
-            } else {
-                stompClient.onConnect = onConnect;
-            }
-        } else {
-            console.warn('WebSocket is not connected. Unable to subscribe.');
+        if (!gameRoomId) {
+            console.warn('Game Room ID is missing');
+            return;
         }
 
-        return () => {
-            if (stompClient) {
-                console.log('Disconnecting WebSocket');
-                stompClient.deactivate();
+        const fetchInitialState = async () => {
+            try {
+                const response = await fetch(`http://localhost:8080/api/v1/gamelogic/${gameRoomId}/serverTime`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch initial state');
+                }
+        
+                const data = await response.json();
+                console.log('Initial game state:', data);
+        
+                setTurn(data.currentTurn);
+                setTotalTurns(data.totalTurns);
+                setTurnEndTime(data.currentTurnEndTime);
+
+                if (data.currentTurnEndTime) {  
+                    const endTime = new Date(data.currentTurnEndTime).getTime();
+                    const currentTime = new Date(data.now).getTime();
+                    const initialRemainingSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+                    setRemainingTime(initialRemainingSeconds);
+                }
+            } catch (error) {
+                console.error('Error fetching initial state:', error);
             }
         };
-    }, [stompClient, gameroomid]);
 
-    // 남은 시간 동기화 함수
-    function syncRemainingTime(startTime: string, serverRemainingTime: number): void {
-        const now = new Date().getTime();
-        const turnStart = new Date(startTime).getTime();
-        const elapsedTime = Math.floor((now - turnStart) / 1000); // 초 단위 경과 시간
+        fetchInitialState();
+    }, [gameRoomId]);
 
-        const syncedRemainingTime = Math.max(serverRemainingTime - elapsedTime, 0);
-        setRemainingTime(syncedRemainingTime);
-    }
+    // 턴 종료 알림 전송
+    const sendTurnEndNotification = useCallback(() => {
+        if (!stompClient || !gameRoomId) {
+            console.warn('StompClient or gameRoomId not available');
+            return;
+        }
 
-    // 로컬 카운트다운
+        if (!stompClient.connected) {
+            console.warn('STOMP client is not connected');
+            return;
+        }
+
+        const message: GameStateUpdateRequest = {
+            gameRoomId: parseInt(gameRoomId),
+            currentTurn: turn,
+            playerId: 'player-id',
+            clientTime: new Date().toISOString()
+        };
+
+        try {
+            stompClient.publish({
+                destination: `/app/gameRoom/${gameRoomId}/turnEnd`,
+                body: JSON.stringify(message)
+            });
+            console.log('Turn end notification sent:', message);
+        } catch (error) {
+            console.error('Failed to send turn end notification:', error);
+        }
+    }, [stompClient, gameRoomId, turn]);
+
+    // 카운트다운 타이머
     useEffect(() => {
-        let timer: NodeJS.Timeout | null = null;
-
+        let timer: NodeJS.Timeout;
+    
         if (remainingTime > 0) {
             timer = setInterval(() => {
-                setRemainingTime((prev) => {
-                    const newTime = Math.max(prev - 1, 0);
-
-                    // 제한 시간이 0이 되었을 때 현재 턴 확인
-                    if (newTime === 0) {
-                        clearInterval(timer!);
-
-                        if (turn < totalTurns) {
-                            // 현재 턴이 전체 턴 미만인 경우에만 턴 업데이트
-                            updateTurn();
-                        } else {
-                            console.log('Game finished: No more turns to update.');
-                        }
+                setRemainingTime(prev => {
+                    const newTime = prev - 1;
+                    // 시간이 0이 되면 턴 종료 메시지 전송
+                    if (newTime <= 0) {
+                        sendTurnEndNotification();
+                        clearInterval(timer);
+                        return 0;
                     }
-
                     return newTime;
                 });
             }, 1000);
         }
-
+    
         return () => {
             if (timer) {
                 clearInterval(timer);
-                console.log('Cleared interval for countdown');
             }
         };
-    }, [remainingTime, turn, totalTurns]);
+    }, [remainingTime, sendTurnEndNotification]);
 
-    // 턴 업데이트 로직
-    async function updateTurn() {
-        if (!gameroomid) {
-            console.warn('Room ID not available for turn update');
+    // 웹소켓 구독 설정
+    useEffect(() => {
+        if (!stompClient || !gameRoomId) {
+            console.log('StompClient or gameRoomId not available');
             return;
         }
 
-        if (updatingTurn) {
-            console.warn('Turn update already in progress');
-            return;
-        }
+        let subscription: any;
+        let connectionCheckInterval: NodeJS.Timeout;
 
-        setUpdatingTurn(true); // 턴 업데이트 중 플래그 설정
-
-        try {
-            const response = await fetch(`http://localhost:8080/api/v1/gamelogic/${gameroomid}/update-turn`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-            });
-
-            if (!response.ok) {
-                console.error('Failed to advance turn:', response.statusText);
-            } else {
-                const data = await response.json();
-                console.log('Turn successfully advanced:', data);
-                // 서버에서 업데이트된 정보를 WebSocket으로 받을 것이므로 상태 변경은 불필요
+        const subscribe = () => {
+            if (stompClient.connected) {
+                try {
+                    subscription = stompClient.subscribe(
+                        `/topic/gameRoom/${gameRoomId}/turnChange`,
+                        (message) => {
+                            try {
+                                const data = JSON.parse(message.body);
+                                console.log('Turn change received:', data);
+                                
+                                setTurn(data.nextTurn);
+                                setTurnEndTime(data.nextTurnEndTime);
+                                
+                                const endTime = new Date(data.nextTurnEndTime).getTime();
+                                const currentTime = Date.now();
+                                const newRemainingSeconds = Math.max(0, Math.floor((endTime - currentTime) / 1000));
+                                setRemainingTime(newRemainingSeconds);
+                            } catch (error) {
+                                console.error('Error processing turn change message:', error);
+                            }
+                        }
+                    );
+                    console.log('Successfully subscribed to turn changes');
+                } catch (error) {
+                    console.error('Error subscribing to turn changes:', error);
+                }
             }
-        } catch (error) {
-            console.error('Error updating turn:', error);
-        } finally {
-            setUpdatingTurn(false); // 플래그 해제
-        }
-    }
+        };
 
-    if (!gameroomid || remainingTime === null || totalTurns === null) {
-        return <div>Loading game room...</div>;
-    }
+        // 연결 상태 확인 및 구독
+        connectionCheckInterval = setInterval(() => {
+            if (stompClient.connected && !subscription) {
+                subscribe();
+            }
+        }, 1000);
+
+        return () => {
+            clearInterval(connectionCheckInterval);
+            if (subscription) {
+                try {
+                    subscription.unsubscribe();
+                    console.log('Unsubscribed from turn changes');
+                } catch (error) {
+                    console.error('Error unsubscribing:', error);
+                }
+            }
+        };
+    }, [stompClient, gameRoomId]);
 
     return (
         <div className={styles.container}>
