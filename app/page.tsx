@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from 'next/link'
 import Image from 'next/image'
 import BottomNav from './components/BottomNav'
+import FooterBlock from './components/FooterBlock'
 import axios from "axios";
 import './css/main.css'
 
@@ -83,31 +84,23 @@ export default function HomePage() {
         {/* 하단 배너 */}
         <div className="test-custom-1">마이페이지</div>
         <div className="section-position">
-          <section>
-            <div className='footer-block-big'>
-              <div>
-                <p>게임을 플레이하면</p>
-                <p>결과에 따른 분석 리포트를 보여드려요!</p>
-              </div>
-              <div className='flex'>
-                <p className='footer-announce'>분석 리포트로 투자 추가 공부하기</p>
-                <p><Image src='/images/detective.png' alt="탐정" width={27} height={27} className='footer-icon-detective'/></p>
-              </div>
-            </div>
-            <div><Image src='/images/icon/right-arrow.png' alt="화살표" width={15} height={15} className="footer-icon-arrow" /></div>    
+          <section className="section-custom">
+            <FooterBlock 
+              title="게임을 플레이하면"
+              subtitle="결과에 따른 분석 리포트를 보여드려요!"
+              announcement="분석 리포트로 투자 추가 공부하기"
+              iconSrc="/images/detective.png"
+              iconAlt="탐정"
+            />
           </section>
-          <section>
-            <div className='footer-block-big'>
-              <div>
-                <p>게임을 플레이하면</p>
-                <p>결과에 따른 분석 리포트를 보여드려요!</p>
-              </div>
-              <div className='flex'>
-                <p className='footer-announce'>분석 리포트로 투자 추가 공부하기</p>
-                <p><Image src='/images/detective.png' alt="탐정" width={27} height={27} className='footer-icon-detective'/></p>
-              </div>
-            </div>
-            <div><Image src='/images/icon/right-arrow.png' alt="화살표" width={15} height={15} className="footer-icon-arrow" /></div>    
+          <section className="section-custom">
+            <FooterBlock 
+              title="게임을 플레이하면"
+              subtitle="결과에 따른 분석 리포트를 보여드려요!"
+              announcement="분석 리포트로 투자 추가 공부하기"
+              iconSrc="/images/detective.png"
+              iconAlt="탐정"
+            />
           </section>
         </div>
       </div>

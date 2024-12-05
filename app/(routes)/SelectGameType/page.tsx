@@ -26,9 +26,10 @@ export default function Component() {
         const nickname = sessionStorage.getItem('nickname');
 
         if(!token || !userId || !nickname ){ 
-            throw new Error("로그인이 필요합니다.");
             router.push('/signin');
-            return;
+            throw new Error("로그인이 필요합니다.");
+            // setErrorMessage("로그인이 필요합니다.");
+            // setIsModalOpen(true);
         }
 
         setUserInfo({ token, userId, nickname });

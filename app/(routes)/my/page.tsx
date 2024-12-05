@@ -5,15 +5,23 @@ import LinkTo from "@/app/components/linkTo/linkTo";
 import GameRules from "@/app/components/myPage/gameRule";
 import Profile from "@/app/components/myPage/profile";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Image from 'next/image'
+import Link from "next/link";
 import '../../css/User/MyPage.css';
+import '../../css/main.css'
+import FooterBlock from '../../components/FooterBlock'
+import BottomNav from '../../components/BottomNav'
 
 export default function My () {
   const router = useRouter();
+  const [nickname, setNickname] = useState<string | null>("");
 
   useEffect(()=>{
     if(!sessionStorage.getItem("id"))
       router.push("/signin");
+    setNickname(sessionStorage.getItem("nickname"));
+
   },[]);
   
   return (
@@ -42,32 +50,51 @@ export default function My () {
       <div className="my-page-root">
         <div className="font-custom-1 ">마이 페이지</div>
         <div className="my-page-box-1 "> 
-          <div className="content-position-1">
+          <div className="content-position-1 items-center">
             <div className="content-position-2">
-              <p>전구</p><p>게임 규칙 설명서</p>
+              <p className="icon-position-2"><Image src='/images/linkTo/bulb.png' alt="전구" width={11} height={11} /></p>
+              <p>게임 규칙 설명서</p>
             </div>
-            <div>
-              화살표
+            <div className="icon-position-1">
+              <Image src='/images/icon/right-arrow.png' alt="화살표" width={11} height={11} />
             </div>
           </div>
         </div>
           <div>
-            <div className="main-contetn-position-1">
+            <div className="main-content-position-1">
               <div className="content-position-3">
-                <div className="font-custom-2">김한토 님 환영합니다!</div>
-                <div>로그아웃</div>
+                <div className="font-custom-2">{nickname} 님 환영합니다!</div>
+                <div className=""><Link href="/signout"><p className="logout-custom">out</p></Link></div>
               </div>
-              <div>누적 포인트 20P</div>
-              <div className="profile-img-position">프로필 이미지</div>
+              <div>누적 포인트 <span className="point-font-custom">20P</span></div>
+              <div className="profile-img-position"><Image src='/images/linkTo/ghost.png' alt="유령" width={200} height={200} /></div>
             </div>
             <section>
-              <div className="section-btn">게임 전적 확인하기</div>
-              <div className="section-btn">친구 목록 관리하기</div>
+              <div className="section-btn">
+                <div> <Image src='/images/linkTo/game.png' alt="게임기" width={70} height={70} /></div>
+                <div>
+                  게임 전적 확인하기
+                </div>
+              </div>
+              <div className="section-btn">
+                <div><Image src='/images/linkTo/friend.png' alt="그룹" width={70} height={70} /></div>
+                <div> 친구 목록 관리하기</div>
+              </div>
             </section>
-            <div>레포트</div>
+            <footer className="footer-custom">
+              <FooterBlock 
+                title="게임을 플레이하면"
+                subtitle="결과에 따른 분석 리포트를 보여드려요!"
+                announcement="분석 리포트로 투자 추가 공부하기"
+                iconSrc="/images/detective.png"
+                iconAlt="탐정"
+              />
+          </footer>
           </div>
       </div>
-      <div> 네비게이션 바</div>
+      <div> 
+        <BottomNav />
+      </div>
     </>
   );
 }

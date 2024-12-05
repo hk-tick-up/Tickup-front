@@ -22,7 +22,7 @@ a {
 }
 
 .container {
-    background-color: rgb(243 244 246);
+    background-color: #F3F8FD;
     display: flex;
     min-height: 100vh;
     flex-direction: column;

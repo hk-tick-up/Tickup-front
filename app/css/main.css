@@ -112,7 +112,7 @@ header {
     box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5);
 }
 
-section {
+.section-custom {
     display: flex;
     align-items: center;
     font-family: 'Pretendard';
@@ -155,4 +155,8 @@ section {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.footer-block-big p {
+    text-align: left;
 }
