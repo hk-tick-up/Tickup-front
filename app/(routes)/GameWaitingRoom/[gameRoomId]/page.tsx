@@ -7,6 +7,7 @@ import Link from "next/link";
 import io, { Socket } from 'socket.io-client';
 import '../../../css/WaitingRoom/root.css'
 import '../../../css/WaitingRoom/gameWaitingRoom.css'
+import Modal from '../../../components/Modal';
 
 import * as StompJs from "@stomp/stompjs";
 
@@ -16,27 +17,30 @@ interface User {
     id: string;
     nickname: string;
     status: '대기중' | '준비완료';
-}
+}   
 
 export default function WaitingRoom() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
-    const [gameRoomCode, setGameRoomCode] = useState("");
-    const [nickname, setNickname] = useState<string | null>("");
+    const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
+    const [isPublic, setIsPublic] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
     const params = useParams();
     const gameRoomId = params.gameRoomId as string;
 
     const { socket, isConnected } = useWebSocket(gameRoomId);
 
-
     useEffect(() => {
         const userId = sessionStorage.getItem('id');
         const nickname = sessionStorage.getItem('nickname');
         const token = sessionStorage.getItem('bearer');
         const code = sessionStorage.getItem('gameRoomCode');
-
-        if(code != null ) setGameRoomCode(code);
+        const publicRoom = sessionStorage.getItem('isPublic');
+        
+        setGameRoomCode(code);
+        setIsPublic(publicRoom === 'true');
 
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
@@ -53,7 +57,7 @@ export default function WaitingRoom() {
         setUsers([initialUser]);
 
         if (!socket) return;
-        // 유저 정보 확인 및 초기 설정
+
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             
@@ -95,13 +99,16 @@ export default function WaitingRoom() {
     }, [socket, gameRoomId]);
 
     const copyRoomCode = async () => {
-        const gameRoomCode = sessionStorage.getItem('gameRoomCode');
-        try {
-            await navigator.clipboard.writeText(gameRoomId);
-            alert('방 코드가 복사되었습니다.');
-        } catch (err) {
-            console.error('복사 실패: ', err);
-            alert('방 코드 복사에 실패했습니다. 직접 코드를 복사해주세요.');
+        if (gameRoomCode) {
+            try {
+                await navigator.clipboard.writeText(gameRoomCode); // gameRoomCode 사용
+                setErrorMessage('방 코드가 복사되었습니다.');
+                setIsModalOpen(true);
+            } catch (err) {
+                console.error('복사 실패: ', err);
+                setErrorMessage('방 코드 복사에 실패했습니다. 직접 코드를 복사해주세요.');
+                setIsModalOpen(true);
+            }
         }
     };
 
@@ -153,7 +160,7 @@ export default function WaitingRoom() {
         await stompClient.deactivate();
         sessionStorage.removeItem('currentRoomId');
         sessionStorage.removeItem('gameRoomCode');
-        router.push('/game/together');
+        router.push('/game');
 
     } catch (error) {
         console.error('Error leaving room:', error);
@@ -172,10 +179,16 @@ export default function WaitingRoom() {
                 </button>
             </div>
             <div className="room-code">
-                <span className="font-[Freesentation-9Black]">{gameRoomCode}</span>
-                <button onClick={copyRoomCode} className='room-code-copy'>
-                    <img src="/images/WaitingRoom/copy-darkgray.png" className="w-5 h-5" alt="방 코드 복사" />
-                </button>
+                {isPublic ? (
+                    <>
+                        <span className="font-[Freesentation-9Black]">{gameRoomCode}</span>
+                        <button onClick={copyRoomCode} className='room-code-copy'>
+                            <img src="/images/WaitingRoom/copy-darkgray.png" className="w-5 h-5" alt="방 코드 복사" />
+                        </button>
+                    </>
+                ) : (
+                    <span className="font-[Freesentation-9Black]">No.{gameRoomId}</span>
+                )}
             </div>
             <div className="user-list-container mx-auto">
                 <ul>
@@ -213,6 +226,8 @@ export default function WaitingRoom() {
                     )}
                 </div>
             </div>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <p>{errorMessage}</p></Modal>
         </div>
     )
 }

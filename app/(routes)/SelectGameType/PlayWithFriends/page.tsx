@@ -73,8 +73,8 @@ export default function Component() {
             const roomCode = data.gameRoomCode;
 
 
-            sessionStorage.setItem('currentRoomId', roomId.toString());
-            sessionStorage.setItem('waitingRoomCode', roomCode);
+            sessionStorage.setItem('currentRoomId', roomId);
+            sessionStorage.setItem('gameRoomCode', roomCode);
             sessionStorage.setItem('isHost', 'true');
 
             const stompClient = new StompJs.Client({
@@ -136,7 +136,7 @@ export default function Component() {
             if (data && data.roomId) {
                 const roomId = data.roomId;
                 sessionStorage.setItem('currentRoomId', roomId.toString());
-                sessionStorage.setItem('waitingRoomCode', gameRoomCode);
+                sessionStorage.setItem('gameRoomCode', gameRoomCode);
     
                 const stompClient = new StompJs.Client({
                 //localhost
