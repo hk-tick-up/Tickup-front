@@ -71,10 +71,11 @@ export default function Component() {
 
             const roomId = data.id;
             const roomCode = data.gameRoomCode;
-
+            const isPublic = data.isPublic;
 
             sessionStorage.setItem('currentRoomId', roomId);
             sessionStorage.setItem('gameRoomCode', roomCode);
+            sessionStorage.setItem('isPublic', isPublic);
             sessionStorage.setItem('isHost', 'true');
 
             const stompClient = new StompJs.Client({

@@ -1,14 +1,7 @@
-/* .splash-root {
+.splash-root {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-    font-family: 'Pretendard';
-} */
+}
 
 .splash-title {
     color: #286DB1;
@@ -27,8 +20,9 @@
 
 .main-root { 
     min-height: 100vh;
-    padding: 3em 1.5em 0 1.5em;
+    padding: 2.5em 1.5em 0 1.5em;
     min-height: 100vh;
+    
 }
 
 header {
@@ -40,7 +34,7 @@ header {
 .main-title {
     font-family: 'Freesentation-9Black';
     color: #24609b;
-    font-size: 26px;
+    font-size: 20px;
     padding: 0 0 8px 0;
 }
 
@@ -118,7 +112,7 @@ header {
     box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5);
 }
 
-footer {
+section {
     display: flex;
     align-items: center;
     font-family: 'Pretendard';
@@ -127,7 +121,6 @@ footer {
     background-color: rgba(238,242,245, 0.5);
     border-radius: 10px;
     padding: 15px 8px 15px 18px;
-    margin : 2em 0 0 0;
     justify-content: space-between;
     cursor: pointer;
 }
@@ -152,13 +145,14 @@ footer {
     margin-right: 10px;
 }
 
+.test-custom-1 {
+    font-weight: bold;
+    padding: 15px 0 10px 5px;
+    font-size: 18px;
+}
 
-
-
-
-
-
-/* 나중에 삭제할 것 */
-.blank1 {
-    padding: 50px 0;
+.section-position {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }

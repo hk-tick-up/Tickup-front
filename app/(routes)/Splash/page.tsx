@@ -20,7 +20,7 @@ export default function SplashPage() {
     // }, [router])
 
     return (
-        <div className="main-root bg-gradient-to-b from-white via-blue-100 to-blue-200">
+        <div className="main-root bg-gradient-to-b from-white via-blue-100 to-blue-200 splash-root">
             <div className="content-wrapper">
                 <div>
                     <div className='logo-position'> 

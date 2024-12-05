@@ -39,15 +39,22 @@ export default function WaitingRoom() {
         const code = sessionStorage.getItem('gameRoomCode');
         const publicRoom = sessionStorage.getItem('isPublic');
         
-        setGameRoomCode(code);
-        setIsPublic(publicRoom === 'true');
-
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
             router.push('/signin');
             return;
         }
 
+        const isPublicBool = publicRoom === 'true';
+        setIsPublic(isPublicBool);
+        if(isPublicBool) {
+            setGameRoomCode(" ");
+        } else {
+            if(code) {
+                setGameRoomCode(code);
+            }
+        }
+    
         const initialUser: User = {
             id: userId,
             nickname: nickname,
@@ -179,17 +186,29 @@ export default function WaitingRoom() {
                 </button>
             </div>
             <div className="room-code">
-                {isPublic ? (
+            {isPublic ? (
+                // 공개방일 때
+                <span className="font-[Freesentation-9Black]">
+                    No.{gameRoomId}
+                </span>
+            ) : (
+                // 비공개방일 때
+                gameRoomCode && (
                     <>
-                        <span className="font-[Freesentation-9Black]">{gameRoomCode}</span>
+                        <span className="font-[Freesentation-9Black]">
+                            {gameRoomCode}
+                        </span>
                         <button onClick={copyRoomCode} className='room-code-copy'>
-                            <img src="/images/WaitingRoom/copy-darkgray.png" className="w-5 h-5" alt="방 코드 복사" />
+                            <img 
+                                src="/images/WaitingRoom/copy-darkgray.png" 
+                                className="w-5 h-5" 
+                                alt="방 코드 복사" 
+                            />
                         </button>
                     </>
-                ) : (
-                    <span className="font-[Freesentation-9Black]">No.{gameRoomId}</span>
-                )}
-            </div>
+                )
+            )}
+        </div>
             <div className="user-list-container mx-auto">
                 <ul>
                     {users.map((user, index) => (

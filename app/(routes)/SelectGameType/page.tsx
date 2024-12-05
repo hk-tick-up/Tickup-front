@@ -61,13 +61,14 @@ export default function Component() {
             }
 
             const data = await response.json();
+            const isPublic = data.isPublic
 
             if (!data || !data.roomId) {
                 throw new Error('방 정보를 받을 수 없습니다.');
             }
 
             sessionStorage.setItem('currentRoomId', data.roomId.toString());
-
+            sessionStorage.setItem('isPublic', isPublic);
 
             const stompClient = new StompJs.Client({
                 //localhost

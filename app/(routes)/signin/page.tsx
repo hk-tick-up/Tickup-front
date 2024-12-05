@@ -93,7 +93,7 @@ const onSignIn = async (e: BaseSyntheticEvent) => {
     <>
       <div className="sign-in-root bg-gradient-to-b from-white via-blue-100 to-blue-200">
         <div className="logo-position">
-          <img src="/images/logo.png" className="logo-size" alt="로고" />
+          <img src="/images/logo-name.png" className="sign-in-logo-size" alt="로고" />
         </div>
         <div className="sign-in-main">
           <form onSubmit={onSignIn} className="sign-in-main">

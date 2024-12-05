@@ -41,7 +41,7 @@ export default function HomePage() {
           </div>
           <div className='user-summary'>
             <div>
-            {nickname}님 반가워요
+            {nickname}님, 반가워요!
             </div>
             <div className='flex'>
               <div><Image src='/images/icon/money.png' alt="포인트" width={20} height={20} className='money-icon-position' /></div>
@@ -49,8 +49,6 @@ export default function HomePage() {
             </div>
           </div>
         </header>
-        <section className='py-5'>Banner?</section>
-
         {/* 메인 카드 섹션 */}
         <main>
           <div className='flex py-5 gap-5 items-center'> 
@@ -83,19 +81,35 @@ export default function HomePage() {
         </main>
 
         {/* 하단 배너 */}
-        <footer>
-          <div className='footer-block-big'>
-            <div>
-              <p>게임을 플레이하면</p>
-              <p>결과에 따른 분석 리포트를 보여드려요!</p>
+        <div className="test-custom-1">마이페이지</div>
+        <div className="section-position">
+          <section>
+            <div className='footer-block-big'>
+              <div>
+                <p>게임을 플레이하면</p>
+                <p>결과에 따른 분석 리포트를 보여드려요!</p>
+              </div>
+              <div className='flex'>
+                <p className='footer-announce'>분석 리포트로 투자 추가 공부하기</p>
+                <p><Image src='/images/detective.png' alt="탐정" width={27} height={27} className='footer-icon-detective'/></p>
+              </div>
             </div>
-            <div className='flex'>
-              <p className='footer-announce'>분석 리포트로 투자 추가 공부하기</p>
-              <p><Image src='/images/detective.png' alt="탐정" width={27} height={27} className='footer-icon-detective'/></p>
+            <div><Image src='/images/icon/right-arrow.png' alt="화살표" width={15} height={15} className="footer-icon-arrow" /></div>    
+          </section>
+          <section>
+            <div className='footer-block-big'>
+              <div>
+                <p>게임을 플레이하면</p>
+                <p>결과에 따른 분석 리포트를 보여드려요!</p>
+              </div>
+              <div className='flex'>
+                <p className='footer-announce'>분석 리포트로 투자 추가 공부하기</p>
+                <p><Image src='/images/detective.png' alt="탐정" width={27} height={27} className='footer-icon-detective'/></p>
+              </div>
             </div>
-          </div>
-          <div><Image src='/images/icon/right-arrow.png' alt="화살표" width={15} height={15} className="footer-icon-arrow" /></div>
-        </footer>
+            <div><Image src='/images/icon/right-arrow.png' alt="화살표" width={15} height={15} className="footer-icon-arrow" /></div>    
+          </section>
+        </div>
       </div>
       <BottomNav />
     </>

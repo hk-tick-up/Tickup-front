@@ -93,10 +93,13 @@ export default function SignUp(){
           <div className="input-title">직업</div>
           <select id="job" className="input-field" required>
             <option value="">직업 선택</option>
-            <option value="student">학생</option>
-            <option value="employee">회사원</option>
+            <option value="woker">직장인</option>
             <option value="self-employed">자영업</option>
-            <option value="other">기타</option>
+            <option value="university-student">대학생</option>
+            <option value="high-school-student">고등학생</option>
+            <option value="middle-school-student">중학생</option>
+            <option value="elementary-school-student">초등학생</option>
+            <option value="not-employed">무직</option>
           </select>
         </div>
 
