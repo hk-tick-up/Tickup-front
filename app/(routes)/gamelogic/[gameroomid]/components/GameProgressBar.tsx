@@ -76,6 +76,12 @@ export default function GameProgressBar() {
             return;
         }
 
+        // 현재 턴이 총 턴 수보다 크거나 같으면 턴 종료 알림을 보내지 않음
+        if (turn >= totalTurns) {
+            console.log('Game has reached the final turn');
+            return;
+        }
+
         const message: GameStateUpdateRequest = {
             gameRoomId: parseInt(gameRoomId),
             currentTurn: turn,
@@ -92,7 +98,7 @@ export default function GameProgressBar() {
         } catch (error) {
             console.error('Failed to send turn end notification:', error);
         }
-    }, [stompClient, gameRoomId, turn]);
+    }, [stompClient, gameRoomId, turn, totalTurns]);
 
     // 카운트다운 타이머
     useEffect(() => {
@@ -177,7 +183,7 @@ export default function GameProgressBar() {
                 }
             }
         };
-    }, [stompClient, gameRoomId]);
+    }, [stompClient, gameRoomId]); 
 
     return (
         <div className={styles.container}>
