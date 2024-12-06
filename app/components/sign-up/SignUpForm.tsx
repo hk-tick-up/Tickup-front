@@ -3,10 +3,12 @@
 import axios from "axios"
 import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
+import { ArrowLeft } from 'lucide-react';
+import '../../css/user/sign-up.css';
 
 const SignUpForm = () => {
-  // const base_url = "http://localhost:8005/api/v1/users";
-  const base_url = "http://back-service:8005/api/v1/users";
+  const base_url = "http://localhost:8005/api/v1/users";
+  // const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -137,51 +139,81 @@ const SignUpForm = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="border border-black p-2 w-2/3 max-w-xl min-w-xs">
-        <form onSubmit={onSignUp} className="flex flex-col items-center space-y-2 w-full">
-          
-          <div className="w-full px-2">
-            <label htmlFor="userId" className="inline-block w-20 text-right pr-2">ID</label>
-            <input id="userId" type="text" placeholder=" user id" className="border border-black w-full max-w-52" required/>
-            <button onClick={checkDuplicatedId}>check duplicated id</button>
+    <>
+      <div className="signup-root">
+        <div>
+          <button onClick={() => router.back()} className="back-btn">
+            <ArrowLeft className="w-5 h-5 mr-1" />
+            <p className="pt-1">뒤로가기</p>
+          </button>
+        </div>
+        <form className="signup-form-main" onSubmit={onSignUp}>
+          <div className="input-group">
+            <div className="input-title">아이디</div>
+            <div className="custom-position-1">
+              <input id="userId" type="text" placeholder="아이디" required />
+              <button className="sign-up-btn" onClick={checkDuplicatedId} >중복확인</button>
+            </div>
           </div>
 
-          <div className="w-full px-2">
-            <label htmlFor="password" className="inline-block w-20 text-right pr-2">password</label>
-            <input id="password" onChange={setPasswordHandler} type="password" placeholder=" password" className="border border-black w-full max-w-52" required/>
-          </div>
-          <div className="w-full px-2">
-            <label htmlFor="passwordCheck" className="inline-block w-20 text-right pr-2">repeat password</label>
-            <input id="passwordCheck" onChange={setPasswordCheckHandler} type="password" placeholder="repeat password" className="border border-black w-full max-w-52" required/>
+          <div className="input-group">
+            <div className="input-title">비밀번호</div>
+            <input id="password"  onChange={setPasswordHandler} type="password" placeholder="비밀번호" required />
           </div>
 
-          <div className="w-full px-2">
-            <label htmlFor="nickname" className="inline-block w-20 text-right pr-2">nickname</label>
-            <input id="nickname" type="text" placeholder=" nickname" className="border border-black w-full max-w-52" required/>
-            <button onClick={checkDuplicatedNickname}>check duplicated nickname</button>
+          <div className="input-group">
+            <div className="input-title">비밀번호</div>
+            <input id="passwordCheck" onChange={setPasswordCheckHandler} type="password" placeholder="비밀번호 확인" required />
           </div>
 
-          <div className="w-full px-2">
-          <label htmlFor="birthday" className="inline-block w-20 text-right pr-2">birthday</label>
-          <input id="birthday" type="date" className="border border-black w-full max-w-52" max={getToday()} min="1990-01-01" required/>
+          <div className="input-group">
+            <div className="input-title">닉네임</div>
+            <div className="custom-position-1">
+              <input id="nickname" type="text" placeholder="닉네임" required />
+              <button className="sign-up-btn" onClick={checkDuplicatedNickname} >중복확인</button>
+            </div>
           </div>
-          <div className="w-full px-2">
-            <label htmlFor="gender" className="inline-block w-20 text-right pr-2">gender</label>
-            <select id="gender" className="border border-black w-full max-w-52" defaultValue="" required>
-              <option value="" disabled>성별</option>
-              <option value="MALE">남자</option>
-              <option value="FEMALE">여자</option>
+
+          <div className="input-group">
+            <div className="input-title">생년월일</div>
+            <div>
+              <input id="birthday" type="date" max={getToday()} min="1990-01-01" required/>
+            </div>
+          </div>
+
+          <div className="input-group">
+            <div className="input-title">성별</div>
+            <div className="gender-select">
+                <input type="radio" name="gender" value="MALE" id="gender-male" required />
+                  <span>남성</span>
+                <input type="radio" name="gender" value="FEMALE" id="gender-female" required />
+                  <span>여성</span>
+            </div>
+          </div>
+
+          <div className="input-group">
+            <div className="input-title">직업</div>
+            <select id="job" className="input-field" required>
+              <option value="">직업 선택</option>
+              <option value="woker">직장인</option>
+              <option value="self-employed">자영업</option>
+              <option value="university-student">대학생</option>
+              <option value="high-school-student">고등학생</option>
+              <option value="middle-school-student">중학생</option>
+              <option value="elementary-school-student">초등학생</option>
+              <option value="not-employed">무직</option>
             </select>
           </div>
-          <div className="w-full px-2">
-            <label htmlFor="job" className="inline-block w-20 text-right pr-2">job</label>
-            <input id="job" type="text" placeholder=" job" className="border border-black w-full max-w-52" required/>
-          </div>
-          <button type="submit" title="회원가입" value="회원가입" className="border border-black m-2 p-2">회원가입</button>
+
+          <button type="submit" className="submit-button">
+            TickUp 시작하기
+          </button>
         </form>
       </div>
-    </div>
+      
+    </>
+    
+
   )
 }
 

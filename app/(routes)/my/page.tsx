@@ -1,14 +1,14 @@
 'use client';
 
 // import BottomNav from "@/app/components/bottomNav";
-import LinkTo from "@/app/components/linkTo/linkTo";
-import GameRules from "@/app/components/myPage/gameRule";
-import Profile from "@/app/components/myPage/profile";
+// import LinkTo from "@/app/components/linkTo/linkTo";
+// import GameRules from "@/app/components/myPage/gameRule";
+// import Profile from "@/app/components/myPage/profile";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from 'next/image'
 import Link from "next/link";
-import '../../css/User/MyPage.css';
+import '../../css/User/my-page.css';
 import '../../css/main.css'
 import FooterBlock from '../../components/FooterBlock'
 import BottomNav from '../../components/BottomNav'

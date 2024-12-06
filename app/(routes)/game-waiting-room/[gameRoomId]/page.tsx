@@ -5,9 +5,9 @@ import { useWebSocket } from '@/app/hooks/useSocket';
 import { useParams, useRouter } from 'next/navigation';
 import Link from "next/link";
 import io, { Socket } from 'socket.io-client';
-import '../../../css/WaitingRoom/root.css'
-import '../../../css/WaitingRoom/gameWaitingRoom.css'
-import Modal from '../../../components/Modal';
+import '../../../css/waiting-room/root.css'
+import '../../../css/waiting-room/game-waiting-room.css'
+import Modal from '../../../components/Modal'
 
 import * as StompJs from "@stomp/stompjs";
 
@@ -182,7 +182,7 @@ export default function WaitingRoom() {
         <div className="relative container">
             <div className="position-back-button fixed w-full">
                 <button onClick={leaveRoom}>
-                    <img src="/images/exitgame_icon.png" className="w-7" alt="게임 나가기" />
+                    <img src="/images/exit-game-icon.png" className="w-7" alt="게임 나가기" />
                 </button>
             </div>
             <div className="room-code">
@@ -200,7 +200,7 @@ export default function WaitingRoom() {
                         </span>
                         <button onClick={copyRoomCode} className='room-code-copy'>
                             <img 
-                                src="/images/WaitingRoom/copy-darkgray.png" 
+                                src="/images/waiting-room/copy-darkgray.png" 
                                 className="w-5 h-5" 
                                 alt="방 코드 복사" 
                             />

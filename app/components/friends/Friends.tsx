@@ -9,8 +9,8 @@ type friend = {
 }
 
 const Friends = () => {
-  // const base_url = "http://localhost:8005/api/v1/users"
-  const base_url = "http://back-service:8005/api/v1/users"
+  const base_url = "http://localhost:8005/api/v1/users"
+  // const base_url = "http://back-service:8005/api/v1/users"
   const [friends, setFriends] = useState<Array<friend>>([]);
   const router = useRouter();
   useEffect(()=>{

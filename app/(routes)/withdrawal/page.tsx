@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
 
 const Withdrawal = () => {
-  // const base_url = "http://localhost:8005/api/v1/users";
-  const base_url = "http://back-service:8005/api/v1/users";
+  const base_url = "http://localhost:8005/api/v1/users";
+  // const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
 
   const requestMembershipWithdrawal = () => {

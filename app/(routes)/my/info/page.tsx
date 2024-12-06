@@ -14,8 +14,8 @@ type User = ({
 })
 
 export default function MyInfo(){
-  // const base_url = "http://localhost:8005/api/v1/users";
-  const base_url = "http://back-service:8005/api/v1/users";
+  const base_url = "http://localhost:8005/api/v1/users";
+  // const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User>({id:"",password:"",nickname:"",age:0,gender:"",job:""});

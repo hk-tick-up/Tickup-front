@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
-import BottomNav from '../../components/bottomNav';
-import '../../css/WaitingRoom/root.css'
-import '../../css/WaitingRoom/selectGame.css';
+import BottomNav from '../../components/BottomNav';
+import '../../css/waiting-room/root.css'
+import '../../css//waiting-room/select-game.css';
 import { error } from 'console';
 import * as StompJs from "@stomp/stompjs";
 
@@ -134,14 +134,14 @@ export default function Component() {
                 <div className="flex justify-center space-x-10">
                     <div>
                         <button onClick={matching} disabled={isLoading}>
-                            <img src="/images/WaitingRoom/dice.png" className="custom-img select-random-btn" />
+                            <img src="/images/waiting-room/dice.png" className="custom-img select-random-btn" />
                             <p className="font-design text-lg">랜덤 매칭</p>
                         </button>
                     </div>
                     <div>
                         <Link href="/game/together">
                             <button>
-                                <img src="/images/WaitingRoom/together.png" className="custom-img select-together-btn" />
+                                <img src="/images/waiting-room/together.png" className="custom-img select-together-btn" />
                                 <p className="font-design text-lg">함께 하기</p>
                             </button>
                         </Link>

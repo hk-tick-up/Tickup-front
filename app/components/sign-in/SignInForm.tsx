@@ -18,8 +18,8 @@ interface CustomJwtPayload {
 }
 
 const SignInForm = () => {
-  // const base_url = "http://localhost:8005/api/v1/users"
-  const base_url = "http://back-service:8005/api/v1/users"
+  const base_url = "http://localhost:8005/api/v1/users"
+  // const base_url = "http://back-service:8005/api/v1/users"
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -42,8 +42,8 @@ const SignInForm = () => {
       withCredentials: true
     })
     .then(response => {
-      console.log(response.data);
       sessionStorage.setItem("bearer", response.data);
+      
       // 로그인 성공
       setModalMessage("로그인 성공했습니다.");
       setIsModalOpen(true);
@@ -98,15 +98,12 @@ const SignInForm = () => {
 
   return (
     <>
-    <div className="splash-main bg-gradient-to-b from-white via-blue-100 to-blue-200">
-      <div className='logo-position'> 
-        <img src="/images/logo.png" className='logo-size' alt="로고" /> 
-      </div>
+    <div>
       <div className="sign-in-main">
         <form onSubmit={onSignIn} className="sign-in-main">
-          <div><input id="userId" type="text" placeholder="아이디" required/></div>
-          <div><input id="password" type="password" placeholder="비밀번호" required/></div>
-          <div><button type="submit" title="로그인" value="로그인">로그인</button> </div>
+          <div><input id="userId" type="text" placeholder="아이디" className='sign-in-input' required/></div>
+          <div><input id="password" type="password" placeholder="비밀번호" className='sign-in-input' required/></div>
+          <div><button type="submit" title="로그인" value="로그인" className='sign-in-btn'>로그인</button> </div>
         </form>
           <Link href="/signup"><div className="link-style">회원가입</div></Link>
       </div>

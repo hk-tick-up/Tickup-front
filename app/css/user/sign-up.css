@@ -2,10 +2,12 @@
     font-family: 'Pretendard';
 }
 
+.sign-up-page {
+    padding: 2em 20px 4em;
+}
+
 .signup-root {
     min-height: 100vh;
-    padding: 2em 20px 4em;
-    background-color: #FBFBFB;
 }
 
 .back-btn {
@@ -20,15 +22,14 @@
 
 .signup-form-main {
     max-width: 28rem;
-    margin: 3rem 15px 0;
+    margin: 2.5rem 15px 0;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
 }
 
 .input-group {
     width: 100%;
-    background-color: #FBFBFB ;
 }
 
 .input-title {
@@ -46,7 +47,6 @@ input {
     font-size: 16px;
     outline: none;
     color: #333;
-    background-color: #FBFBFB ;
 }
 
 input::placeholder {
@@ -96,7 +96,7 @@ input::placeholder {
     border-radius: 25px;
     font-size: 16px;
     font-weight: bold;
-    margin-top: 1.5rem;
+    margin-top: 10px;
     cursor: pointer;
     box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5);
 }
@@ -111,3 +111,40 @@ input::placeholder {
     background-color: #1b4a7a;
 }
 
+.custom-position-1 {
+    position: relative;
+    width: 100%;
+}
+
+.custom-position-1 input {
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    outline: none;
+    color: #333;
+}
+
+.custom-position-1 button {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: #24609b;
+    color: white;
+    padding: 6px 12px 5px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.sign-up-btn {
+    margin-left: 10px;
+    font-size: 12px;
+    background-color: #1b4a7a;
+    color: #FBFBFB;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 14px;
+}

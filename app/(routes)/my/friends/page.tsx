@@ -1,8 +1,8 @@
 'use client';
 
-import Find from "@/app/components/friends/find";
-import Friends from "@/app/components/friends/friends";
-import Requests from "@/app/components/friends/requests";
+// import Find from "@/app/components/friends/find";
+// import Friends from "@/app/components/friends/friends";
+// import Requests from "@/app/components/friends/requests";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react"

@@ -3,10 +3,10 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
-import BottomNav from '../../../components/bottomNav';
+import BottomNav from '../../../components/BottomNav';
 import Modal from '../../../components/Modal';
-import '../../../css/WaitingRoom/root.css'
-import '../../../css/WaitingRoom/playWithFreinds.css'
+import '../../../css/waiting-room/root.css';
+import '../../../css/waiting-room/play-with-friends.css';
 import { useSocket } from '@/app/hooks/useSocket';
 
 import * as StompJs from "@stomp/stompjs";
@@ -210,7 +210,7 @@ export default function Component() {
                     <div className='font-design custom-color-gray middle-components-position'>
                         <div className='adjustment-position'>
                             <div className='flex items-center'>
-                                <img src='/images/WaitingRoom/hands.png' className='pr-1 h-6' alt="손" />
+                                <img src='/images/waiting-room/hands.png' className='pr-1 h-6' alt="손" />
                                 <div className='notice-text font-design'>친구와 함께 플레이 해요</div>
                             </div>
                         </div>

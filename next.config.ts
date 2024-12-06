@@ -15,10 +15,10 @@ const nextConfig: NextConfig = {
         source: '/game/together',
         destination: '/select-game-type/play-with-friends',
       },
-      // {
-      //   source: '/game/waiting/:gameRoomCode',
-      //   destination: '/GameWaitingRoom/:gameRoomCode',
-      // },
+      {
+        source: '/game/waiting/:gameRoomId',
+        destination: '/game-waiting-room/:gameRoomId',
+      },
       {
         source: '/game/waiting',
         destination: '/game-waiting-room',
