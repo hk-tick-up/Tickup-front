@@ -1,53 +1,124 @@
 'use client';
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
 import BottomNav from '../../components/BottomNav';
 import '../../css/WaitingRoom/root.css'
 import '../../css/WaitingRoom/selectGame.css';
+import { error } from 'console';
+import * as StompJs from "@stomp/stompjs";
+
+
+// const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:8080/ws';
 
 export default function Component() {
     const [isLoading, setIsLoading] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
+    const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
+    const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
+    
+    useEffect(() => {
+        const token = sessionStorage.getItem('bearer');
+        const userId = sessionStorage.getItem('id');
+        const nickname = sessionStorage.getItem('nickname');
+
+        if(!token || !userId || !nickname ){ 
+            router.push('/signin');
+            throw new Error("로그인이 필요합니다.");
+            // setErrorMessage("로그인이 필요합니다.");
+            // setIsModalOpen(true);
+        }
+
+        setUserInfo({ token, userId, nickname });
+    }, [router]);
     
     const matching = async () => {
         setIsLoading(true);
         router.push('/game/loading');
 
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/random-join`;
+
+        const requestBody = {
+            GameType: "Basic",
+            userRole: "User"
+        };
+
         try {
-            const response = await fetch("http://localhost:8080/api/v1/waiting-room/random-join", {
+            const response = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": userInfo.token.startsWith('Bearer ') ? userInfo.token : `Bearer ${userInfo.token}`
                 },
-                body: JSON.stringify({
-                    "GameType": "Basic",
-                    "userRole": "user",
-                    "is_public": true
-                })
+                credentials: 'include',
+                body: JSON.stringify(requestBody)
             });
 
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
-            console.log(data);
-            
-            if (data.id) {
-                router.push(`/game/room/${data.id}`);
-            } else {
-                throw new Error('Room ID not found in response');
+            const isPublic = data.isPublic
+
+            if (!data || !data.roomId) {
+                throw new Error('방 정보를 받을 수 없습니다.');
             }
+
+            sessionStorage.setItem('currentRoomId', data.roomId.toString());
+            sessionStorage.setItem('isPublic', isPublic);
+
+            const stompClient = new StompJs.Client({
+                //localhost
+                brokerURL: 'ws://localhost:8007/ws'
+                ,connectHeaders: {
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            });
+            
+            stompClient.onConnect = (frame) => {
+                console.log('STOMP 연결 성공:', frame);
+                stompClient.subscribe(`/topic/waiting-room/${data.roomId}`, (message) => {
+                    console.log('메시지 수신:', message.body);
+                });
+    
+                stompClient.publish({
+                    destination: `/app/waiting-room/${data.roomId}/join`,
+                    body: JSON.stringify({ userId: userInfo.userId, nickname: userInfo.nickname })
+                });
+    
+                // 웹소켓 연결 성공 후 페이지 이동
+                router.push(`/game/waiting/${data.roomId}`);
+            };
+            
+            stompClient.onWebSocketError = (error) => {
+                console.error('WebSocket Error:', error);
+                setErrorMessage("웹소켓 연결 중 오류가 발생했습니다.");
+                setIsModalOpen(true);
+            };
+    
+            stompClient.onStompError = (frame) => {
+                console.error('STOMP Error:', frame.headers['message']);
+                console.error('Additional details:', frame.body);
+                setErrorMessage("STOMP 연결 중 오류가 발생했습니다.");
+                setIsModalOpen(true);
+            };
+    
+            stompClient.activate();
+    
         } catch (error) {
-            console.error("Error during matching:", error);
-            alert("매칭 중 오류가 발생했습니다. 다시 시도해 주세요.");
-            router.push('/game');
+            console.error("매칭 중 오류:", error);
+            setErrorMessage("매칭 중 오류가 발생했습니다. 다시 시도해 주세요.");
+            setIsModalOpen(true);
+            router.push("/game");
         } finally {
             setIsLoading(false);
         }
     };
+
     
     return (
         <>

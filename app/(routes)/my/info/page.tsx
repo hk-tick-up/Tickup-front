@@ -19,6 +19,7 @@ export default function MyInfo(){
   const [user, setUser] = useState<User>({id:"",password:"",nickname:"",age:0,gender:"",job:""});
 
   const getUserInfo = () => {
+    //localhost
     axios.get("http://localhost:8000/api/v1/users/userinfo",
       {headers: {Authorization: `Bearer ${sessionStorage.getItem("bearer")}`}}
     ).then(response => {
