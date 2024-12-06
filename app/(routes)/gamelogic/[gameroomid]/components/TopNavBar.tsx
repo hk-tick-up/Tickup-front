@@ -19,7 +19,7 @@ export default function TopNavBar() {
     { href: `/gamelogic/${gameroomid}/myinvest`, label: '내 투자' },
     { href: `/gamelogic/${gameroomid}/stockinfo`, label: '시장' },
     { href: `/gamelogic/${gameroomid}/rank`, label: '랭킹' },
-    { href: `/gamelogic/${gameroomid}/ticki`, label: '티키' },
+    // { href: `/gamelogic/${gameroomid}/ticki`, label: '티키' },
   ];
 
   return (
