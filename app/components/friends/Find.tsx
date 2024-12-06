@@ -8,7 +8,7 @@ type username = {
   status: string;
 }
 
-export default function Find(){
+const Find = () => {
   const [userToFind, setUserToFind] = useState<string>("");
   const [found, setFound] = useState<username>();
   
@@ -55,3 +55,5 @@ export default function Find(){
     </div>
   )
 }
+
+export default Find;

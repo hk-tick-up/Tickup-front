@@ -8,7 +8,7 @@ type friend = {
   nickname: string;
 }
 
-export default function Friends(){
+const Friends = () => {
   // const base_url = "http://localhost:8005/api/v1/users"
   const base_url = "http://back-service:8005/api/v1/users"
   const [friends, setFriends] = useState<Array<friend>>([]);
@@ -44,3 +44,5 @@ export default function Friends(){
     </div>
   )
 }
+
+export default Friends;

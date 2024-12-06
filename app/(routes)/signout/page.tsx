@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react"
 
-export default function SignOut() {
+const SignOut = () => {
   const router = useRouter();
   const isLoggedOut = useRef(false);
 
@@ -36,3 +36,5 @@ export default function SignOut() {
     </div>
   );
 }
+
+export default SignOut;

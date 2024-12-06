@@ -5,8 +5,8 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
-import Modal from '../../components/Modal';
-import '../../css/User/SignIn.css';
+import Modal from '../Modal';
+import '../../css/user/sign-in.css';
 import { jwtDecode } from 'jwt-decode';
 
 interface CustomJwtPayload {
@@ -17,7 +17,7 @@ interface CustomJwtPayload {
   deletionRequested?: boolean; // 추가한 boolean 속성
 }
 
-export default function SignInForm(){
+const SignInForm = () => {
   // const base_url = "http://localhost:8005/api/v1/users"
   const base_url = "http://back-service:8005/api/v1/users"
   const router = useRouter();
@@ -118,3 +118,4 @@ export default function SignInForm(){
   )
 }
 
+export default SignInForm;

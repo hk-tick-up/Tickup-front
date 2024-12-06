@@ -4,7 +4,7 @@ import axios from "axios"
 import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 
-export default function SignUpForm(){
+const SignUpForm = () => {
   // const base_url = "http://localhost:8005/api/v1/users";
   const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
@@ -184,3 +184,5 @@ export default function SignUpForm(){
     </div>
   )
 }
+
+export default SignUpForm;

@@ -1,19 +1,19 @@
-// app/components/bottomNav.tsx
+// app/components/BottomNav.tsx
 
 'use client';
 
-import '../css/Components/bottomNav.css';
+import '../css/components/bottom-nav.css';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Book, Gamepad2, Home, Users, User } from 'lucide-react';
 
-export default function BottomNav() {
+const BottomNav = () => {
     const pathname = usePathname();
 
     const isActive = (path: string) => {
     return pathname === path;
-};
+    };
 
     return (
         <nav className="fixed nav-main">
@@ -66,3 +66,5 @@ export default function BottomNav() {
         </nav>
     );
 }
+
+export default BottomNav;

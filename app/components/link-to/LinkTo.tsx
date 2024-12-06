@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 
-export default function LinkTo({href, innerContents}:{href:string, innerContents:ReactNode}){
+const LinkTo = ({href, innerContents}:{href:string, innerContents:ReactNode}) => {
   return (
     <Link href={href} className="w-full">
       <div className="bg-[#EEF2F5] rounded-[15px] px-[15px] py-[10px]">
@@ -10,6 +10,8 @@ export default function LinkTo({href, innerContents}:{href:string, innerContents
     </Link>
   )
 }
+
+export default LinkTo;
 
 // 사용 예시
 /*

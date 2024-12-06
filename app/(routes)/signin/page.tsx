@@ -1,12 +1,14 @@
 'use client';
 
-import SignInForm from '@/app/components/signin/signinform';
+import SignInForm from '@/app/components/sign-in/SignInForm';
 import { Suspense } from 'react';
 
-export default function SignInPage() {
+const SignInPage = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <SignInForm/>
     </Suspense>
   );
 }
+
+export default SignInPage;

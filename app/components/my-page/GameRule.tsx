@@ -1,6 +1,6 @@
-import LinkToBracket from "../linkTo/linkToBracket";
+import LinkToBracket from "../link-to/LinkToBracket";
 
-export default function GameRules() {
+const GameRules = () => {
   return (<>
     <LinkToBracket href="/" innerContents={
         <div className="flex items-center">
@@ -11,3 +11,5 @@ export default function GameRules() {
     </>
   )
 }
+
+export default GameRules;

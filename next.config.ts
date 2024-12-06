@@ -5,23 +5,23 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/game',
-        destination: '/SelectGameType',
+        destination: '/select-game-type',
       },
       {
         source: '/game/loading',
-        destination: '/SelectGameType/LoadingPage',
+        destination: '/select-game-type/loading-page',
       },
       {
         source: '/game/together',
-        destination: '/SelectGameType/PlayWithFriends',
+        destination: '/select-game-type/play-with-friends',
       },
-      {
-        source: '/game/waiting/:gameRoomCode',
-        destination: '/GameWaitingRoom/:gameRoomCode',
-      },
+      // {
+      //   source: '/game/waiting/:gameRoomCode',
+      //   destination: '/GameWaitingRoom/:gameRoomCode',
+      // },
       {
         source: '/game/waiting',
-        destination: '/GameWaitingRoom',
+        destination: '/game-waiting-room',
       }
     ];
   },

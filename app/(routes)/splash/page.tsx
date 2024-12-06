@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+// import { useEffect } from 'react'
+// import { useRouter } from 'next/navigation'
 import '../../css/main.css'
 
 // import { Logo } from '@/components/logo'
 // import { motion } from 'framer-motion'
 
-export default function SplashPage() {
+const SplashPage = () => {
     // const router = useRouter()
 
     // useEffect(() => {
@@ -36,3 +36,4 @@ export default function SplashPage() {
     )
 }
 
+export default SplashPage;

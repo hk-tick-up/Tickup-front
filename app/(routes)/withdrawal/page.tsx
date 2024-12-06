@@ -4,7 +4,7 @@ import axios from "axios"
 import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
 
-export default function Withdrawal(){
+const Withdrawal = () => {
   // const base_url = "http://localhost:8005/api/v1/users";
   const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
@@ -39,3 +39,5 @@ export default function Withdrawal(){
     </div>
   )
 }
+
+export default Withdrawal;

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import LinkTo from "./linkTo";
+import LinkTo from "./LinkTo";
 
-export default function LinkToBracket({href, innerContents}:{href:string, innerContents:ReactNode}){
+const LinkToBracket = ({href, innerContents}:{href:string, innerContents:ReactNode}) => {
   return (
     <LinkTo href={href} innerContents={
       <div className="flex justify-between items-center">
@@ -12,3 +12,5 @@ export default function LinkToBracket({href, innerContents}:{href:string, innerC
 
   )
 }
+
+export default LinkToBracket;

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import BottomNav from './components/BottomNav'
 import FooterBlock from './components/FooterBlock'
-import FooterBlock_v2 from './components/FooterBlock_v2'
+import FooterBlock_v2 from './components/FooterBlockV2'
 import axios from "axios";
 import './css/main.css'
 
@@ -116,4 +116,3 @@ export default function HomePage() {
     </>
   )
 }
-
