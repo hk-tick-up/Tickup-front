@@ -10,6 +10,7 @@
     font-weight: 600;
     font-size: 20px;
     padding: 0 0 10px 5px;
+    text-align: left;
 }
 
 .font-custom-2 {
@@ -29,6 +30,7 @@
 .content-position-1 {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 .content-position-2 {
@@ -38,7 +40,9 @@
 
 .content-position-3 {
     display: flex;
-    gap: 5px;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px 0 8px 0;
 }
 
 .icon-position-1 {
@@ -74,8 +78,6 @@ section {
     background-color: #F8FBFD;
     border-radius: 14px;
     padding: 1em 0;
-    /* background-color: red; */
-    
     gap: 25px;
 }
 

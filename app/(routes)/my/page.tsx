@@ -48,7 +48,10 @@ export default function My () {
     // </div>
     <>
       <div className="my-page-root">
-        <div className="font-custom-1 ">마이 페이지</div>
+        <div className="content-position-1" >
+          <div className="font-custom-1 ">마이 페이지</div>
+          <div className=""><Link href="/signout"><p className="logout-custom mr-2">로그아웃</p></Link></div>
+        </div>
         <div className="my-page-box-1 "> 
           <div className="content-position-1 items-center">
             <div className="content-position-2">
@@ -61,10 +64,9 @@ export default function My () {
           </div>
         </div>
           <div>
-            <div className="main-content-position-1">
-              <div className="content-position-3">
+            <div className="content-position-3">
+              <div>
                 <div className="font-custom-2">{nickname} 님 환영합니다!</div>
-                <div className=""><Link href="/signout"><p className="logout-custom">out</p></Link></div>
               </div>
               <div>누적 포인트 <span className="point-font-custom">20P</span></div>
               <div className="profile-img-position"><Image src='/images/linkTo/ghost.png' alt="유령" width={200} height={200} /></div>
