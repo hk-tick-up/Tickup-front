@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useEffect, useState } from "react"
 
 export default function WithdrawalStatus(){
+  // const base_url = "http://localhost:8005/api/v1/users";
+  const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
   const [requestedAt, setRequestedAt] = useState<Date | null>(null); // Date 객체로 저장
   const [deleteAt, setDeleteAt] = useState<Date | null>(null); // Date 객체로 저장
 
   useEffect(()=>{
-    axios.get("http://localhost:8005/api/v1/users/withdrawal",{headers:{Authorization:`Bearer ${sessionStorage.getItem("bearer")}`}})
+    axios.get(`${base_url}/withdrawal`,{headers:{Authorization:`Bearer ${sessionStorage.getItem("bearer")}`}})
     .then(response => {
       console.log(response.data);
       setRequestedAt(new Date(response.data));
@@ -40,7 +42,7 @@ export default function WithdrawalStatus(){
 
   const cancelWithdrawal = (e:BaseSyntheticEvent) => {
     e.preventDefault();
-    axios.put("http://localhost:8005/api/v1/users/withdrawal",{},{headers:{Authorization: `Bearer ${sessionStorage.getItem("bearer")}`}})
+    axios.put(`${base_url}/withdrawal`,{},{headers:{Authorization: `Bearer ${sessionStorage.getItem("bearer")}`}})
     .then(response => {
       console.log(response.data);
       alert(response.data);

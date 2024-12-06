@@ -6,6 +6,8 @@ import LinkToBracket from "../linkTo/linkToBracket";
 import axios from "axios";
 
 export default function Profile(){
+  // const base_url = "http://localhost:8005/api/v1/users"
+  const base_url = "http://back-service:8005/api/v1/users"
   const tempProfileImage = "/images/linkTo/ghost.png";
   const gameIcon = "/images/linkTo/game.png";
   const friendIcon = "/images/linkTo/friend.png";
@@ -16,7 +18,7 @@ export default function Profile(){
   useEffect(()=>{
     setNickname(sessionStorage.getItem("nickname"));
 
-    axios.get("http://localhost:8005/api/v1/users/point", {
+    axios.get(`${base_url}/point`, {
       headers: {
         "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
       }

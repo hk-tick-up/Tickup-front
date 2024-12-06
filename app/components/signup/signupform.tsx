@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 
 export default function SignUpForm(){
+  // const base_url = "http://localhost:8005/api/v1/users";
+  const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -46,7 +48,7 @@ export default function SignUpForm(){
     };
     console.log(data);
 
-    axios.post("http://localhost:8005/api/v1/users/sign-up", data)
+    axios.post(`${base_url}/sign-up`, data)
     .then(response => {
       console.log(response.data);
       // Info: Account Created at 2024-11-20T11:21:39.368112
@@ -100,7 +102,7 @@ export default function SignUpForm(){
     const data = {
       userId: input.value
     }
-    axios.post("http://localhost:8005/api/v1/users/duplicateid",data)
+    axios.post(`${base_url}/duplicateid`,data)
     .then(response => {
       setIsIdDuplicated(response.data);
       console.log(response.data);
@@ -120,7 +122,7 @@ export default function SignUpForm(){
     const data = {
       nickname: input.value
     }
-    axios.post("http://localhost:8005/api/v1/users/duplicatenickname",data)
+    axios.post(`${base_url}/duplicatenickname`,data)
     .then(response => {
       setIsNicknameDuplicated(response.data);
       console.log(response.data);

@@ -18,6 +18,8 @@ interface CustomJwtPayload {
 }
 
 export default function SignInForm(){
+  // const base_url = "http://localhost:8005/api/v1/users"
+  const base_url = "http://back-service:8005/api/v1/users"
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +35,7 @@ export default function SignInForm(){
       "password": formElement.password.value
     };
 
-    axios.post("http://localhost:8005/api/v1/users/sign-in", data, {
+    axios.post(`${base_url}/sign-in`, data, {
       headers: {
           "Content-Type": "application/json",
       },
@@ -47,7 +49,7 @@ export default function SignInForm(){
       setIsModalOpen(true);
       
       // 세션에 id, nickname 저장: 다시 axios, id nickname 불러와 세션스토리지에 저장하기
-      axios.get("http://localhost:8005/api/v1/users/self", {
+      axios.get(`${base_url}/self`, {
         headers: {
           "Authorization": `Bearer ${response.data}`
         }

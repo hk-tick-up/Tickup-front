@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
 
 export default function Withdrawal(){
+  // const base_url = "http://localhost:8005/api/v1/users";
+  const base_url = "http://back-service:8005/api/v1/users";
   const router = useRouter();
 
   const requestMembershipWithdrawal = () => {
-    axios.delete("http://localhost:8005/api/v1/users/withdrawal",{
+    axios.delete(`${base_url}/withdrawal`,{
       headers:{
         Authorization:`Bearer ${sessionStorage.getItem("bearer")}`
       }
