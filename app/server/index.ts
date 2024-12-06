@@ -1,32 +1,35 @@
 import express from 'express';
-import { createServer } from 'http';
-// import { Server } from 'socket.io';
+import http from 'http';
+import { Server } from 'socket.io';
 import cors from 'cors';
 
 const app = express();
-const httpServer = createServer(app);
-
-// CORS 미들웨어 설정
-app.use(cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000", // 클라이언트 주소
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
     methods: ["GET", "POST"],
-    credentials: true
-}));
+  }
+});
 
-// Socket.IO 서버 설정
-// const io = new Server(httpServer, {
-//     cors: {
-//         origin: process.env.CLIENT_URL || "http://localhost:3000", // 클라이언트 주소
-//         methods: ["GET", "POST"],
-//         credentials: true
-//     },
-//     transports: ['websocket', 'polling'] // 웹소켓을 우선적으로 사용
-// });
+app.use(cors());
 
-// ... Socket.IO 이벤트 핸들러 ...
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
 
-const PORT = process.env.PORT || 3007;
-httpServer.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  socket.on('joinRoom', ({ gameRoomCode, user }) => {
+    console.log(`User ${user.nickname} joined room ${gameRoomCode}`);
+    socket.join(gameRoomCode);
+    io.to(gameRoomCode).emit('userJoined', user);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('User disconnected:', socket.id);
+  });
+});
+
+const PORT = process.env.PORT || 8007;
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
