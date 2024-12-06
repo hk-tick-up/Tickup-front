@@ -6,6 +6,8 @@ import LinkToBracket from "../linkTo/linkToBracket";
 import axios from "axios";
 
 export default function Profile(){
+  // const base_url = "http://localhost:8005/api/v1/users"
+  const base_url = "http://back-service:8005/api/v1/users"
   const tempProfileImage = "/images/linkTo/ghost.png";
   const gameIcon = "/images/linkTo/game.png";
   const friendIcon = "/images/linkTo/friend.png";
@@ -16,14 +18,13 @@ export default function Profile(){
   useEffect(()=>{
     setNickname(sessionStorage.getItem("nickname"));
 
-    //localhost
-    axios.get("http://localhost:8005/api/v1/users/point", {
+    axios.get(`${base_url}/point`, {
       headers: {
         "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
       }
     })
     .then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       setPoint(res.data);
     })
     .catch(error => {
@@ -50,7 +51,7 @@ export default function Profile(){
             <p className="font-bold">게임 전적 확인하기</p>
           </div>
         </>}/>
-        <LinkTo href="/" innerContents={<>
+        <LinkTo href="/my/friends" innerContents={<>
           <div className="w-full h-[120px] flex flex-col items-center justify-center">
             <img className="w-15 h-15 mb-5" src={friendIcon} alt="icon"/>
             <p className="font-bold">친구 목록 관리하기</p>
