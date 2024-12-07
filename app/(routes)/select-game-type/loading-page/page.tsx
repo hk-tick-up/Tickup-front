@@ -1,6 +1,6 @@
 import React from 'react'
-import '../../../css/waiting-room/root.css'
-import '../../../css/waiting-room/loading.css'
+import '@/app/css/waiting-room/root.css'
+import '@/app/css/waiting-room/loading.css'
 
 export default function Component() {
     return (

@@ -4,11 +4,11 @@ import axios from "axios"
 import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { ArrowLeft } from 'lucide-react';
-import '../../css/user/sign-up.css';
+import '@/app/css/user/sign-up.css';
+import { BACKEND_URL } from "@/constants/backend-url";
 
 const SignUpForm = () => {
-  const base_url = "http://localhost:8005/api/v1/users";
-  // const base_url = "http://back-service:8005/api/v1/users";
+  const base_url = `${BACKEND_URL}/api/v1/users`;
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -98,7 +98,9 @@ const SignUpForm = () => {
 
   const checkDuplicatedId = (e:BaseSyntheticEvent) => {
     e.preventDefault();
-    const input:HTMLInputElement = e.target.parentElement.children[1];
+    // const parent:HTMLDivElement = e.target.parentElement;
+    // const firstchild = parent.firstChild;
+    const input:HTMLInputElement = e.target.parentElement.children[0];
     console.log(e.target.parentElement.userId);
 
     const data = {
@@ -109,9 +111,9 @@ const SignUpForm = () => {
       setIsIdDuplicated(response.data);
       console.log(response.data);
       if(response.data)
-        alert("This ID already exists.");
+        alert(`${input.value}: This ID already exists.`);
       else
-        alert("You can use this ID.");
+        alert(`${input.value}: You can use this ID.`);
     })
     .catch(error => {
       console.error(error);
@@ -119,7 +121,7 @@ const SignUpForm = () => {
   }
   const checkDuplicatedNickname = (e:BaseSyntheticEvent) => {
     e.preventDefault();
-    const input:HTMLInputElement = e.target.parentElement.children[1];
+    const input:HTMLInputElement = e.target.parentElement.children[0];
 
     const data = {
       nickname: input.value

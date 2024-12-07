@@ -2,7 +2,7 @@
 
 import SignInForm from '@/app/components/sign-in/SignInForm';
 import { Suspense } from 'react';
-import '../../css/user/sign-in.css'
+import '@/app/css/user/sign-in.css'
 
 const SignInPage = () => {
   return (

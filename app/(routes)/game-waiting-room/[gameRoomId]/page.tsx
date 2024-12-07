@@ -3,15 +3,15 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useWebSocket } from '@/app/hooks/useSocket';
 import { useParams, useRouter } from 'next/navigation';
-import Link from "next/link";
-import io, { Socket } from 'socket.io-client';
-import '../../../css/waiting-room/root.css'
-import '../../../css/waiting-room/game-waiting-room.css'
+// import Link from "next/link";
+// import io, { Socket } from 'socket.io-client';
+import '@/app/css/waiting-room/root.css'
+import '@/app/css/waiting-room/game-waiting-room.css'
 import Modal from '../../../components/Modal'
 
 import * as StompJs from "@stomp/stompjs";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:8007/ws';
+// const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:8007/ws';
 
 interface User {
     id: string;
@@ -30,7 +30,8 @@ export default function WaitingRoom() {
     const params = useParams();
     const gameRoomId = params.gameRoomId as string;
 
-    const { socket, isConnected } = useWebSocket(gameRoomId);
+    // const { socket, isConnected } = useWebSocket(gameRoomId);
+    const { socket } = useWebSocket(gameRoomId);
 
     useEffect(() => {
         const userId = sessionStorage.getItem('id');
@@ -129,7 +130,8 @@ export default function WaitingRoom() {
             });
     
             await new Promise((resolve, reject) => {
-                stompClient.onConnect = (frame) => {
+                // stompClient.onConnect = (frame) => {
+                stompClient.onConnect = () => {
                     console.log('Connected to WebSocket for leaving room');
                     
                     // 방 나가기 메시지 전송

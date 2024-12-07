@@ -1,5 +1,8 @@
 'use client';
 
+import Find from "@/app/components/friends/Find";
+import Friends from "@/app/components/friends/Friends";
+import Requests from "@/app/components/friends/Requests";
 // import Find from "@/app/components/friends/find";
 // import Friends from "@/app/components/friends/friends";
 // import Requests from "@/app/components/friends/requests";

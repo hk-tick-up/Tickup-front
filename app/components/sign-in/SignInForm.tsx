@@ -6,8 +6,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent } from "react";
 import Modal from '../Modal';
-import '../../css/user/sign-in.css';
+import '@/app/css/user/sign-in.css';
 import { jwtDecode } from 'jwt-decode';
+import { BACKEND_URL } from '@/constants/backend-url';
 
 interface CustomJwtPayload {
   sub: string; // 사용자 ID 등 토큰의 subject
@@ -18,8 +19,7 @@ interface CustomJwtPayload {
 }
 
 const SignInForm = () => {
-  const base_url = "http://localhost:8005/api/v1/users"
-  // const base_url = "http://back-service:8005/api/v1/users"
+  const base_url = `${BACKEND_URL}/api/v1/users`;
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
