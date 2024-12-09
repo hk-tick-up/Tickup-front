@@ -6,7 +6,7 @@ const LinkToBracket = ({href, innerContents}:{href:string, innerContents:ReactNo
     <LinkTo href={href} innerContents={
       <div className="flex justify-between items-center">
         {innerContents}
-        <img className="w-2 h-3" src="/images/linkTo/rightAngleBracket.png" alt="bracket"/>
+        <img className="w-2 h-3" src="/images/link-to/rightAngleBracket.png" alt="bracket"/>
       </div>
     }/>
 

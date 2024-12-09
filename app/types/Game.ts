@@ -11,6 +11,5 @@ export type GameType = 'Basic' | 'Contest'
 export interface WaitingRoom {
     id: string;
     gameType: GameType;
-    isPublic: boolean;
     users: User[];
 }

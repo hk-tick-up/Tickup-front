@@ -52,7 +52,7 @@ export default function My () {
         <div className="my-page-box-1 "> 
           <div className="content-position-1 items-center">
             <div className="content-position-2">
-              <p className="icon-position-2"><Image src='/images/linkTo/bulb.png' alt="전구" width={11} height={11} /></p>
+              <p className="icon-position-2"><Image src='/images/link-to/bulb.png' alt="전구" width={11} height={11} /></p>
               <p>게임 규칙 설명서</p>
             </div>
             <div className="icon-position-1">
@@ -66,7 +66,7 @@ export default function My () {
                 <div className="font-custom-2">{nickname} 님 환영합니다!</div>
               </div>
               <div>누적 포인트 <span className="point-font-custom">20P</span></div>
-              <div className="profile-img-position"><Image src='/images/linkTo/ghost.png' alt="유령" width={200} height={200} /></div>
+              <div className="profile-img-position"><Image src='/images/link-to/ghost.png' alt="유령" width={200} height={200} /></div>
             </div>
             <section>
               <div className="section-btn">

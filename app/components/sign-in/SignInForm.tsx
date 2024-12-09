@@ -8,7 +8,7 @@ import { BaseSyntheticEvent } from "react";
 import Modal from '../Modal';
 import '@/app/css/user/sign-in.css';
 import { jwtDecode } from 'jwt-decode';
-import { BACKEND_URL } from '@/constants/backend-url';
+// import { BACKEND_URL } from '@/constants/backend-url';
 
 interface CustomJwtPayload {
   sub: string; // 사용자 ID 등 토큰의 subject
@@ -18,8 +18,10 @@ interface CustomJwtPayload {
   deletionRequested?: boolean; // 추가한 boolean 속성
 }
 
+const BACKEND_USER_URL=process.env.NEXT_PUBLIC_BACKEND_USER_URL;
+
 const SignInForm = () => {
-  const base_url = `${BACKEND_URL}/api/v1/users`;
+  // const base_url = `${BACKEND_URL}/api/v1/users`;
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +37,7 @@ const SignInForm = () => {
       "password": formElement.password.value
     };
 
-    axios.post(`${base_url}/sign-in`, data, {
+    axios.post(`${BACKEND_USER_URL}/sign-in`, data, {
       headers: {
           "Content-Type": "application/json",
       },
@@ -49,7 +51,7 @@ const SignInForm = () => {
       setIsModalOpen(true);
       
       // 세션에 id, nickname 저장: 다시 axios, id nickname 불러와 세션스토리지에 저장하기
-      axios.get(`${base_url}/self`, {
+      axios.get(`${BACKEND_USER_URL}/self`, {
         headers: {
           "Authorization": `Bearer ${response.data}`
         }

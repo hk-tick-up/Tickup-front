@@ -5,10 +5,12 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { BaseSyntheticEvent, useEffect, useState } from "react";
 import { ArrowLeft } from 'lucide-react';
 import '@/app/css/user/sign-up.css';
-import { BACKEND_URL } from "@/constants/backend-url";
+// import { BACKEND_URL } from "@/constants/backend-url";
 
 const SignUpForm = () => {
-  const base_url = `${BACKEND_URL}/api/v1/users`;
+  //localhost
+  // const base_url = `${BACKEND_URL}/api/v1/users`;
+  const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL;
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -50,7 +52,7 @@ const SignUpForm = () => {
     };
     console.log(data);
 
-    axios.post(`${base_url}/sign-up`, data)
+    axios.post(`${BACKEND_USER_URL}/sign-up`, data)
     .then(response => {
       console.log(response.data);
       // Info: Account Created at 2024-11-20T11:21:39.368112
@@ -106,7 +108,7 @@ const SignUpForm = () => {
     const data = {
       userId: input.value
     }
-    axios.post(`${base_url}/duplicateid`,data)
+    axios.post(`${BACKEND_USER_URL}/duplicateid`,data)
     .then(response => {
       setIsIdDuplicated(response.data);
       console.log(response.data);
@@ -126,7 +128,7 @@ const SignUpForm = () => {
     const data = {
       nickname: input.value
     }
-    axios.post(`${base_url}/duplicatenickname`,data)
+    axios.post(`${BACKEND_USER_URL}/duplicatenickname`,data)
     .then(response => {
       setIsNicknameDuplicated(response.data);
       console.log(response.data);

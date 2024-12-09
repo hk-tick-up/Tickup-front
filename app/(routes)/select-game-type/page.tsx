@@ -9,16 +9,15 @@ import '@/app/css//waiting-room/select-game.css';
 // import { error } from 'console';
 import * as StompJs from "@stomp/stompjs";
 
-
-// const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:8080/ws';
-
 export default function Component() {
     const [isLoading, setIsLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
-    // const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
+    //localhost
+    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_SOCKET_URL
+
     
     useEffect(() => {
         // isModalOpen, errorMessage 값 변화 시
@@ -42,7 +41,7 @@ export default function Component() {
     const matching = async () => {
         setIsLoading(true);
         router.push('/game/loading');
-
+        //localhost
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/random-join`;
 
         const requestBody = {
@@ -77,7 +76,7 @@ export default function Component() {
 
             const stompClient = new StompJs.Client({
                 //localhost
-                brokerURL: 'ws://localhost:8007/ws'
+                brokerURL: NEXT_PUBLIC_SOCKET_URL
                 ,connectHeaders: {
                     Authorization: `Bearer ${userInfo.token}`
                 }

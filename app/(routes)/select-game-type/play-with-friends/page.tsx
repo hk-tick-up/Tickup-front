@@ -10,7 +10,6 @@ import '@/app/css/waiting-room/play-with-friends.css';
 // import { useSocket } from '@/app/hooks/useSocket';
 
 import * as StompJs from "@stomp/stompjs";
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8007';
 
 
 export default function Component() {
@@ -19,6 +18,8 @@ export default function Component() {
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
     const [gameRoomCode, setGameRoomCode] = useState("");
+    //localhost
+    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_SOCKET_URL;
     
     useEffect(() => {
         const token = sessionStorage.getItem('bearer');
@@ -36,6 +37,7 @@ export default function Component() {
 
     const createRoom = async () => {
         try {
+            //localhost
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/create-private`;
             
             const requestBody = {
@@ -80,7 +82,7 @@ export default function Component() {
 
             const stompClient = new StompJs.Client({
                 //localhost
-                brokerURL: "ws://localhost:8007/ws",
+                brokerURL: NEXT_PUBLIC_SOCKET_URL,
                 connectHeaders: {
                     Authorization: `Bearer ${userInfo.token}`
                 }
@@ -120,6 +122,7 @@ export default function Component() {
         }
     
         try {
+            //localhost
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/join/${gameRoomCode}`, {
                 method: 'POST',
                 headers: {
@@ -141,7 +144,8 @@ export default function Component() {
     
                 const stompClient = new StompJs.Client({
                 //localhost
-                brokerURL: "ws://localhost:8007/ws",
+
+                brokerURL: NEXT_PUBLIC_SOCKET_URL,
                 connectHeaders: {
                     Authorization: `Bearer ${userInfo.token}`
                 },
