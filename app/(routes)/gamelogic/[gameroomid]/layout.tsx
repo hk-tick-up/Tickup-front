@@ -4,6 +4,7 @@ import React from 'react';
 import TopNavBar from './components/TopNavBar';
 import GameProgressBar from './components/GameProgressBar';
 import { WebSocketProvider } from './context/WebSocketContext';
+import { StockProvider } from './context/StockContext'; // StockProvider 추가
 import './css/layout.css';
 
 export default function GameLogicLayout({
@@ -17,19 +18,21 @@ export default function GameLogicLayout({
 
     return (
         <WebSocketProvider>
-            <div className="screen">
-                <div className="header">
-                    <GameProgressBar initialTurn={initialTurn} />
-                    <TopNavBar />
+            <StockProvider> {/* StockProvider 추가 */}
+                <div className="screen">
+                    <div className="header">
+                        <GameProgressBar initialTurn={initialTurn} />
+                        <TopNavBar />
+                    </div>
+
+                    <div className="space-between" />
+
+                    <main className="main-container">
+                        {/* 본문 내용 */}
+                        {children}
+                    </main>
                 </div>
-
-                <div className="space-between" />
-
-                <main className="main-container">
-                    {/* 본문 내용 */}
-                    {children}
-                </main>
-            </div>
+            </StockProvider>
         </WebSocketProvider>
     );
 }
