@@ -1,9 +1,5 @@
 'use client';
 
-// import BottomNav from "@/app/components/bottomNav";
-// import LinkTo from "@/app/components/linkTo/linkTo";
-// import GameRules from "@/app/components/myPage/gameRule";
-// import Profile from "@/app/components/myPage/profile";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from 'next/image'
@@ -73,13 +69,13 @@ export default function My () {
             </div>
             <section>
               <div className="section-btn">
-                <div> <Image src='/images/linkTo/game.png' alt="게임기" width={70} height={70} /></div>
-                <div>
+                <div> <Image src='/images/link-to/game.png' alt="게임기" width={70} height={70} /></div>
+                <div className="mt-2">
                   게임 전적 확인하기
                 </div>
               </div>
               <div className="section-btn">
-                <div><Image src='/images/linkTo/friend.png' alt="그룹" width={70} height={70} /></div>
+                <div><Image src='/images/link-to/friend.png' alt="그룹" width={60} height={60} /></div>
                 <div> 친구 목록 관리하기</div>
               </div>
             </section>
