@@ -17,7 +17,27 @@
     color: #333;
     margin-top: 20px;
     padding: 0 0 0 8px;
-    
+}
+
+.text-custom {
+    position: relative;
+    display: inline-block;
+}
+
+.text-custom:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: #333;
+    transition: transform 250ms ease-in-out;
+}
+
+.text-custom:hover:after {
+    transform: scaleX(1);
 }
 
 .signup-form-main {
@@ -108,7 +128,7 @@ input::placeholder {
 }
 
 .submit-button:hover {
-    background-color: #1b4a7a;
+    background-color: #1e5287;
 }
 
 .custom-position-1 {
@@ -147,4 +167,10 @@ input::placeholder {
     cursor: pointer;
     padding: 5px;
     border-radius: 14px;
+    box-shadow: -1px 3px 5px 1px rgba(183,183,183,0.5);
+}
+
+.sign-up-btn:hover {
+    box-shadow: none;
+    background-color: #1e5287;
 }

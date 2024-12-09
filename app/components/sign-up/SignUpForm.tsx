@@ -146,7 +146,7 @@ const SignUpForm = () => {
         <div>
           <button onClick={() => router.back()} className="back-btn">
             <ArrowLeft className="w-5 h-5 mr-1" />
-            <p className="pt-1">뒤로가기</p>
+            <p className="text-custom">뒤로가기</p>
           </button>
         </div>
         <form className="signup-form-main" onSubmit={onSignUp}>
