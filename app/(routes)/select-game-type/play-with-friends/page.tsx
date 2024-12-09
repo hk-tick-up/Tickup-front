@@ -39,7 +39,7 @@ export default function Component() {
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/create-private`;
             
             const requestBody = {
-                GameType: "Basic",
+                GameType: "Private",
                 userRole: "User"
             };
     
@@ -71,11 +71,11 @@ export default function Component() {
 
             const roomId = data.id;
             const roomCode = data.gameRoomCode;
-            const isPublic = data.isPublic;
+            const gameType = data.gameType;
 
             sessionStorage.setItem('currentRoomId', roomId);
             sessionStorage.setItem('gameRoomCode', roomCode);
-            sessionStorage.setItem('isPublic', isPublic);
+            sessionStorage.setItem('gameType', gameType);
             sessionStorage.setItem('isHost', 'true');
 
             const stompClient = new StompJs.Client({

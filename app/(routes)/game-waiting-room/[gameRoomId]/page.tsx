@@ -24,7 +24,7 @@ export default function WaitingRoom() {
     const [users, setUsers] = useState<User[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
-    const [isPublic, setIsPublic] = useState<boolean>(false);
+    const [gameType, setGameType] = useState<'Basic' | 'Private' | 'Contest'>('Basic');
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
     const params = useParams();
@@ -38,7 +38,7 @@ export default function WaitingRoom() {
         const nickname = sessionStorage.getItem('nickname');
         const token = sessionStorage.getItem('bearer');
         const code = sessionStorage.getItem('gameRoomCode');
-        const publicRoom = sessionStorage.getItem('isPublic');
+        const storedgameType = sessionStorage.getItem('gameType');
         
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
@@ -46,14 +46,15 @@ export default function WaitingRoom() {
             return;
         }
 
-        const isPublicBool = publicRoom === 'true';
-        setIsPublic(isPublicBool);
-        if(isPublicBool) {
-            setGameRoomCode(" ");
-        } else {
-            if(code) {
-                setGameRoomCode(code);
-            }
+        if(storedgameType === 'Basic') {
+            setGameType('Basic');
+            setGameRoomCode("");
+        } else if(storedgameType === 'Contest') {
+            setGameType('Contest');
+            setGameRoomCode("");
+        }else {
+            setGameType('Private');
+            setGameRoomCode(code);
         }
     
         const initialUser: User = {
@@ -188,13 +189,7 @@ export default function WaitingRoom() {
                 </button>
             </div>
             <div className="room-code">
-            {isPublic ? (
-                // 공개방일 때
-                <span className="font-[Freesentation-9Black]">
-                    No.{gameRoomId}
-                </span>
-            ) : (
-                // 비공개방일 때
+            {gameType === 'Private' ?  (
                 gameRoomCode && (
                     <>
                         <span className="font-[Freesentation-9Black]">
@@ -209,7 +204,12 @@ export default function WaitingRoom() {
                         </button>
                     </>
                 )
-            )}
+            ) : (
+                <span className="font-[Freesentation-9Black]">
+                    No.{gameRoomId}
+                </span>
+            )
+        }
         </div>
             <div className="user-list-container mx-auto">
                 <ul>
