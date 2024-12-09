@@ -2,7 +2,7 @@
 
 // import { useEffect } from 'react'
 // import { useRouter } from 'next/navigation'
-import '../../css/main.css'
+import '@/app/css/main.css'
 
 // import { Logo } from '@/components/logo'
 // import { motion } from 'framer-motion'

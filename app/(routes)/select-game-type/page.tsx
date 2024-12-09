@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
 import BottomNav from '../../components/BottomNav';
-import '../../css/waiting-room/root.css'
-import '../../css//waiting-room/select-game.css';
-import { error } from 'console';
+import '@/app/css/waiting-room/root.css'
+import '@/app/css//waiting-room/select-game.css';
+// import { error } from 'console';
 import * as StompJs from "@stomp/stompjs";
 
 
@@ -18,8 +18,12 @@ export default function Component() {
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
-    const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
+    // const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
     
+    useEffect(() => {
+        // isModalOpen, errorMessage 값 변화 시
+    },[isModalOpen, errorMessage]);
+
     useEffect(() => {
         const token = sessionStorage.getItem('bearer');
         const userId = sessionStorage.getItem('id');

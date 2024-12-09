@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from "next/link";
 import BottomNav from '../../../components/BottomNav';
 import Modal from '../../../components/Modal';
-import '../../../css/waiting-room/root.css';
-import '../../../css/waiting-room/play-with-friends.css';
-import { useSocket } from '@/app/hooks/useSocket';
+import '@/app/css/waiting-room/root.css';
+import '@/app/css/waiting-room/play-with-friends.css';
+// import { useSocket } from '@/app/hooks/useSocket';
 
 import * as StompJs from "@stomp/stompjs";
 // const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8007';

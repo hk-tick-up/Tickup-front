@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import LinkTo from "../link-to/LinkTo";
 import LinkToBracket from "../link-to/LinkToBracket";
 import axios from "axios";
-import '../../css/user/my-page.css'
+import '@/app/css/user/my-page.css'
+import { BACKEND_URL } from "@/constants/backend-url";
 
 const Profile = () => {
-  const base_url = "http://localhost:8005/api/v1/users"
-  // const base_url = "http://back-service:8005/api/v1/users"
+  const base_url = `${BACKEND_URL}/api/v1/users`;
   const tempProfileImage = "/images/linkTo/ghost.png";
   const gameIcon = "/images/linkTo/game.png";
   const friendIcon = "/images/linkTo/friend.png";

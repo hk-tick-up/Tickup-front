@@ -1,4 +1,5 @@
 'use client';
+import { BACKEND_URL } from "@/constants/backend-url";
 import axios from "axios";
 import { BaseSyntheticEvent, KeyboardEvent, useState } from 'react';
 
@@ -12,8 +13,7 @@ const Find = () => {
   const [userToFind, setUserToFind] = useState<string>("");
   const [found, setFound] = useState<username>();
   
-  const base_url = "http://localhost:8005/api/v1/users"
-  // const base_url = "http://back-service:8005/api/v1/users"
+  const base_url = `${BACKEND_URL}/api/v1/users`;
 
   const setKeyword = (e:BaseSyntheticEvent) => {
     setUserToFind(e.target.value);

@@ -7,9 +7,11 @@ import BottomNav from './components/BottomNav'
 import FooterBlock from './components/FooterBlock'
 import FooterBlock_v2 from './components/FooterBlockV2'
 import axios from "axios";
-import './css/main.css'
+import '@/app/css/main.css'
+import { BACKEND_URL } from "@/constants/backend-url";
 
 export default function HomePage() {
+  const base_url = `${BACKEND_URL}/api/v1/users`;
   const [nickname, setNickname] = useState<string | null>("");
   const [point, setPoint] = useState<number>(0);
 
@@ -17,7 +19,8 @@ export default function HomePage() {
     setNickname(sessionStorage.getItem("nickname"));
 
     //localhost
-    axios.get("http://localhost:8005/api/v1/users/point", {
+    // axios.get("http://localhost:8005/api/v1/users/point", {
+    axios.get(`${base_url}/point`, {
       headers: {
         "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
       }
