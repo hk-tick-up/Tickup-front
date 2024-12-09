@@ -8,6 +8,7 @@ import '../../css/User/my-page.css';
 import '../../css/main.css'
 import FooterBlock from '../../components/FooterBlock'
 import BottomNav from '../../components/BottomNav'
+import { LogOut } from 'lucide-react';
 
 export default function My () {
   const router = useRouter();
@@ -46,7 +47,7 @@ export default function My () {
       <div className="my-page-root">
         <div className="content-position-1" >
           <div className="font-custom-1 ">마이 페이지</div>
-          <div className=""><Link href="/signout"><p className="logout-custom mr-2">로그아웃</p></Link></div>
+          <div className=""><Link href="/signout"><p className="logout-custom mr-2">로그아웃<LogOut className="w-4 pb-1"/></p></Link></div>
         </div>
         <div className="my-page-box-1 "> 
           <div className="content-position-1 items-center">
