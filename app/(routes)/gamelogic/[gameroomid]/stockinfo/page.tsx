@@ -16,6 +16,7 @@ import {
     Legend,
 } from 'chart.js';
 import styles from '../css/StockInfoPage.module.css';
+import TradeBar from '../components/TradeBar'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -30,6 +31,13 @@ export default function StockInfo() {
         isLoading,
         setIsLoading,
     } = useStockContext();
+
+    // 초기값 설정 (첫 번째 주식으로 기본값 설정)
+    useEffect(() => {
+        if (Object.keys(stockData).length > 0 && !selectedCategory) {
+            setSelectedCategory(Object.keys(stockData)[0]);
+        }
+    }, [stockData, selectedCategory]);
 
     const { stompClient } = useWebSocket();
     const pathname = usePathname();
@@ -129,6 +137,8 @@ export default function StockInfo() {
 
     return (
         <div className={styles.container}>
+            <TradeBar selectedTicker={selectedCategory} onTradeComplete={() => console.log("거래 완료!")} />
+
             {/* 종목 카테고리 */}
             <div className={styles.tradeBarContainer}>
                 {Object.keys(stockData).map((category) => (

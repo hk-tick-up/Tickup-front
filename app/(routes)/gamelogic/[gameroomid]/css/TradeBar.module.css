@@ -1,6 +1,5 @@
 .tradeBar {
     @apply fixed bottom-0 left-0 right-0 w-full justify-center bg-white;
-    /* z-index: 10; 다른 요소 위로 올리기 */
 }
 
 .tradeContainer {
@@ -10,22 +9,106 @@
     box-shadow: 0 -3px 4px rgba(0, 0, 0, 0.1);
 }
 
-.sellButton, .buyButton {
-    @apply flex-1 text-center justify-center bg-white rounded-full text-gray-800;
+.sellButton,
+.buyButton {
+    @apply flex-1 text-center justify-center rounded-full text-white text-base font-bold py-1;
     margin: 0 0.5rem;
     box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
 }
 
 .sellButton {
-    @apply bg-red-500;
+    @apply bg-blue-500; 
 }
 
 .buyButton {
+    @apply bg-red-500; 
+}
+
+/* 모달창 스타일 */
+.modalOverlay {
+    @apply fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-[1000];
+}
+
+.modal {
+    @apply bg-white p-5 rounded-xl shadow-lg relative;
+    width: calc(100% - 2.5rem);
+    max-width: 24rem; 
+    margin: 0 auto; 
+}
+
+.closeButton {
+    @apply absolute top-3 right-3 text-gray-500 text-2xl cursor-pointer hover:text-gray-700;
+}
+
+.modalHeader {
+    @apply text-xl text-center mb-5;
+}
+
+.modalBody {
+    @apply flex flex-col items-center mb-5;
+}
+
+.quantityLabel {
+    @apply mb-2 text-base;
+}
+
+.quantitySelector {
+    @apply flex items-center gap-2;
+}
+
+.quantityButton {
+    @apply w-10 h-10 text-lg border border-gray-300 rounded-lg bg-gray-100 hover:bg-gray-200 flex justify-center items-center;
+}
+
+.quantityInput {
+    @apply w-12 text-center border border-gray-300 rounded-lg;
+}
+
+.modalFooter {
+    @apply flex justify-between gap-2;
+}
+
+.tradeActionButton {
+    @apply flex-1 py-2 px-4 text-white rounded-lg text-base font-bold;
+}
+
+.buyAction {
+    @apply bg-red-500;
+}
+
+.sellAction {
     @apply bg-blue-500;
 }
 
-.tradeName {
-    @apply font-normal text-white;
-    padding: 0.2rem;
+.cancelButton {
+    @apply flex-1 py-2 px-4 bg-gray-500 text-white rounded-lg hover:bg-gray-700;
 }
 
+.notification {
+    @apply fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 px-8 py-4 rounded-lg text-base text-center z-[1050];
+    animation: fadeOut 3s ease-in-out forwards !important;
+    width: 75%; /* 화면 너비의 3/4 */
+    max-width: 32rem; /* 최대 너비 32rem (약 512px) */
+}
+
+.success {
+    @apply bg-green-500 text-white bg-opacity-80; /* 투명도 추가 */
+}
+
+.error {
+    @apply bg-red-500 text-white bg-opacity-80; /* 투명도 추가 */
+}
+
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    99% {
+        visibility: visible;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}

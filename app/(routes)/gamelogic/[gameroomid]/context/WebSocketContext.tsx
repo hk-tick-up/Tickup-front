@@ -27,11 +27,14 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             });
 
             const client = new Client({
-                webSocketFactory: () => socket as any,
+                webSocketFactory: () => socket as WebSocket,
                 reconnectDelay: 5000,
                 heartbeatIncoming: 4000,
                 heartbeatOutgoing: 4000,
-                onConnect: () => console.log('WebSocket connected'),
+                onConnect: () => {
+                    console.log('WebSocket connected');
+                    setStompClient(client);
+                },
                 onStompError: (error) => console.error('STOMP error', error),
             });
 
@@ -45,6 +48,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
                 console.log('Deactivating WebSocket client');
                 clientRef.current.deactivate();
                 clientRef.current = null;
+                setStompClient(null);
             }
         };
     }, []);
