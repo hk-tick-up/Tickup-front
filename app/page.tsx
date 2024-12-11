@@ -1,8 +1,41 @@
+'use client';
+
+import { useEffect, useState } from "react";
 import Link from 'next/link'
 import Image from 'next/image'
 import BottomNav from './components/BottomNav'
+import FooterBlock from './components/FooterBlock'
+import FooterBlock_v2 from './components/FooterBlockV2'
+import axios from "axios";
+import '@/app/css/main.css'
+// import { BACKEND_URL } from "@/constants/backend-url";
 
 export default function HomePage() {
+  // const base_url = `${BACKEND_URL}/api/v1/users`;
+  const [nickname, setNickname] = useState<string | null>("");
+  const [point, setPoint] = useState<number>(0);
+  const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL
+
+  useEffect(()=>{
+    setNickname(sessionStorage.getItem("nickname"));
+
+    //localhost
+    // axios.get("http://localhost:8005/api/v1/users/point", {
+    axios.get(`${BACKEND_USER_URL}/point`, {
+      headers: {
+        "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
+      }
+    })
+    .then(res => {
+      console.log(res.data);
+      setPoint(res.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }, [])
+
+
   return (
     <>
       <div className="main-root">
@@ -13,64 +46,76 @@ export default function HomePage() {
           </div>
           <div className='user-summary'>
             <div>
-              김한토님 반가워요
+            {nickname}님, 반가워요!
             </div>
             <div className='flex'>
               <div><Image src='/images/icon/money.png' alt="포인트" width={20} height={20} className='money-icon-position' /></div>
-              <div>Point</div>
+              <div>{point}P</div>
             </div>
           </div>
         </header>
-        <section className='py-5'>Banner?</section>
-
         {/* 메인 카드 섹션 */}
         <main>
           <div className='flex py-5 gap-5 items-center'> 
-            <Link href="/game">
+            <Link href="/game" className="flex-1">
               <div className='main-block main-game-btn'>
-                <div className='cutom-title'>
+                <div className='custom-title'>
                   <p>모의투자</p>
                   <p>게임하기</p>
                 </div>
                 <div>
-                  <Image src='/images/group_1.png' alt="게임하기" width={120} height={120} />
+                  <Image src='/images/group_1.png' alt="게임하기" width={156} height={156} />
                 </div>
               </div>
             </Link>
             <div className='side-block'>
               <div className='mini-block'>
                 <div>오늘의 금융 퀴즈</div>
-                <div className='inblock-icon'><Image src='/images/books.png' alt="퀴즈" width={24} height={24} /></div>
+                <div className='inblock-icon'><Image src='/images/books.png' alt="퀴즈" width={40} height={40} /></div>
               </div>
               <div className='mini-block'>
                 <div>친구들과 토론하기</div>
-                <div className='inblock-icon'><Image src='/images/speech_bubble.png' alt="토론" width={24} height={24} /></div>
+                <div className='inblock-icon'><Image src='/images/speech_bubble.png' alt="토론" width={40} height={40} /></div>
               </div>
             </div>
           </div>
           <div className='other-service-block'>
             <div>이런 서비스도 있어요</div>
-            <div className='blank1'></div>
+            <div>
+              <ul>
+                <li><p><Image src='/images/icon/money-fly.png' alt="돈다발" width={50} height={50} /></p><p>해외 주식<br/>공부하기</p></li>
+                <li><p><Image src='/images/icon/down-chart.png' alt="하향차트" width={50} height={50} /></p><p>실제 경제뉴스<br/>보러가기</p></li>
+                <li><p className="pb-1"><Image src='/images/link-to/bulb.png' alt="전구" width={35} height={50} /></p><p>증권 상품<br/>구경하기</p></li>
+                <li><p><Image src='/images/icon/medal.png' alt="메달" width={50} height={50} /></p><p>상위 10%의<br/>비결</p></li>
+              </ul>
+            </div>
           </div>
         </main>
 
         {/* 하단 배너 */}
-        <footer>
-          <div className='footer-block-big'>
-            <div>
-              <p>게임을 플레이하면</p>
-              <p>결과에 따른 분석 리포트를 보여드려요!</p>
-            </div>
-            <div className='flex'>
-              <p className='footer-announce'>분석 리포트로 투자 추가 공부하기</p>
-              <p><Image src='/images/detective.png' alt="탐정" width={27} height={27} className='footer-icon-detective'/></p>
-            </div>
-          </div>
-          <div><Image src='/images/icon/right-arrow.png' alt="화살표" width={15} height={15} className="footer-icon-arrow" /></div>
-        </footer>
+        <div className="test-custom-1">마이페이지</div>
+        <div className="section-position">
+          <section className="section-custom">
+            <FooterBlock 
+              title="게임을 플레이하면"
+              subtitle="결과에 따른 분석 리포트를 보여드려요!"
+              announcement="분석 리포트로 투자 추가 공부하기"
+              iconSrc="/images/detective.png"
+              iconAlt="탐정"
+            />
+          </section>
+          <section className="section-custom">
+            <FooterBlock_v2
+              title="캐릭터 키우는"
+              subtitle="포인트 모으기 꿀팁"
+              announcement="포인트 모아서 귀여운 나만의 캐릭터 성장시키기"
+              iconSrc="/images/icon/jar-of-honey.png"
+              iconAlt="꿀단지"
+            />
+          </section>
+        </div>
       </div>
       <BottomNav />
     </>
   )
 }
-
