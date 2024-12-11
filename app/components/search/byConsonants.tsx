@@ -4,7 +4,7 @@ import axios from "axios";
 import { BaseSyntheticEvent, useState } from "react";
 
 interface ComponentProps {
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  setMode: React.Dispatch<React.SetStateAction<string>>;
   setResponse: React.Dispatch<React.SetStateAction<Array<simpleWord>>>;
 }
 interface simpleWord{
@@ -12,8 +12,20 @@ interface simpleWord{
   "영문한문":string;
   "뜻":string;
 }
+interface WordInOrder{
+  sort: string[];
+  _id: string;
+  _ignored: string[];
+  _index: string;
+  _score: number | null;
+  _source: {
+    단어명: string;
+    영문한문: string;
+    뜻: string;
+  };
+}
 
-export default function ByConsonants({setShow, setResponse}:ComponentProps) {
+export default function ByConsonants({setMode, setResponse}:ComponentProps) {
   const [language, setLanguage] = useState<boolean>(true);
   const consonants = new Map<string, string>([
     ["ㄱ","[가-깋].*"],["ㄴ","[나-닣].*"],["ㄷ","[다-딯].*"],["ㄹ","[라-맇].*"],["ㅁ","[마-밓].*"],["ㅂ","[바-빟].*"],["ㅅ","[사-싷].*"],
@@ -57,7 +69,7 @@ export default function ByConsonants({setShow, setResponse}:ComponentProps) {
     }
     axios.post(base_url, body, header)
     .then((response)=>{
-      const data = response.data.hits.hits;
+      const data:WordInOrder[] = response.data.hits.hits;
       console.log(data);
       // setResponse, setShow
       const arr = new Array<simpleWord>();
@@ -66,7 +78,7 @@ export default function ByConsonants({setShow, setResponse}:ComponentProps) {
       })
       console.log(arr);
       setResponse(arr);
-      setShow(true);
+      setMode("category");
     })
     .catch((error)=>{
       console.error(error);

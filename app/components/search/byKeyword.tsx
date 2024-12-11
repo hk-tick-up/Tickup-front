@@ -1,12 +1,13 @@
 'use client';
 
+import searchOneWord from "@/src/dictionary/search-by-keyword";
 import axios from "axios";
 import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useState } from "react";
 
 interface ComponentProps {
-  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  setMode: React.Dispatch<React.SetStateAction<string>>;
   setResponse: React.Dispatch<React.SetStateAction<OneWord>>
 }
 interface OneWord{
@@ -16,55 +17,18 @@ interface OneWord{
   "연관단어":string;
 }
 
-export default function ByKeyword({setShow, setResponse}:ComponentProps){
+export default function ByKeyword({setMode, setResponse}:ComponentProps){
   const [keyword, setKeyword] = useState("");
-  const base_url = "http://localhost:9200/dictionary/_search?pretty";
+  // const base_url = "http://localhost:9200/dictionary/_search?pretty";
+  const base_url = process.env.NEXT_PUBLIC_ELASTICSEARCH_URL;
 
   const onKeywordChanged = (e:BaseSyntheticEvent) => {
     setKeyword(e.currentTarget.value);
   }
   const onSearchClicked = async (e:BaseSyntheticEvent) => {
-    // keyword로 (유사)단어 검색
-
-    const input = keyword;
     e.preventDefault();
-    console.log(input);
-
-    const searchQuery = {
-      "query": {
-        "match": {
-          "단어명": input
-        }
-      },
-      "_source": ["단어명", "영문한문", "설명", "연관단어"]
-    };
-    const header = {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }
-    const response = await axios.post(`${base_url}`,searchQuery,header);
-    const hits = response.data.hits.hits;
-    if(hits.length > 0){
-      // 검색된 단어 있음
-      const word = hits[0]._source;
-      setResponse({
-        "단어명":word.단어명,
-        "영문한문":word.영문한문,
-        "설명":word.설명,
-        "연관단어":word.연관단어
-      })
-    }
-    else{
-      // 검색된 단어 없음
-      setResponse({
-        "단어명":"",
-        "영문한문":"",
-        "설명":"검색 결과가 없습니다.",
-        "연관단어":""
-      })
-    }
-    setShow(true);
+    setResponse(await searchOneWord(keyword));
+    setMode("search");
   }
   return (
     <div>
