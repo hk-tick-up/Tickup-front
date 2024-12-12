@@ -9,7 +9,7 @@ export const useWebSocket = (gameRoomId: string) => {
  const [subscriptions, setSubscriptions] = useState<StompJs.StompSubscription[]>([]);
 
  const initializeWebSocket = useCallback(() => {
-     const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "http://192.168.1.6:8007/ws";
+     const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://192.168.1.6:8007/ws";
      const token = sessionStorage.getItem('bearer');
      
      if (!token) {
@@ -23,10 +23,7 @@ export const useWebSocket = (gameRoomId: string) => {
      }
 
      const client = new StompJs.Client({
-         webSocketFactory: () => new SockJS(SOCKET_URL, null, {
-            //  transports: ['websocket'],
-             timeout: 20000
-         }),
+         brokerURL: SOCKET_URL,
          connectHeaders: {
              'Authorization': `Bearer ${token}`,
              'gameRoomId': gameRoomId

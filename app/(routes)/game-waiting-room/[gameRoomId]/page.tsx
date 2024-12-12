@@ -123,7 +123,7 @@ export default function WaitingRoom() {
                 setSubscriptionIds([]);
             }
         };
-    }, [isConnected, stompClient, gameRoomId, router, shouldConnect, subscriptionIds]);
+    }, []);
 
     const handleReady = useCallback(() => {
         if (stompClient?.active && currentUser) {
@@ -231,20 +231,7 @@ export default function WaitingRoom() {
         }
     }, [stompClient, setStompClient, gameRoomId, router, subscriptionIds]);
     
-    useEffect(() => {
-        return () => {
-            setShouldConnect(false);
-            if (stompClient?.active) {
-                subscriptionIds.forEach(id => {
-                    stompClient.unsubscribe(id);
-                });
-                stompClient.deactivate();
-                if (setStompClient) {
-                    setStompClient(null);
-                }
-            }
-        };
-    }, [stompClient, setStompClient, subscriptionIds]);
+    
 
     const isHost = currentUser && users.length > 0 && currentUser.id === users[0].id;
 
