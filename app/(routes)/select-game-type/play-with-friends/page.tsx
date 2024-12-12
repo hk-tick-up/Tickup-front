@@ -19,7 +19,7 @@ export default function Component() {
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
     const [gameRoomCode, setGameRoomCode] = useState("");
     //localhost
-    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_SOCKET_URL;
+    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://192.168.1.6:8007/ws';
     
     useEffect(() => {
         const token = sessionStorage.getItem('bearer');
