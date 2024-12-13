@@ -1,8 +1,10 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import SockJS from 'sockjs-client';
-import { Client } from '@stomp/stompjs';
+import { Client, IMessage } from '@stomp/stompjs';
+import { useRankingStore } from '../lib/store/useRankingStore';
+import { usePathname } from 'next/navigation';
 
 interface WebSocketContextType {
     stompClient: Client | null;
@@ -19,9 +21,17 @@ export const useWebSocket = () => {
 export const WebSocketProvider = ({ children }: { children: React.ReactNode }) => {
     const [stompClient, setStompClient] = useState<Client | null>(null);
     const clientRef = useRef<Client | null>(null);
+    const subscriptionRef = useRef<any>(null);
+    const { setRankings } = useRankingStore();
+    const pathname = usePathname();
 
+    // Extract gameRoomId from URL
+    const gameRoomId = pathname.split('/')[2]; // gameroomid 추출
+
+    // Initialize WebSocket client
     useEffect(() => {
         if (!clientRef.current) {
+            console.log("Initializing WebSocket connection...");
             const socket = new SockJS('http://localhost:8080/ws', null, {
                 withCredentials: true,
             });
@@ -35,12 +45,16 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
                     console.log('WebSocket connected');
                     setStompClient(client);
                 },
-                onStompError: (error) => console.error('STOMP error', error),
+                onStompError: (error) => {
+                    console.error('STOMP error', error);
+                },
+                onWebSocketClose: () => {
+                    console.log('WebSocket connection closed');
+                },
             });
 
             client.activate();
             clientRef.current = client;
-            setStompClient(client);
         }
 
         return () => {
@@ -52,6 +66,50 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
             }
         };
     }, []);
+
+    // Subscribe to rankings
+    const subscribeToRankings = useCallback(() => {
+        if (!stompClient || !stompClient.connected || !gameRoomId) {
+            console.log('Subscription not possible yet. Waiting for valid stompClient and gameRoomId.');
+            return;
+        }
+
+        // Unsubscribe from previous subscription
+        if (subscriptionRef.current) {
+            subscriptionRef.current.unsubscribe();
+            subscriptionRef.current = null;
+        }
+
+        subscriptionRef.current = stompClient.subscribe(
+            `/topic/gameRoom/${gameRoomId}/rankings`,
+            (message: IMessage) => {
+                try {
+                    const data = JSON.parse(message.body);
+                    console.log('Received rankings update:', data);
+                    setRankings(data);
+                } catch (error) {
+                    console.error('Error processing rankings message:', error);
+                }
+            }
+        );
+
+        console.log(`Subscribed to rankings for gameRoomId: ${gameRoomId}`);
+    }, [stompClient, gameRoomId, setRankings]);
+
+    // Effect to handle subscription updates
+    useEffect(() => {
+        if (stompClient && gameRoomId) {
+            subscribeToRankings();
+        }
+
+        return () => {
+            if (subscriptionRef.current) {
+                subscriptionRef.current.unsubscribe();
+                subscriptionRef.current = null;
+                console.log('Unsubscribed from rankings');
+            }
+        };
+    }, [stompClient, gameRoomId, subscribeToRankings]);
 
     return (
         <WebSocketContext.Provider value={{ stompClient }}>

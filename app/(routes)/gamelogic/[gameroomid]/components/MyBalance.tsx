@@ -38,7 +38,7 @@ const MyBalance: React.FC<MyBalanceProps> = ({ balance, balanceHistory }) => {
             >
                 {lastTurnDetail
                     ? `지난 턴에 ${lastTurnDetail.previousBalance.toLocaleString()}원을 사용했어요!`
-                    : '지난 턴 정보가 없습니다.'}
+                    : '준비 중인 서비스 !'}
                 <svg
                     className={`toggle-icon ${isOpen ? "icon-rotated" : ""}`}
                     xmlns="http://www.w3.org/2000/svg"

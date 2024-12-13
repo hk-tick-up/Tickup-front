@@ -77,7 +77,7 @@ export default function GameProgressBar() {
         }
 
         // 현재 턴이 총 턴 수보다 크거나 같으면 턴 종료 알림을 보내지 않음
-        if (turn >= totalTurns) {
+        if (turn > totalTurns) {
             console.log('Game has reached the final turn');
             return;
         }

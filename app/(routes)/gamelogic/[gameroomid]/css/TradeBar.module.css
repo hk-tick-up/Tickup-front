@@ -95,7 +95,7 @@
     @apply bg-green-500 text-white bg-opacity-80; /* 투명도 추가 */
 }
 
-.error {
+.error {    
     @apply bg-red-500 text-white bg-opacity-80; /* 투명도 추가 */
 }
 

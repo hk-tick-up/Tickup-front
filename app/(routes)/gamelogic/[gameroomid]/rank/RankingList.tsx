@@ -1,36 +1,45 @@
 'use client';
 
 import styles from '../css/RankingList.module.css'; // module.css 스타일 가져오기
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Minus } from 'lucide-react';
+import { useWebSocket } from '../context/WebSocketContext';
+import { usePathname } from 'next/navigation';
 
 // 더미 데이터 타입 정의
 type PortfolioItem = {
-category: string;
-amount: number;
-percentage: number;
+    category: string;
+    amount: number;
+    percentage: number;
 };
 
-type UserRanking = {
-id: number;
-rank: number;
-username: string;
-profileImage: string;
-totalAmount: number;
-portfolio: PortfolioItem[];
-trend: 'up' | 'down' | 'neutral';
-};
+// type UserRanking = {
+//     id: number;
+//     rank: number;
+//     username: string;
+//     profileImage: string;
+//     totalAmount: number;
+//     portfolio: PortfolioItem[];
+//     trend: 'up' | 'down' | 'neutral';
+// };
+
+interface RankingResponse {
+    userId: string,
+    userName: string,
+    rank: number,
+    returnRate: number
+}
 
 // 메달 컴포넌트
 function RankMedal({ rank }: { rank: number }) {
-if (rank === 1) {
-    return <span className={styles.goldMedal}>🥇</span>;
-} else if (rank === 2) {
-    return <span className={styles.silverMedal}>🥈</span>;
-} else if (rank === 3) {
-    return <span className={styles.bronzeMedal}>🥉</span>;
-}
-return <span className={styles.rankText}>{rank}</span>;
+    if (rank === 1) {
+        return <span className={styles.goldMedal}>🥇</span>;
+    } else if (rank === 2) {
+        return <span className={styles.silverMedal}>🥈</span>;
+    } else if (rank === 3) {
+        return <span className={styles.bronzeMedal}>🥉</span>;
+    }
+    return <span className={styles.rankText}>{rank}</span>;
 }
 
 // 트렌드 아이콘 컴포넌트
@@ -48,79 +57,85 @@ function formatAmount(amount: number) {
 return new Intl.NumberFormat('ko-KR').format(amount);
 }
 
-export default function RankingList({ rankings }: { rankings: UserRanking[] }) {
-const [openPortfolios, setOpenPortfolios] = useState<number[]>([]);
+export default function RankingList({ rankings }: { rankings: RankingResponse[] }) {
+    
+    const [openPortfolios, setOpenPortfolios] = useState<number[]>([]);
 
-return (
-    <div className={styles.rankingList}>
-    {rankings.map((user) => (
-        <div
-        key={user.id}
-        className={`${styles.rankingItem} ${
-            user.rank === 4 ? styles.rankingHighlight : ''
-        }`}
-        >
-        <div className={styles.rankingHeader}>
-            <div className={styles.userInfo}>
-            <RankMedal rank={user.rank} />
-            <img src={user.profileImage} alt="" className={styles.profileImage} />
-            <div>
-                <span className={styles.userName}>{user.username}</span>
-                <div className={styles.assetInfo}>
-                <span className={styles.totalAmount}>
-                    평가금액 {formatAmount(user.totalAmount)}원
-                </span>
-                <button
-                    onClick={() =>
-                    setOpenPortfolios((prev) =>
-                        prev.includes(user.id)
-                        ? prev.filter((id) => id !== user.id)
-                        : [...prev, user.id]
-                    )
-                    }
-                >
-                    <ChevronDown
-                    className={`${styles.expandButton} ${
-                        openPortfolios.includes(user.id) ? styles.expandRotate : ''
-                    }`}
-                    />
-                </button>
-                </div>
-            </div>
-            </div>
-            <TrendIcon trend={user.trend} />
-        </div>
+    // 랭킹이 없을 경우 처리 (ex. 1턴일 때)
+    if (!rankings || rankings.length === 0) {
+        return <div className={styles.noRankings}>현재 랭킹 정보가 없습니다.</div>;
+    }
 
-        {user.portfolio.length > 0 && openPortfolios.includes(user.id) && (
-            <>
-            <hr className={styles.divider} />
-            <div className={styles.portfolioContainer}>
-                <div className={styles.portfolioTitle}>보유 종목</div>
-                {user.portfolio.map((item, index) => (
-                <div key={index} className={styles.portfolioItem}>
-                    <span>{item.category}</span>
-                    <div className={styles.portfolioDetails}>
-                    <span className={styles.portfolioAmount}>
-                        {formatAmount(item.amount)}원
+    return (
+        <div className={styles.rankingList}>
+        {rankings.map((user) => (
+            <div
+                key={user.userId}
+                className={`${styles.rankingItem} ${
+                    user.rank === 4 ? styles.rankingHighlight : ''
+            }`}
+            >
+            <div className={styles.rankingHeader}>
+                <div className={styles.userInfo}>
+                <RankMedal rank={user.rank} />
+                <img src={user.profileImage} alt="" className={styles.profileImage} />
+                <div>
+                    <span className={styles.userName}>{user.userName}</span>
+                    <div className={styles.assetInfo}>
+                    <span className={styles.returnRate}>
+                        수익률: {user.returnRate.toFixed(2)} %
                     </span>
-                    <span
-                        className={
-                        item.percentage > 0
-                            ? styles.portfolioPositive
-                            : styles.portfolioNegative
+                    {/* <button
+                        onClick={() =>
+                        setOpenPortfolios((prev) =>
+                            prev.includes(user.id)
+                            ? prev.filter((id) => id !== user.id)
+                            : [...prev, user.id]
+                        )
                         }
                     >
-                        {item.percentage > 0 ? '+' : ''}
-                        {item.percentage}%
-                    </span>
+                        <ChevronDown
+                        className={`${styles.expandButton} ${
+                            openPortfolios.includes(user.id) ? styles.expandRotate : ''
+                        }`}
+                        />
+                    </button> */}
                     </div>
                 </div>
-                ))}
+                </div>
+                {/* <TrendIcon trend={user.trend} /> */}
             </div>
-            </>
-        )}
+
+            {/* {user.portfolio.length > 0 && openPortfolios.includes(user.id) && (
+                <>
+                <hr className={styles.divider} />
+                <div className={styles.portfolioContainer}>
+                    <div className={styles.portfolioTitle}>보유 종목</div>
+                    {user.portfolio.map((item, index) => (
+                    <div key={index} className={styles.portfolioItem}>
+                        <span>{item.category}</span>
+                        <div className={styles.portfolioDetails}>
+                        <span className={styles.portfolioAmount}>
+                            {formatAmount(item.amount)}원
+                        </span>
+                        <span
+                            className={
+                            item.percentage > 0
+                                ? styles.portfolioPositive
+                                : styles.portfolioNegative
+                            }
+                        >
+                            {item.percentage > 0 ? '+' : ''}
+                            {item.percentage}%
+                        </span>
+                        </div>
+                    </div>
+                    ))}
+                </div>
+                </>
+            )} */}
+            </div>
+        ))}
         </div>
-    ))}
-    </div>
-);
+    );
 }
