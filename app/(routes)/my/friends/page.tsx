@@ -3,6 +3,7 @@
 import Find from "@/app/components/friends/Find";
 import Friends from "@/app/components/friends/Friends";
 import Requests from "@/app/components/friends/Requests";
+import Sends from "@/app/components/friends/Sends";
 // import Find from "@/app/components/friends/find";
 // import Friends from "@/app/components/friends/friends";
 // import Requests from "@/app/components/friends/requests";
@@ -37,17 +38,15 @@ export default function MyFriends(){
 
       <div className="border border-black">
         <Find/>
-        <div className="flex flex-row space-x-2">
+        {/* <div className="flex flex-row space-x-2">
           <button className="border border-black" onClick={onClickFriends} title="">친구 목록</button>
           <button className="border border-black" onClick={onClickRequests} title="">받은 요청</button>
-          <Link href="/find">
-            <div className="w-8 h-6 bg-black rounded-lg flex justify-center items-center">
-              <Image width={20} height={20} src="/images/findUser/ic-search.png" alt="유저 검색" />
-            </div>
-          </Link>
         </div>
         {tab === "friends" && <Friends/> }
-        {tab === "requests" && <Requests/> }
+        {tab === "requests" && <Requests/> } */}
+        <Sends/>
+        <Requests/>
+        <Friends/>
       </div>
     </div>
   )

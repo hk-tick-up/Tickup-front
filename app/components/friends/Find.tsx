@@ -1,7 +1,7 @@
 'use client';
-import { BACKEND_URL } from "@/constants/backend-url";
 import axios from "axios";
 import { BaseSyntheticEvent, KeyboardEvent, useState } from 'react';
+import AcceptRequest from "./AcceptRequest";
 
 type username = {
   id: string;
@@ -10,10 +10,12 @@ type username = {
 }
 
 const Find = () => {
+  const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL;
+
   const [userToFind, setUserToFind] = useState<string>("");
   const [found, setFound] = useState<username>();
   
-  const base_url = `${BACKEND_URL}/api/v1/users`;
+  const base_url = `${BACKEND_USER_URL}`;
 
   const setKeyword = (e:BaseSyntheticEvent) => {
     setUserToFind(e.target.value);
@@ -45,11 +47,11 @@ const Find = () => {
         found &&
         <div>
           <p>이 유저를 찾으셨나요?</p>
-          <p>{found.nickname}<sub>{found.id}</sub></p>
+          <p>닉네임(아이디): {found.nickname}<sub>{found.id}</sub></p>
           {/* 프로필사진? */}
           {/* 친구 신청 버튼 */}
             {/* 친구 여부에 따라 버튼 달라져야 */}
-          <p>{found.status}</p>
+          <AcceptRequest found={found}/>
         </div>
       }
     </div>
