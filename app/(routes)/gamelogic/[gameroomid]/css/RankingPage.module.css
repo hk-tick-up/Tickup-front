@@ -1,0 +1,16 @@
+/* 페이지 스타일 */
+.container {
+    @apply flex flex-col min-h-screen mt-4;
+}
+
+.content {
+    
+}
+
+.participantText {
+    @apply text-sm text-gray-500 mb-2;
+}
+
+.title {
+    @apply text-xl font-bold mb-4;
+}
