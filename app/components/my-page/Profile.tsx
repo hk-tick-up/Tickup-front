@@ -4,21 +4,25 @@ import { useEffect, useState } from "react";
 import LinkTo from "../link-to/LinkTo";
 import LinkToBracket from "../link-to/LinkToBracket";
 import axios from "axios";
+import '@/app/css/user/my-page.css'
+// import { BACKEND_URL } from "@/constants/backend-url";
 
 const Profile = () => {
-  // const base_url = "http://localhost:8005/api/v1/users"
-  const base_url = "http://back-service:8005/api/v1/users"
-  const tempProfileImage = "/images/linkTo/ghost.png";
-  const gameIcon = "/images/linkTo/game.png";
-  const friendIcon = "/images/linkTo/friend.png";
-  const researchIcon = "/images/linkTo/personResearch.png";
+
+  //localhost
+  // const base_url = `${BACKEND_URL}/api/v1/users`;
+  const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL;
+  const tempProfileImage = "/images/link-to/ghost.png";
+  const gameIcon = "/images/link-to/game.png";
+  const friendIcon = "/images/link-to/friend.png";
+  const researchIcon = "/images/link-to/personResearch.png";
   const [point, setPoint] = useState<number>(0);
   const [nickname, setNickname] = useState<string | null>("");
 
   useEffect(()=>{
     setNickname(sessionStorage.getItem("nickname"));
 
-    axios.get(`${base_url}/point`, {
+    axios.get(`${BACKEND_USER_URL}/point`, {
       headers: {
         "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
       }

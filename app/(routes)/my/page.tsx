@@ -1,17 +1,14 @@
 'use client';
 
-// import BottomNav from "@/app/components/bottomNav";
-import LinkTo from "@/app/components/linkTo/linkTo";
-import GameRules from "@/app/components/myPage/gameRule";
-import Profile from "@/app/components/myPage/profile";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from 'next/image'
 import Link from "next/link";
-import '../../css/User/MyPage.css';
+import '../../css/User/my-page.css';
 import '../../css/main.css'
 import FooterBlock from '../../components/FooterBlock'
 import BottomNav from '../../components/BottomNav'
+import { LogOut } from 'lucide-react';
 
 export default function My () {
   const router = useRouter();
@@ -50,12 +47,12 @@ export default function My () {
       <div className="my-page-root">
         <div className="content-position-1" >
           <div className="font-custom-1 ">마이 페이지</div>
-          <div className=""><Link href="/signout"><p className="logout-custom mr-2">로그아웃</p></Link></div>
+          <div className=""><Link href="/signout"><p className="logout-custom mr-2">로그아웃<LogOut className="w-4 pb-1"/></p></Link></div>
         </div>
         <div className="my-page-box-1 "> 
           <div className="content-position-1 items-center">
             <div className="content-position-2">
-              <p className="icon-position-2"><Image src='/images/linkTo/bulb.png' alt="전구" width={11} height={11} /></p>
+              <p className="icon-position-2"><Image src='/images/link-to/bulb.png' alt="전구" width={11} height={11} /></p>
               <p>게임 규칙 설명서</p>
             </div>
             <div className="icon-position-1">
@@ -69,17 +66,17 @@ export default function My () {
                 <div className="font-custom-2">{nickname} 님 환영합니다!</div>
               </div>
               <div>누적 포인트 <span className="point-font-custom">20P</span></div>
-              <div className="profile-img-position"><Image src='/images/linkTo/ghost.png' alt="유령" width={200} height={200} /></div>
+              <div className="profile-img-position"><Image src='/images/link-to/ghost.png' alt="유령" width={200} height={200} /></div>
             </div>
             <section>
               <div className="section-btn">
-                <div> <Image src='/images/linkTo/game.png' alt="게임기" width={70} height={70} /></div>
-                <div>
+                <div> <Image src='/images/link-to/game.png' alt="게임기" width={70} height={70} /></div>
+                <div className="mt-2">
                   게임 전적 확인하기
                 </div>
               </div>
               <div className="section-btn">
-                <div><Image src='/images/linkTo/friend.png' alt="그룹" width={70} height={70} /></div>
+                <div><Image src='/images/link-to/friend.png' alt="그룹" width={60} height={60} /></div>
                 <div> 친구 목록 관리하기</div>
               </div>
             </section>

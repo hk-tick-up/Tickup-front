@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import '../css/main.css'
+import '@/app/css/main.css'
 
 interface FooterBlockProps {
     title: string;

@@ -3,14 +3,11 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
-import BottomNav from '../../components/bottomNav';
-import '../../css/WaitingRoom/root.css'
-import '../../css/WaitingRoom/selectGame.css';
-import { error } from 'console';
+import BottomNav from '../../components/BottomNav';
+import '@/app/css/waiting-room/root.css'
+import '@/app/css//waiting-room/select-game.css';
+// import { error } from 'console';
 import * as StompJs from "@stomp/stompjs";
-
-
-// const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://localhost:8080/ws';
 
 export default function Component() {
     const [isLoading, setIsLoading] = useState(false);
@@ -18,8 +15,14 @@ export default function Component() {
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
-    const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
+    //localhost
+    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_SOCKET_URL
+
     
+    useEffect(() => {
+        // isModalOpen, errorMessage 값 변화 시
+    },[isModalOpen, errorMessage]);
+
     useEffect(() => {
         const token = sessionStorage.getItem('bearer');
         const userId = sessionStorage.getItem('id');
@@ -38,7 +41,7 @@ export default function Component() {
     const matching = async () => {
         setIsLoading(true);
         router.push('/game/loading');
-
+        //localhost
         const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/random-join`;
 
         const requestBody = {
@@ -62,18 +65,18 @@ export default function Component() {
             }
 
             const data = await response.json();
-            const isPublic = data.isPublic
+            const gameType = data.gameType
 
             if (!data || !data.roomId) {
                 throw new Error('방 정보를 받을 수 없습니다.');
             }
 
             sessionStorage.setItem('currentRoomId', data.roomId.toString());
-            sessionStorage.setItem('isPublic', isPublic);
+            sessionStorage.setItem('gameType', gameType);
 
             const stompClient = new StompJs.Client({
                 //localhost
-                brokerURL: 'ws://localhost:8007/ws'
+                brokerURL: NEXT_PUBLIC_SOCKET_URL
                 ,connectHeaders: {
                     Authorization: `Bearer ${userInfo.token}`
                 }
@@ -134,14 +137,14 @@ export default function Component() {
                 <div className="flex justify-center space-x-10">
                     <div>
                         <button onClick={matching} disabled={isLoading}>
-                            <img src="/images/WaitingRoom/dice.png" className="custom-img select-random-btn" />
+                            <img src="/images/waiting-room/dice.png" className="custom-img select-random-btn" />
                             <p className="font-design text-lg">랜덤 매칭</p>
                         </button>
                     </div>
                     <div>
                         <Link href="/game/together">
                             <button>
-                                <img src="/images/WaitingRoom/together.png" className="custom-img select-together-btn" />
+                                <img src="/images/waiting-room/together.png" className="custom-img select-together-btn" />
                                 <p className="font-design text-lg">함께 하기</p>
                             </button>
                         </Link>

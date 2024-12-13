@@ -1,6 +1,6 @@
 import React from 'react'
-import '../../../css/WaitingRoom/root.css'
-import '../../../css/WaitingRoom/loading.css'
+import '@/app/css/waiting-room/root.css'
+import '@/app/css/waiting-room/loading.css'
 
 export default function Component() {
     return (
@@ -14,7 +14,7 @@ export default function Component() {
                     <p>나만의 투자 시작하기!</p>
                 </div>
                 <div className='runnig-img-position'>
-                    <img src='/images/WaitingRoom/running.png' />
+                    <img src='/images/waiting-room/running.png' />
                 </div>
                 <div className='font-design text-lg custom-color-gray position-discription'>
                     <p>게임을 함께 할 플레이어들을 매칭중입니다.</p>

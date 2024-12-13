@@ -3,15 +3,10 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useWebSocket } from '@/app/hooks/useSocket';
 import { useParams, useRouter } from 'next/navigation';
-import Link from "next/link";
-import io, { Socket } from 'socket.io-client';
-import '../../../css/WaitingRoom/root.css'
-import '../../../css/WaitingRoom/gameWaitingRoom.css'
-import Modal from '../../../components/Modal';
-
+import '@/app/css/waiting-room/root.css'
+import '@/app/css/waiting-room/game-waiting-room.css'
+import Modal from '../../../components/Modal'
 import * as StompJs from "@stomp/stompjs";
-
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:8007/ws';
 
 interface User {
     id: string;
@@ -19,25 +14,27 @@ interface User {
     status: '대기중' | '준비완료';
 }   
 
+const NEXT_PUBLIC_SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL;
+
 export default function WaitingRoom() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [users, setUsers] = useState<User[]>([]);
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
-    const [isPublic, setIsPublic] = useState<boolean>(false);
+    const [gameType, setGameType] = useState<'Basic' | 'Private' | 'Contest'>('Basic');
     const [errorMessage, setErrorMessage] = useState("");
     const router = useRouter();
     const params = useParams();
     const gameRoomId = params.gameRoomId as string;
 
-    const { socket, isConnected } = useWebSocket(gameRoomId);
+    const { socket } = useWebSocket(gameRoomId);
 
     useEffect(() => {
         const userId = sessionStorage.getItem('id');
         const nickname = sessionStorage.getItem('nickname');
         const token = sessionStorage.getItem('bearer');
         const code = sessionStorage.getItem('gameRoomCode');
-        const publicRoom = sessionStorage.getItem('isPublic');
+        const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
         
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
@@ -45,14 +42,12 @@ export default function WaitingRoom() {
             return;
         }
 
-        const isPublicBool = publicRoom === 'true';
-        setIsPublic(isPublicBool);
-        if(isPublicBool) {
-            setGameRoomCode(" ");
-        } else {
-            if(code) {
-                setGameRoomCode(code);
-            }
+        if (storedGameType) {
+            setGameType(storedGameType);
+        }
+
+        if (storedGameType === 'Private' && code) {
+            setGameRoomCode(code);
         }
     
         const initialUser: User = {
@@ -62,6 +57,14 @@ export default function WaitingRoom() {
         };
         setCurrentUser(initialUser);
         setUsers([initialUser]);
+
+        if (socket && currentUser) {
+            socket.send(JSON.stringify({
+                type: 'JOIN_ROOM',
+                gameRoomId,
+                user: currentUser
+            }));
+        }
 
         if (!socket) return;
 
@@ -83,7 +86,7 @@ export default function WaitingRoom() {
                     break;
             }
         };
-    }, [socket, router, gameRoomId]);
+    }, [socket, currentUser, gameRoomId, router]);
 
     const handleReady = useCallback(() => {
         if (socket && currentUser) {
@@ -107,15 +110,30 @@ export default function WaitingRoom() {
 
     const copyRoomCode = async () => {
         if (gameRoomCode) {
-            try {
-                await navigator.clipboard.writeText(gameRoomCode); // gameRoomCode 사용
-                setErrorMessage('방 코드가 복사되었습니다.');
-                setIsModalOpen(true);
-            } catch (err) {
-                console.error('복사 실패: ', err);
-                setErrorMessage('방 코드 복사에 실패했습니다. 직접 코드를 복사해주세요.');
-                setIsModalOpen(true);
+            if (typeof navigator !== 'undefined' && navigator.clipboard) {
+                try {
+                    await navigator.clipboard.writeText(gameRoomCode);
+                    setErrorMessage('방 코드가 복사되었습니다.');
+                } catch (err) {
+                    console.error('복사 실패: ', err);
+                    setErrorMessage('방 코드 복사에 실패했습니다. 직접 코드를 복사해주세요.');
+                }
+            } else {
+                // Fallback for environments where Clipboard API is not available
+                const textArea = document.createElement('textarea');
+                textArea.value = gameRoomCode;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    setErrorMessage('방 코드가 복사되었습니다.');
+                } catch (err) {
+                    console.error('복사 실패: ', err);
+                    setErrorMessage('방 코드 복사에 실패했습니다. 직접 코드를 복사해주세요.');
+                }
+                document.body.removeChild(textArea);
             }
+            setIsModalOpen(true);
         }
     };
 
@@ -124,75 +142,63 @@ export default function WaitingRoom() {
             const userId = sessionStorage.getItem('id');
 
             const stompClient = new StompJs.Client({
-                brokerURL: "ws://localhost:8007/ws",
-                debug: console.log
+                brokerURL: NEXT_PUBLIC_SOCKET_URL,
+                debug: function (str) {
+                    console.log('STOMP: ' + str);
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000
             });
     
             await new Promise((resolve, reject) => {
-                stompClient.onConnect = (frame) => {
+                stompClient.onConnect = () => {
                     console.log('Connected to WebSocket for leaving room');
                     
-                    // 방 나가기 메시지 전송
                     stompClient.publish({
                         destination: `/app/waiting-room/${gameRoomId}/leave`,
                         body: JSON.stringify({
                             userId: userId,
                             gameRoomId: gameRoomId
-                        }),
-                        headers: {
-                            'content-type': 'application/json'
-                        }
+                        })
                     });
-    
-                    // 연결 해제 및 리다이렉트
-                    stompClient.deactivate().then(() => {
-                        console.log('WebSocket connection closed');
-                        sessionStorage.removeItem('currentRoomId');
-                        sessionStorage.removeItem('gameRoomCode');
-                        router.push('/game/together');
-                    });
-    
                     resolve(true);
-            };
+                };
 
-            stompClient.onWebSocketError = (error) => {
-                console.error('WebSocket Error:', error);
-                reject(error);
-            };
+                stompClient.onWebSocketError = (error) => {
+                    console.error('WebSocket Error:', error);
+                    reject(error);
+                };
 
-            stompClient.activate();
-        });
+                stompClient.activate();
+            });
 
-        // 연결 해제 및 세션 정리
-        await stompClient.deactivate();
-        sessionStorage.removeItem('currentRoomId');
-        sessionStorage.removeItem('gameRoomCode');
-        router.push('/game');
+            await stompClient.deactivate();
+            sessionStorage.removeItem('currentRoomId');
+            sessionStorage.removeItem('gameRoomCode');
+            router.push('/game');
 
-    } catch (error) {
-        console.error('Error leaving room:', error);
-        router.push('/game/together');
-    }
-};
+        } catch (error) {
+            console.error('Error leaving room:', error);
+            router.push('/game/together');
+        }
+    };
 
     const isHost = currentUser && users.length > 0 && currentUser.id === users[0].id;
-
 
     return (
         <div className="relative container">
             <div className="position-back-button fixed w-full">
                 <button onClick={leaveRoom}>
-                    <img src="/images/exitgame_icon.png" className="w-7" alt="게임 나가기" />
+                    <img src="/images/exit-game-icon.png" className="w-7" alt="게임 나가기" />
                 </button>
             </div>
             <div className="room-code">
-            {isPublic ? (
-                // 공개방일 때
+            {gameType === 'Basic' ? (
                 <span className="font-[Freesentation-9Black]">
                     No.{gameRoomId}
                 </span>
             ) : (
-                // 비공개방일 때
                 gameRoomCode && (
                     <>
                         <span className="font-[Freesentation-9Black]">
@@ -200,7 +206,7 @@ export default function WaitingRoom() {
                         </span>
                         <button onClick={copyRoomCode} className='room-code-copy'>
                             <img 
-                                src="/images/WaitingRoom/copy-darkgray.png" 
+                                src="/images/waiting-room/copy-darkgray.png" 
                                 className="w-5 h-5" 
                                 alt="방 코드 복사" 
                             />
@@ -208,15 +214,15 @@ export default function WaitingRoom() {
                     </>
                 )
             )}
-        </div>
+            </div>
             <div className="user-list-container mx-auto">
                 <ul>
                     {users.map((user, index) => (
                         <li key={user.id}>
                             <div className="flex w-full mx-10 justify-between gap-20 items-center">
                                 <div className="flex-1 text-xl">
-                                {index + 1}. {user.nickname}
-                                {user.id === currentUser?.id && ' (나)'}</div> 
+                                {index + 1}. <span className={user.id === currentUser?.id ? 'font-bold' : ''}>{user.nickname}</span>
+                                </div> 
                                 <div className="flex-1 flex justify-center">
                                     <p className={user.status === '대기중' ? 'status-wait' : 'status-ready'}>
                                         {user.status}
@@ -246,7 +252,9 @@ export default function WaitingRoom() {
                 </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-            <p>{errorMessage}</p></Modal>
+                <p>{errorMessage}</p>
+            </Modal>
         </div>
     )
 }
+

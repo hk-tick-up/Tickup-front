@@ -104,8 +104,14 @@ section {
     cursor: pointer;
     color: #3C3D37;
     font-size: 14px;
+    display: flex;
+    gap: 2px;
+    padding: 2px 5px 0;
 }
 
 .logout-custom:hover {
     text-decoration: underline;
+    background-color: #F8FAFC;
+    border-radius: 8px;
+    /* padding: 2px 4px; */
 }

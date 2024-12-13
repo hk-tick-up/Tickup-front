@@ -7,7 +7,8 @@ export const useWebSocket = (gameRoomCode: string) => {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_WS_URL}/ws`);
+        //localhost
+        const ws = new WebSocket(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
 
         // ws.onopen = () => {
         //     console.log('WebSocket Connected');

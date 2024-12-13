@@ -3,14 +3,13 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
-import BottomNav from '../../../components/bottomNav';
+import BottomNav from '../../../components/BottomNav';
 import Modal from '../../../components/Modal';
-import '../../../css/WaitingRoom/root.css'
-import '../../../css/WaitingRoom/playWithFreinds.css'
-import { useSocket } from '@/app/hooks/useSocket';
+import '@/app/css/waiting-room/root.css';
+import '@/app/css/waiting-room/play-with-friends.css';
+// import { useSocket } from '@/app/hooks/useSocket';
 
 import * as StompJs from "@stomp/stompjs";
-// const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8007';
 
 
 export default function Component() {
@@ -19,6 +18,8 @@ export default function Component() {
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
     const [gameRoomCode, setGameRoomCode] = useState("");
+    //localhost
+    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_SOCKET_URL;
     
     useEffect(() => {
         const token = sessionStorage.getItem('bearer');
@@ -36,10 +37,11 @@ export default function Component() {
 
     const createRoom = async () => {
         try {
+            //localhost
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/create-private`;
             
             const requestBody = {
-                GameType: "Basic",
+                GameType: "Private",
                 userRole: "User"
             };
     
@@ -71,16 +73,16 @@ export default function Component() {
 
             const roomId = data.id;
             const roomCode = data.gameRoomCode;
-            const isPublic = data.isPublic;
+            const gameType = data.gameType;
 
             sessionStorage.setItem('currentRoomId', roomId);
             sessionStorage.setItem('gameRoomCode', roomCode);
-            sessionStorage.setItem('isPublic', isPublic);
+            sessionStorage.setItem('gameType', gameType);
             sessionStorage.setItem('isHost', 'true');
 
             const stompClient = new StompJs.Client({
                 //localhost
-                brokerURL: "ws://localhost:8007/ws",
+                brokerURL: NEXT_PUBLIC_SOCKET_URL,
                 connectHeaders: {
                     Authorization: `Bearer ${userInfo.token}`
                 }
@@ -120,6 +122,7 @@ export default function Component() {
         }
     
         try {
+            //localhost
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/join/${gameRoomCode}`, {
                 method: 'POST',
                 headers: {
@@ -141,7 +144,8 @@ export default function Component() {
     
                 const stompClient = new StompJs.Client({
                 //localhost
-                brokerURL: "ws://localhost:8007/ws",
+
+                brokerURL: NEXT_PUBLIC_SOCKET_URL,
                 connectHeaders: {
                     Authorization: `Bearer ${userInfo.token}`
                 },
@@ -210,7 +214,7 @@ export default function Component() {
                     <div className='font-design custom-color-gray middle-components-position'>
                         <div className='adjustment-position'>
                             <div className='flex items-center'>
-                                <img src='/images/WaitingRoom/hands.png' className='pr-1 h-6' alt="손" />
+                                <img src='/images/waiting-room/hands.png' className='pr-1 h-6' alt="손" />
                                 <div className='notice-text font-design'>친구와 함께 플레이 해요</div>
                             </div>
                         </div>

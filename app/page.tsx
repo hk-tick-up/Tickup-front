@@ -7,17 +7,21 @@ import BottomNav from './components/BottomNav'
 import FooterBlock from './components/FooterBlock'
 import FooterBlock_v2 from './components/FooterBlockV2'
 import axios from "axios";
-import './css/main.css'
+import '@/app/css/main.css'
+// import { BACKEND_URL } from "@/constants/backend-url";
 
 export default function HomePage() {
+  // const base_url = `${BACKEND_URL}/api/v1/users`;
   const [nickname, setNickname] = useState<string | null>("");
   const [point, setPoint] = useState<number>(0);
+  const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL
 
   useEffect(()=>{
     setNickname(sessionStorage.getItem("nickname"));
 
     //localhost
-    axios.get("http://localhost:8005/api/v1/users/point", {
+    // axios.get("http://localhost:8005/api/v1/users/point", {
+    axios.get(`${BACKEND_USER_URL}/point`, {
       headers: {
         "Authorization": `Bearer ${sessionStorage.getItem("bearer")}`
       }
@@ -27,7 +31,6 @@ export default function HomePage() {
       setPoint(res.data);
     })
     .catch(error => {
-      // console.error(error);
       console.log(error);
     });
   }, [])
@@ -82,7 +85,7 @@ export default function HomePage() {
               <ul>
                 <li><p><Image src='/images/icon/money-fly.png' alt="돈다발" width={50} height={50} /></p><p>해외 주식<br/>공부하기</p></li>
                 <li><p><Image src='/images/icon/down-chart.png' alt="하향차트" width={50} height={50} /></p><p>실제 경제뉴스<br/>보러가기</p></li>
-                <li><p><Image src='/images/linkTo/bulb.png' alt="전구" width={35} height={50} /></p><p>증권 상품<br/>구경하기</p></li>
+                <li><p className="pb-1"><Image src='/images/link-to/bulb.png' alt="전구" width={35} height={50} /></p><p>증권 상품<br/>구경하기</p></li>
                 <li><p><Image src='/images/icon/medal.png' alt="메달" width={50} height={50} /></p><p>상위 10%의<br/>비결</p></li>
               </ul>
             </div>

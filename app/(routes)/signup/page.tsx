@@ -2,12 +2,15 @@
 
 import SignUpForm from '@/app/components/sign-up/SignUpForm';
 import { Suspense } from 'react';
+import '@/app/css/user/sign-up.css';
 
 const SignUpPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SignUpForm/>
-    </Suspense>
+    <div className='sign-up-page'>
+      <Suspense fallback={<div>Loading...</div>}>
+        <SignUpForm/>
+      </Suspense>
+    </div>
   );
 }
 
