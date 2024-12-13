@@ -2,84 +2,69 @@
 
 'use client';
 
-import Image from "next/image";
+import '../css/components/bottom-nav.css';
 
-import '../css/BottomNav.css'
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Book, Gamepad2, Home, Users, User } from 'lucide-react';
 
-import studyImage from '../../public/images/금융 학습.png';
-import communityImage from '../../public/images/커뮤니티.png';
-import gameImage from '../../public/images/투자 게임.png';
-import homeImage from '../../public/images/Home.png';
-import myImage from '../../public/images/My.png';
-import { BaseSyntheticEvent, useEffect } from "react";
+const BottomNav = () => {
+    const pathname = usePathname();
 
-export default function BottomNav() {
-  // CSS filter generator by Barrett Sonntag
-  // #09D2CF
-  // const MINT = 'invert(62%) sepia(98%) saturate(1682%) hue-rotate(132deg) brightness(99%) contrast(93%)';
-  // #000000
-  const BLACK = 'invert(0%) sepia(100%) saturate(0%) hue-rotate(7deg) brightness(95%) contrast(102%)';
-  // #0F6A49
-  const GREEN = 'invert(27%) sepia(18%) saturate(2802%) hue-rotate(116deg) brightness(103%) contrast(88%)';
+    const isActive = (path: string) => {
+    return pathname === path;
+    };
 
-  const BASECOLOR = GREEN;
+    return (
+        <nav className="fixed nav-main">
+            <div className="nav-standardization">
+                <Link href="/learning" className="flex flex-col items-center">
+                    <Book 
+                    className={`icon-custom ${isActive('/learning') ? 'custom-blue' : 'text-gray-500'}`} 
+                    />
+                    <span className={`icon-title-custom ${isActive('/learning') ? 'custom-blue' : 'text-gray-500'}`}>
+                    금융 학습
+                    </span>
+                </Link>
 
-  // 첫 실행 시 홈 버튼 색상 변경
-  useEffect(() => {
-    const homeButton = document.querySelector('#home') as HTMLElement;
-    if (homeButton instanceof HTMLElement) {
-      const imgFromElem = homeButton.firstElementChild as HTMLImageElement;
-      const pFromElem = homeButton.lastElementChild as HTMLParagraphElement;
+                <Link href="/game" className="flex flex-col items-center">
+                    <Gamepad2 
+                        className={`icon-custom ${isActive('/game') ? 'custom-blue' : 'text-gray-500'}`} 
+                    />
+                    <span className={`icon-title-custom ${isActive('/game') ? 'custom-blue' : 'text-gray-500'}`}>
+                    투자 게임
+                    </span>
+                </Link>
 
-      if(homeButton !== null){
-        imgFromElem.style.filter = BASECOLOR;
-        pFromElem.style.filter = BASECOLOR;
-      }
-    }
-  },[BASECOLOR]);
+                <Link href="/" className="flex flex-col items-center">
+                    <Home 
+                        className={`icon-custom ${isActive('/') ? 'custom-blue' : 'text-gray-500'}`} 
+                    />
+                    <span className={`icon-title-custom ${isActive('/') ? 'custom-blue' : 'text-gray-500'}`}>
+                        Home
+                    </span>
+                </Link>
 
-  // 색상 변경
-  const selectMenu = (e:BaseSyntheticEvent) => {
-    const imgTag = e.currentTarget.firstElementChild;
-    const imgs = e.currentTarget.parentElement.children;
+                <Link href="/community" className="flex flex-col items-center">
+                    <Users 
+                        className={`icon-custom ${isActive('/community') ? 'custom-blue' : 'text-gray-500'}`} 
+                    />    
+                    <span className={`icon-title-custom ${isActive('/community') ? 'custom-blue' : 'text-gray-500'}`}>
+                        커뮤니티
+                    </span>
+                </Link>
 
-    for (const elem of imgs) {
-      const imgFromElem = elem.firstElementChild;
-      const pFromElem = elem.lastElementChild;
-      let color;
-      if(imgFromElem == imgTag){
-        color = BASECOLOR;
-      }
-      else {
-        color = BLACK;
-      }
-      imgFromElem.style.filter = color;
-      pFromElem.style.filter = color;
-    }
-  };
-
-  return (
-    <footer id='navigate' className="flex items-center justify-between p-4">
-      <button className='tab' onClick={selectMenu}>
-        <Image   className='img' src={studyImage} alt="금융 학습"/>
-        <p className='tabName'>금융 학습</p>
-      </button>
-      <button className='tab' onClick={selectMenu}>
-        <Image className='img' src={gameImage} alt="투자 게임"/>
-        <p className='tabName'>투자 게임</p>
-      </button>
-      <button id='home' className='tab' onClick={selectMenu}>
-        <Image className='img' src={homeImage} alt="Home"/>
-        <p className='tabName'>Home</p>
-      </button>
-      <button className='tab' onClick={selectMenu}>
-        <Image className='img' src={communityImage} alt="커뮤니티"/>
-        <p className='tabName'>커뮤니티</p>
-      </button>
-      <button className='tab' onClick={selectMenu}>
-        <Image className='img' src={myImage} alt="My"/>
-        <p className='tabName'>My</p>
-      </button>
-    </footer>
-  );
+                <Link href="/my" className="flex flex-col items-center">
+                    <User 
+                        className={`icon-custom ${isActive('/my') ? 'custom-blue' : 'text-gray-500'}`} 
+                    />
+                    <span className={`icon-title-custom ${isActive('/my') ? 'custom-blue' : 'text-gray-500'}`}>
+                        My
+                    </span>
+                </Link>
+            </div>
+        </nav>
+    );
 }
+
+export default BottomNav;

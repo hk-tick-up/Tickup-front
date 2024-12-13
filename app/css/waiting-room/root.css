@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-design {
+    font-family: 'Pretendard';
+    font-weight: 600;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+p {
+    line-height: 1.2;
+}
+
+a {
+    cursor: pointer;
+}
+
+.container {
+    background-color: #F3F8FD;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.box-position {
+    display: flex;
+    flex: 1 1 0%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.custom-color-gray{
+    color: #3C3D37;
+}
+
+.custom-title-font {
+    font-size: 30px;
+}
+
+.position-back-button {
+    text-align: left;
+    padding: 3.5em 2em 1em;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
