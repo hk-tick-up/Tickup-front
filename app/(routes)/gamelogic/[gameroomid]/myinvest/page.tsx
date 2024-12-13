@@ -10,20 +10,21 @@ import { useWebSocket } from '../context/WebSocketContext';
 import { usePathname } from 'next/navigation';
 
 interface InvestmentDetail {
-ticker: string;
-shares: number;
-pricePerShare: number;
-valuationAmount: number;
-averagePurchasePrice: number;
-rateReturn: number;
+    ticker: string;
+    companyName: string;
+    shares: number;
+    pricePerShare: number;
+    valuationAmount: number;
+    averagePurchasePrice: number;
+    rateReturn: number;
 }
 
 interface MyInvestmentResponse {
-balance: number;
-netAssets: number;
-valuationAmount: number;
-returnRate: number;
-investments: InvestmentDetail[];
+    balance: number;
+    netAssets: number;
+    valuationAmount: number;
+    returnRate: number;
+    investments: InvestmentDetail[];
 }
 
 export default function MyInvest() {
@@ -38,9 +39,9 @@ const gameRoomId = pathname.split('/')[2];
 
 const fetchInvestments = async () => {
     try {
-        const BASE_URL = 'http://localhost:8080';  // TradeBar와 동일하게 설정
+        const BASE_URL = 'http://localhost:8080';  
         
-        const response = await fetch(`${BASE_URL}/api/v1/1/trade/investments?userId=1`, {
+        const response = await fetch(`${BASE_URL}/api/v1/${gameRoomId}/trade/investments?userId=1`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -168,7 +169,7 @@ return (
                         >
                             <div className="investment-image">
                                 <Image
-                                    src={`/images/${investment.ticker}.png`}
+                                    src={`/images/${investment.companyName}.png`}
                                     alt={investment.ticker}
                                     width={45}
                                     height={45}
@@ -178,7 +179,7 @@ return (
                             <div className="flex-1">
                                 <div className="flex justify-between items-start">
                                     <div>
-                                        <p className="text-medium pb-1">{investment.ticker}</p>
+                                        <p className="text-medium pb-1">{investment.companyName}</p>
                                         <p className="text-sub">{investment.shares}주</p>
                                     </div>
                                     <div className="text-right">
@@ -202,8 +203,6 @@ return (
                     <p className="no-investments">보유 주식이 없습니다.</p>
                 )}
             </div>
-
-            {/* <TradeBar onTradeComplete={handleTradeComplete} selectedTicker="AAPL" /> */}
             <MyBalance {...myBalanceProps} />
         </div>
     </div>

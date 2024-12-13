@@ -141,18 +141,18 @@ export default function StockInfo() {
 
             {/* 종목 카테고리 */}
             <div className={styles.tradeBarContainer}>
-                {Object.keys(stockData).map((category) => (
+                {Object.keys(stockData).map((ticker) => (
                     <div
-                        key={category}
+                        key={ticker}
                         className={styles.categoryItem}
-                        onClick={() => setSelectedCategory(category)}
+                        onClick={() => setSelectedCategory(ticker)}
                     >
                         <div
                             className={`${styles.categoryContainer} ${
-                                selectedCategory === category ? styles.selected : ''
+                                selectedCategory === ticker ? styles.selected : ''
                             }`}
                         >
-                            <span className={styles.categoryLabel}>{category}</span>
+                            <span className={styles.categoryLabel}>{stockData[ticker]?.companyName || ticker}</span>
                         </div>
                     </div>
                 ))}
@@ -160,7 +160,7 @@ export default function StockInfo() {
 
             {/* 주가 정보 */}
             <div>
-                <h1 className={styles.stockHeader}>{selectedCategory} 주가</h1>
+                <h1 className={styles.stockHeader}>{stockData[selectedCategory]?.companyName || selectedCategory} 주가</h1>
                 <div className={styles.stockPrice}>
                     {currentStock.stockPrice.toLocaleString()}원
                 </div>
