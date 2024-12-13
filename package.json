@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev:win": "cross-env NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@stomp/stompjs": "^7.0.0",
+    "axios": "^1.7.9",
     "chart.js": "^4.4.6",
     "lucide-react": "^0.456.0",
     "next": "15.0.3",
@@ -24,6 +26,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/sockjs-client": "^1.5.4",
+    "cross-env": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "postcss": "^8",
