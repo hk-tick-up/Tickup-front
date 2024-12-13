@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -16,7 +17,6 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 } */
-
 
 @font-face {
   font-family: 'Youth';
@@ -64,5 +64,3 @@ body {
   width: 100%;
   max-width: 390px; 
 }
-
-
