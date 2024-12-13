@@ -12,6 +12,7 @@ export default {
       md: '768px',
       lg: '1024px'
     },
+    darkMode: 'selector',
     extend: {
       colors: {
         background: "var(--background)",
