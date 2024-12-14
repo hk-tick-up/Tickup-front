@@ -19,7 +19,7 @@ export default function Component() {
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
     const [gameRoomCode, setGameRoomCode] = useState("");
     //localhost
-    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'http://192.168.1.6:8007/ws';
+    const NEXT_PUBLIC_SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || 'ws://192.168.1.6:8007/ws';
     
     useEffect(() => {
         const token = sessionStorage.getItem('bearer');
@@ -39,7 +39,6 @@ export default function Component() {
         try {
             //localhost
             const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/create-private`;
-            
             const requestBody = {
                 GameType: "Private",
                 userRole: "User"
@@ -78,40 +77,14 @@ export default function Component() {
             sessionStorage.setItem('currentRoomId', roomId);
             sessionStorage.setItem('gameRoomCode', roomCode);
             sessionStorage.setItem('gameType', gameType);
-            sessionStorage.setItem('isHost', 'true');
 
-            const stompClient = new StompJs.Client({
-                //localhost
-                brokerURL: NEXT_PUBLIC_SOCKET_URL,
-                connectHeaders: {
-                    Authorization: `Bearer ${userInfo.token}`
-                }
-            });
-    
-            stompClient.onConnect = (frame) => {
-                console.log('Connected: ' + frame);
-                stompClient.subscribe(`/topic/waiting-room/${roomId}`, (greeting) => {
-                    console.log(greeting)
-                });
-            };
-
-            stompClient.onWebSocketError = (error) => {
-                console.error('Error with websocket', error);
-            };
-            
-            stompClient.onStompError = (frame) => {
-                console.error('Broker reported error: ' + frame.headers['message']);
-                console.error('Additional details: ' + frame.body);
-            };
-            
-            stompClient.activate();
-    
             return roomId;
         } catch (error) {
             console.error("방 생성 중 오류 발생:", error);
             throw error;
         }
     };
+
     const joinRoom = async (e: React.FormEvent) => {
         e.preventDefault();
     
@@ -122,60 +95,36 @@ export default function Component() {
         }
     
         try {
-            //localhost
-            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/join/${gameRoomCode}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${userInfo.token}`
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/join/${gameRoomCode}`, 
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${userInfo.token}`
+                    },
+                    credentials: "include"
                 }
-            });
+            );
     
             if (!response.ok) {
-                throw new Error(`방을 찾을 수 없습니다.`);
-            }    
+                throw new Error(`방을 찾을 수 없습니다. (${response.status})`);
+            }
     
             const data = await response.json();
-            
-            if (data && data.roomId) {
-                const roomId = data.roomId;
-                sessionStorage.setItem('currentRoomId', roomId.toString());
-                sessionStorage.setItem('gameRoomCode', gameRoomCode);
     
-                const stompClient = new StompJs.Client({
-                //localhost
-
-                brokerURL: NEXT_PUBLIC_SOCKET_URL,
-                connectHeaders: {
-                    Authorization: `Bearer ${userInfo.token}`
-                },
-            });
-    
-                stompClient.onConnect = function (frame) {
-                    console.log('STOMP 연결 성공:', frame);
-                    stompClient.subscribe(`/topic/waiting-room/${roomId}`, function (message) {
-                        console.log('메시지 수신:', message.body);
-                    });
-
-                    stompClient.publish({
-                        destination: `/app/waiting-room/${roomId}`,
-                        body: JSON.stringify({ userId: userInfo.userId, nickname: userInfo.nickname })
-                    });
-
-                    router.push(`/game/waiting/${roomId}`);
-                };
-
-                stompClient.onStompError = function (frame) {
-                    console.error('STOMP 에러:', frame.headers['message']);
-                    console.error('추가 상세:', frame.body);
-                    setErrorMessage("웹소켓 연결 중 오류가 발생했습니다.");
-                    setIsModalOpen(true);
-                };
-
-                stompClient.activate();
-            } else {
-                throw new Error("방 정보를 받을 수 없습니다.");
+            if (!data || !data.roomId) {
+                throw new Error("존재하지 않는 방입니다.");
             }
+    
+            // 세션 스토리지에 정보 저장
+            sessionStorage.setItem('currentRoomId', data.roomId.toString());
+            sessionStorage.setItem('gameRoomCode', gameRoomCode);
+            // sessionStorage.setItem('gameType', 'Private');
+    
+            // WebSocket 연결은 하지 않고 바로 라우팅
+            router.push(`/game/waiting/${data.roomId}`);
+            
         } catch (error) {
             console.error("방 입장 중 오류:", error);
             setErrorMessage(error instanceof Error ? error.message : "방 입장 중 오류가 발생했습니다.");

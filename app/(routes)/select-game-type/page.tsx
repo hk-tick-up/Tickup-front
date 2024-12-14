@@ -73,6 +73,7 @@ export default function Component() {
 
             sessionStorage.setItem('currentRoomId', data.roomId.toString());
             sessionStorage.setItem('gameType', gameType);
+            sessionStorage.setItem('shouldTriggerUserJoined', 'true');
 
             const stompClient = new StompJs.Client({
                 //localhost

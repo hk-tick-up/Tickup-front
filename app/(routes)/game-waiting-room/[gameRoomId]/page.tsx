@@ -8,12 +8,22 @@ import '@/app/css/waiting-room/game-waiting-room.css'
 import Modal from '../../../components/Modal'
 import * as StompJs from "@stomp/stompjs";
 import SockJS from 'sockjs-client';
+import { resolve } from 'path';
+import { rejects } from 'assert';
 
 interface User {
     id: string;
     nickname: string;
     status: '대기중' | '준비완료';
 }   
+
+interface ParticipantsInfo {
+    orderNum: number;
+    userId: string;
+    nickname: string;
+    gameType: string;
+    currentRoomId: number;
+}
 
 export default function WaitingRoom() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,9 +37,7 @@ export default function WaitingRoom() {
     const params = useParams();
     const gameRoomId = params.gameRoomId as string;
     const [shouldConnect, setShouldConnect] = useState(true);
-    
-    
-    const { stompClient, setStompClient, isConnected, error, sendMessage, reconnect } = useWebSocket(gameRoomId);
+    const { stompClient, setStompClient, isConnected } = useWebSocket(gameRoomId);
     
     
     useEffect(() => {
@@ -40,7 +48,15 @@ export default function WaitingRoom() {
         const token = sessionStorage.getItem('bearer');
         const code = sessionStorage.getItem('gameRoomCode');
         const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
+        const currentRoomId = sessionStorage.getItem('currentRoomId');
     
+        if (storedGameType === 'Private' && code) {
+            setGameRoomCode(code);
+            setGameType('Private');
+        } else {
+            setGameType('Basic');
+        }
+
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
             router.push('/signin');
@@ -62,53 +78,37 @@ export default function WaitingRoom() {
         };
         setCurrentUser(initialUser);
         setUsers([initialUser]);
+
     
         if (stompClient && isConnected) {
             const setupConnection = async () => {
                 try {
-                    // 기존 구독 해제
                     subscriptionIds.forEach(id => {
                         stompClient.unsubscribe(id);
-                    });
+                    });      
 
-                    // 새로운 구독 생성 및 ID 저장
-                    const newSubscription = stompClient.subscribe(
-                        `/topic/waiting-room/${gameRoomId}`,
+                    const subscription = stompClient.subscribe(
+                        `/topic/waiting-room/${currentRoomId}`,
                         (message) => {
-                            const data = JSON.parse(message.body);
-                            switch (data.type) {
-                                case 'USER_JOINED':
-                                    setUsers(prev => [...prev, data.user]);
-                                    break;
-                                case 'USER_LEFT':
-                                    setUsers(prev => prev.filter(user => user.id !== data.userId));
-                                    break;
-                                case 'UPDATE_USERS':
-                                    setUsers(data.users);
-                                    break;
-                                case 'GAME_START':
-                                    router.push(`/game/play/${gameRoomId}`);
-                                    break;
-                            }
+                            const participantsList = JSON.parse(message.body);
+                            const updatedUsers = participantsList.map((participant) => ({
+                                id: participant.userId,
+                                nickname: participant.nickname,
+                                status: '대기중', // 상태 정보가 있다면 해당 값으로 설정
+                            }));
+                            setUsers(updatedUsers);
                         }
                     );
                     
-                    setSubscriptionIds(prev => [...prev, newSubscription.id]);
-    
-                    stompClient.publish({
-                        destination: `/app/waiting-room/${gameRoomId}`,
-                        body: JSON.stringify({
-                            type: 'JOIN_ROOM',
-                            gameRoomId,
-                            user: initialUser
-                        })
-                    });
+                    setSubscriptionIds(prev => [...prev, subscription.id]);
+                    
                 } catch (error) {
                     console.error('Error setting up connection:', error);
                 }
             };
-    
+
             setupConnection();
+            
         }
     
         return () => {
@@ -180,60 +180,74 @@ export default function WaitingRoom() {
     };
 
     const leaveRoom = useCallback(async () => {
+        const userId = sessionStorage.getItem('id');
+        const token = sessionStorage.getItem('bearer'); 
+        
         try {
-            const userId = sessionStorage.getItem('id');
-            
-            setShouldConnect(false);
-            
-            if (stompClient?.active) {
-                try {
-                    await new Promise<void>((resolve, reject) => {
-                        stompClient.publish({
-                            destination: `/app/waiting-room/${gameRoomId}/leave`,
-                            body: JSON.stringify({
-                                type: 'LEAVE_ROOM',
-                                userId: userId,
-                                gameRoomId: gameRoomId
-                            }),
-                            headers: {}, 
-                            skipContentLengthHeader: false,
-                        });
-                        resolve();
-                    });
-
-                    // 모든 저장된 구독 ID에 대해 구독 해제
-                    subscriptionIds.forEach(id => {
-                        stompClient.unsubscribe(id);
-                    });
-                    setSubscriptionIds([]); // 구독 ID 목록 초기화
-
-                    await stompClient.deactivate();
-                    
-                    if (setStompClient) {
-                        setStompClient(null);
-                    }
-                } catch (err) {
-                    console.error('Error during STOMP cleanup:', err);
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/leave/${gameRoomId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}` 
+                    },
+                    credentials: 'include'
                 }
+            );
+    
+            if (!response.ok) {
+                console.error('API Response not OK:', response.status);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+    
+            if (stompClient?.active) {
 
+                stompClient.publish({
+                    destination: `/app/waiting-room/leave/${gameRoomId}`,
+                    body: JSON.stringify({
+                        type: 'LEAVE_ROOM',
+                        userId: userId,
+                        gameRoomId: gameRoomId
+                    })
+                });
+    
+                subscriptionIds.forEach(id => {
+                    stompClient.unsubscribe(id);
+                });
+                setSubscriptionIds([]);
+    
+                await stompClient.deactivate();
+                setStompClient(null);
+            }
+    
             sessionStorage.removeItem('currentRoomId');
             sessionStorage.removeItem('gameRoomCode');
-            
             router.push('/game/together');
-            
+    
         } catch (error) {
-            console.error('Error leaving room:', error);
-            setShouldConnect(false);
+            console.error('Error during room leave:', error);
+
+            if (stompClient?.active) {
+                try {
+                    subscriptionIds.forEach(id => stompClient.unsubscribe(id));
+                    setSubscriptionIds([]);
+                    await stompClient.deactivate();
+                    setStompClient(null);
+                } catch (stompError) {
+                    console.error('Error during STOMP cleanup:', stompError);
+                }
+            }
+            
+            setErrorMessage("서버 연결 중 오류가 발생했습니다. 다시 시도해주세요.");
+            setIsModalOpen(true);
+            
             sessionStorage.removeItem('currentRoomId');
             sessionStorage.removeItem('gameRoomCode');
             router.push('/game/together');
         }
-    }, [stompClient, setStompClient, gameRoomId, router, subscriptionIds]);
-    
-    
+    }, [gameRoomId, stompClient, setStompClient, subscriptionIds, router]);
 
-    const isHost = currentUser && users.length > 0 && currentUser.id === users[0].id;
 
     return (
         <div className="relative container">
@@ -242,6 +256,7 @@ export default function WaitingRoom() {
                     <img src="/images/exit-game-icon.png" className="w-7" alt="게임 나가기" />
                 </button>
             </div>
+            
             <div className="room-code">
                 {gameType === 'Basic' ? (
                     <span className="font-[Freesentation-9Black]">
@@ -264,14 +279,17 @@ export default function WaitingRoom() {
                     )
                 )}
             </div>
+            {/* <div>
+                <button onClick={dataDelever}> data</button>
+            </div> */}
             <div className="user-list-container mx-auto">
                 <ul>
-                    {users.map((user, index) => (
+                    {users.map((user) => (
                         <li key={user.id}>
                             <div className="flex w-full mx-10 justify-between gap-20 items-center">
-                                <div className="flex-1 text-xl">
-                                    {index + 1}. <span className={user.id === currentUser?.id ? 'font-bold' : ''}>{user.nickname}</span>
-                                </div> 
+                            <div className="flex-1 text-xl">
+                                {user.orderNum}. <span className={user.id === currentUser?.id ? 'font-bold' : ''}>{user.nickname}</span>
+                            </div>
                                 <div className="flex-1 flex justify-center">
                                     <p className={user.status === '대기중' ? 'status-wait' : 'status-ready'}>
                                         {user.status}
@@ -281,7 +299,7 @@ export default function WaitingRoom() {
                         </li>
                     ))}
                 </ul>
-                <div>
+                {/* <div>
                     {isHost ? ( 
                         <button
                             onClick={handleStart}
@@ -298,7 +316,7 @@ export default function WaitingRoom() {
                             {currentUser?.status === '준비완료' ? '준비취소' : '준비완료'}
                         </button>
                     )}
-                </div>
+                </div> */}
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <p>{errorMessage}</p>
