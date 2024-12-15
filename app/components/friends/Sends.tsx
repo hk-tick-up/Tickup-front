@@ -1,21 +1,70 @@
-import { useState } from "react";
+import { logout } from "@/app/utils/logout";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { BaseSyntheticEvent, useEffect, useState } from "react";
 
 type friend = {
   id: string;
   nickname: string;
 }
 
+// 보낸 요청들
 const Sends = () => {
-  // 보낸 요청들
-  // 백엔드에 엔드포인트 추가하거나 수정해야
-  // GET /friend-requests에 쿼리 붙여서 보낸/받은 요청 구분
+  const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL;
+
+  const base_url = `${BACKEND_USER_URL}`;
   const [friends, setFriends] = useState<Array<friend>>([]);
+  const router = useRouter();
+
+  useEffect(()=>{
+    getSentRequests();
+  },[]);
+
+  const getSentRequests = () => {
+    const header = {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("bearer")}`
+      }
+    };
+    axios.get(`${base_url}/friend-requests?send=true`,header)
+    .then(response => {
+      setFriends(response.data);
+    }).catch(error=>{
+      console.error(error);
+    })
+  }
+
+  const deleteRequest = (e:BaseSyntheticEvent, targetId:string) => {
+    e.preventDefault();
+
+    console.log(`try to delete request to ${targetId}`);
+
+    const header = {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("bearer")}`
+      }
+    };
+    axios.delete(`${base_url}/friend-requests/${targetId}`, header)
+    .then(response => {
+      console.log(response.data);
+
+      e.target.innerText = "취소 완료";
+      e.target.disabled = true;
+    }).catch(error=>{
+      console.error(error);
+    })
+  }
+  
   return (
-    <div title="친구 목록">
-      { friends.length > 0 ?
+    <div title="내 요청 목록">
+      <p>내 요청 목록</p>
+      { friends.length > 0 &&
         friends.map((value, index)=>
-        <div key={index}>친구 닉네임: {value.nickname}</div>
-      ):<p>친구 요청을 보내 보세요</p>}
+        <div className="flex flex-row justify-between" key={index}>
+          <p>친구 닉네임: {value.nickname}</p>
+          <button onClick={e => deleteRequest(e, value.id)}>취소버튼</button>
+        </div>
+      )}
     </div>
   )
 }

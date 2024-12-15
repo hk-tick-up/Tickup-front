@@ -25,12 +25,12 @@ export default function MyFriends(){
     <div>
       <p>MyFriends</p>
 
-      <p>TAB1: Friends component</p>
+      <p>기능1: 친구 목록</p>
       <p>1. 친구 목록</p>
       <p>2. 친구 삭제 버튼</p>
       <p>3. 친구 프로필 보기</p>
 
-      <p>TAB2: Requests Component</p>
+      <p>기능2: 유저 검색 및 친구 요청</p>
       <p>1. 유저 이름(id)로 검색하기</p>
       <p>2. 친구 요청하기</p>
       <p>3. 유저 프로필 보기</p>
@@ -44,9 +44,9 @@ export default function MyFriends(){
         </div>
         {tab === "friends" && <Friends/> }
         {tab === "requests" && <Requests/> } */}
-        <Sends/>
-        <Requests/>
-        <Friends/>
+        <Sends/> {/* 보낸 요청 */}
+        <Requests/> {/* 받은 요청 */}
+        <Friends/> {/* 친구 관계 */}
       </div>
     </div>
   )

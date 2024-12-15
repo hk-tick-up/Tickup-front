@@ -1,6 +1,6 @@
 'use client';
 import axios from "axios";
-import { BaseSyntheticEvent, KeyboardEvent, useState } from 'react';
+import { BaseSyntheticEvent, KeyboardEvent, useEffect, useState } from 'react';
 import AcceptRequest from "./AcceptRequest";
 
 type username = {
@@ -14,8 +14,13 @@ const Find = () => {
 
   const [userToFind, setUserToFind] = useState<string>("");
   const [found, setFound] = useState<username>();
+  const [currentAccount, setCurrentAccount] = useState<string|null>("");
   
   const base_url = `${BACKEND_USER_URL}`;
+
+  useEffect(()=>{
+    setCurrentAccount(sessionStorage.getItem("id"));
+  }, []);
 
   const setKeyword = (e:BaseSyntheticEvent) => {
     setUserToFind(e.target.value);
@@ -47,13 +52,16 @@ const Find = () => {
         found &&
         <div>
           <p>이 유저를 찾으셨나요?</p>
-          <p>닉네임(아이디): {found.nickname}<sub>{found.id}</sub></p>
-          {/* 프로필사진? */}
-          {/* 친구 신청 버튼 */}
-            {/* 친구 여부에 따라 버튼 달라져야 */}
-          <AcceptRequest found={found}/>
+          <div className="flex flex-row justify-between">
+            <p>닉네임(아이디): {found.nickname}<sub>{found.id}</sub></p>
+            {/* 프로필사진? */}
+            {/* 친구 신청 버튼 */}
+              {/* 친구 여부에 따라 버튼 달라져야 */}
+            <AcceptRequest found={found}/>
+          </div>
         </div>
       }
+      <p>현재 접속 중인 계정: {currentAccount}</p>
     </div>
   )
 }

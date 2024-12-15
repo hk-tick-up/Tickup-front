@@ -8,6 +8,7 @@ type friend = {
   nickname: string;
 }
 
+// 친구 목록
 const Friends = () => {
   const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL;
 
@@ -25,13 +26,7 @@ const Friends = () => {
     .then(response => {
       setFriends(response.data);
     }).catch(error=>{
-      if(error.status === 401){
-        logout();
-        router.push("/signin?back=true");
-      }
-      else{
-        console.error(error);
-      }
+      console.error(error);
     })
   },[]);
 
