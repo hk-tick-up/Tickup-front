@@ -116,13 +116,11 @@ export default function Component() {
             if (!data || !data.roomId) {
                 throw new Error("존재하지 않는 방입니다.");
             }
-    
-            // 세션 스토리지에 정보 저장
+
             sessionStorage.setItem('currentRoomId', data.roomId.toString());
             sessionStorage.setItem('gameRoomCode', gameRoomCode);
-            // sessionStorage.setItem('gameType', 'Private');
+            sessionStorage.setItem('gameType', 'Private');
     
-            // WebSocket 연결은 하지 않고 바로 라우팅
             router.push(`/game/waiting/${data.roomId}`);
             
         } catch (error) {

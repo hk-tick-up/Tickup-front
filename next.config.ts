@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
       {
         source: '/game/waiting',
         destination: '/game-waiting-room',
+      },
+      {
+        source: '/game/waiting-loading',
+        destination: '/game-waiting-room/game-waiting-loading',
       }
     ];
   },

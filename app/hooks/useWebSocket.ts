@@ -2,20 +2,26 @@ import { useState, useEffect, useCallback } from 'react';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
-export const useWebSocket = (gameRoomId: string) => {
+export const useWebSocket = (gameRoomId: string, onMessageReceived?: (data: any) => void) =>  {
     const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [subscriptions, setSubscriptions] = useState<StompJs.StompSubscription[]>([]);
 
-    const userId = sessionStorage.getItem('id');
-    const nickname = sessionStorage.getItem('nickname');
-    const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
-    const currentRoomId = sessionStorage.getItem('currentRoomId');
+    // const userId = sessionStorage.getItem('id');
+    // const nickname = sessionStorage.getItem('nickname');
+    // const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
+    // const currentRoomId = sessionStorage.getItem('currentRoomId');
 
     const initializeWebSocket = useCallback(() => {
+        const userId = typeof window !== 'undefined' ? sessionStorage.getItem('id') : null;
+        const nickname = typeof window !== 'undefined' ? sessionStorage.getItem('nickname') : null;
+        const storedGameType = typeof window !== 'undefined' ? sessionStorage.getItem('gameType') as 'Basic' | 'Private' : 'Basic';
+        const currentRoomId = typeof window !== 'undefined' ? sessionStorage.getItem('currentRoomId') : null;
+        const token = typeof window !== 'undefined' ? sessionStorage.getItem('bearer') : null;
+
         const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://192.168.1.6:8007/ws";
-        const token = sessionStorage.getItem('bearer');
+        // const token = sessionStorage.getItem('bearer');
 
         if (!token) {
             setError(new Error('Authentication token not found'));
@@ -35,9 +41,9 @@ export const useWebSocket = (gameRoomId: string) => {
         debug: (str) => {
             console.log('STOMP: ' + str);
         },
-         // 자동 재연결 비활성화
-         reconnectDelay: 5000, // Update: Added reconnectDelay
-         // heartbeat 간격 증가
+
+        reconnectDelay: 5000,
+
         heartbeatIncoming: 25000,
         heartbeatOutgoing: 25000,
         connectionTimeout: 30000,
@@ -60,8 +66,15 @@ export const useWebSocket = (gameRoomId: string) => {
                 `/topic/waiting-room/${gameRoomId}`,
                 (message) => {
                     console.log('Received message:', message.body);
+                    try {
+                        const parsedData = JSON.parse(message.body);
+                        onMessageReceived?.(parsedData);
+                    } catch (e) {
+                        console.error('Message parsing error:', e);
+                    }
                 }
             );
+
             client.publish({
                 destination: `/app/waiting-room/${currentRoomId}`,
                 body: JSON.stringify({

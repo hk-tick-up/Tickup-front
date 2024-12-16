@@ -3,6 +3,8 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useWebSocket } from '@/app/hooks/useWebSocket';
 import { useParams, useRouter } from 'next/navigation';
+// import { ParticipantsInfo } from '@/app/types/ParticipantsInfo';
+import { ParticipantsInfo, createInitialUser } from '@/app/types/Game';
 import '@/app/css/waiting-room/root.css'
 import '@/app/css/waiting-room/game-waiting-room.css'
 import Modal from '../../../components/Modal'
@@ -11,24 +13,11 @@ import SockJS from 'sockjs-client';
 import { resolve } from 'path';
 import { rejects } from 'assert';
 
-interface User {
-    id: string;
-    nickname: string;
-    status: '대기중' | '준비완료';
-}   
-
-interface ParticipantsInfo {
-    orderNum: number;
-    userId: string;
-    nickname: string;
-    gameType: string;
-    currentRoomId: number;
-}
 
 export default function WaitingRoom() {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [users, setUsers] = useState<User[]>([]);
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [users, setUsers] = useState<ParticipantsInfo[]>([]);
+    const [currentUser, setCurrentUser] = useState<ParticipantsInfo | null>(null);
     const [gameRoomCode, setGameRoomCode] = useState<string | null>(null);
     const [gameType, setGameType] = useState<'Basic' | 'Private' | 'Contest'>('Basic');
     const [errorMessage, setErrorMessage] = useState("");
@@ -37,11 +26,29 @@ export default function WaitingRoom() {
     const params = useParams();
     const gameRoomId = params.gameRoomId as string;
     const [shouldConnect, setShouldConnect] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const { stompClient, setStompClient, isConnected } = useWebSocket(gameRoomId);
+    const { userStatus, setUserStatus } = useState<'준비 완료' | '대기중' >('대기중');
     
-    
+    const handleMessageReceived = useCallback((data: ParticipantsInfo[]) => {
+        if (!data) return;
+        const updatedUsers = data.map(user => ({
+            ...user,
+            status: user.userStatus || '대기중' // 기본값 설정
+        }));
+        setUsers(updatedUsers.sort((a, b) => a.orderNum - b.orderNum));
+        setIsLoading(false);
+        const currentUserInfo = updatedUsers.find(u => u.userId === currentUser?.userId);
+        if (currentUserInfo) {
+        setCurrentUser(prev => ({
+            ...prev!,
+            userStatus: currentUserInfo.userStatus
+        }));
+    }
+}, [currentUser]);
+
     useEffect(() => {
-        if (!shouldConnect) return;
+        if (!shouldConnect || !stompClient || !isConnected) return;
 
         const userId = sessionStorage.getItem('id');
         const nickname = sessionStorage.getItem('nickname');
@@ -49,58 +56,70 @@ export default function WaitingRoom() {
         const code = sessionStorage.getItem('gameRoomCode');
         const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
         const currentRoomId = sessionStorage.getItem('currentRoomId');
-    
-        if (storedGameType === 'Private' && code) {
-            setGameRoomCode(code);
-            setGameType('Private');
-        } else {
-            setGameType('Basic');
-        }
 
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
             router.push('/signin');
             return;
         }
-    
-        if (storedGameType) {
-            setGameType(storedGameType);
-        }
-    
-        if (storedGameType === 'Private' && code) {
-            setGameRoomCode(code);
-        }
-    
-        const initialUser: User = {
-            id: userId,
-            nickname: nickname,
-            status: '대기중'
-        };
-        setCurrentUser(initialUser);
-        setUsers([initialUser]);
 
+        if (code) {
+            setGameRoomCode(code);
+            setGameType(storedGameType || 'Basic');
+        }
     
+        const initialUser = createInitialUser(
+            userId,
+            nickname,
+            gameRoomId,
+            storedGameType || 'Basic',
+        );
+        initialUser.userStatus = '대기중';
+        setCurrentUser(initialUser);
+        // setUsers([initialUser]);
+
         if (stompClient && isConnected) {
             const setupConnection = async () => {
                 try {
                     subscriptionIds.forEach(id => {
-                        stompClient.unsubscribe(id);
-                    });      
+                        if (stompClient.active) {
+                            stompClient.unsubscribe(id);
+                        }
+                    });
+                    setSubscriptionIds([]);
 
                     const subscription = stompClient.subscribe(
-                        `/topic/waiting-room/${currentRoomId}`,
+                        `/topic/waiting-room/${gameRoomId}`,
                         (message) => {
-                            const participantsList = JSON.parse(message.body);
-                            const updatedUsers = participantsList.map((participant) => ({
-                                id: participant.userId,
-                                nickname: participant.nickname,
-                                status: '대기중', // 상태 정보가 있다면 해당 값으로 설정
+                            const participantsList: ParticipantsInfo[] = JSON.parse(message.body);
+                            const updatedList = participantsList.map(user => ({
+                                ...user,
+                                userStatus: user.userStatus || '대기중'
                             }));
-                            setUsers(updatedUsers);
+                            
+                            setUsers(updatedList.sort((a, b) => a.orderNum - b.orderNum));
+                            
+                            const currentUserInfo = updatedList.find(u => u.userId === currentUser?.userId);
+                            if (currentUserInfo) {
+                                setCurrentUser(prev => ({
+                                    ...prev!,
+                                    status: currentUserInfo.userStatus
+                                }));
+                            }
                         }
                     );
+
+                    setSubscriptionIds([subscription.id]);
+
+                    // 초기 사용자 정보 전송
+                    await new Promise(resolve => setTimeout(resolve, 10)); // 연결 안정화를 위한 짧은 대기
                     
-                    setSubscriptionIds(prev => [...prev, subscription.id]);
+                    stompClient.publish({
+                        destination: `/app/waiting-room/${gameRoomId}`,
+                        body: JSON.stringify(initialUser)
+                    });
+
+                    setIsLoading(false);
                     
                 } catch (error) {
                     console.error('Error setting up connection:', error);
@@ -123,33 +142,50 @@ export default function WaitingRoom() {
                 setSubscriptionIds([]);
             }
         };
-    }, []);
+    }, [ isConnected, shouldConnect, gameRoomId, gameType]);
 
     const handleReady = useCallback(() => {
-        if (stompClient?.active && currentUser) {
-            stompClient.publish({
-                destination: `/app/waiting-room/${gameRoomId}/status`,
-                body: JSON.stringify({
-                    type: 'UPDATE_STATUS',
-                    gameRoomId,
-                    userId: currentUser.id,
-                    status: currentUser.status === '대기중' ? '준비완료' : '대기중'
-                })
-            });
-        }
+        if (!stompClient?.active || !currentUser) return;
+
+        const newStatus = currentUser.userStatus === '대기중' ? '준비완료' : '대기중';
+
+        setCurrentUser(prev => 
+            prev ? { ...prev, userStatus: newStatus } : null
+        );
+
+        setUsers(prevUsers => 
+            prevUsers.map(user => 
+                user.userId === currentUser.userId 
+                    ? { ...user, userStatus: currentUser.userStatus }
+                    : user
+            )
+        );
+        
+        stompClient.publish({
+            destination: `/app/waiting-room/${gameRoomId}/status`,
+            body: JSON.stringify({
+                userId: currentUser.userId,
+                userStatus: newStatus
+            })
+        });
+
+
     }, [stompClient, currentUser, gameRoomId]);
 
     const handleStart = useCallback(() => {
-        if (stompClient?.active) {
-            stompClient.publish({
-                destination: `/app/waiting-room/${gameRoomId}/start`,
-                body: JSON.stringify({
-                    type: 'START_GAME',
-                    gameRoomId
-                })
-            });
-        }
-    }, [stompClient, gameRoomId]);
+        if (!stompClient?.active || !currentUser) return;
+        if (!users.every(user => user.orderNum === 1 || user.userStatus === '준비완료')) return;
+
+        stompClient.publish({
+            destination: `/app/waiting-room/${gameRoomId}/start`,
+            body: JSON.stringify({
+                type: 'START_GAME',
+                gameRoomId
+            })
+        });
+    },  [stompClient, currentUser, users, gameRoomId]);
+
+    
 
     const copyRoomCode = async () => {
         if (gameRoomCode) {
@@ -248,6 +284,10 @@ export default function WaitingRoom() {
         }
     }, [gameRoomId, stompClient, setStompClient, subscriptionIds, router]);
 
+    if (isLoading) {
+        return <div className="flex justify-center items-center h-screen">로딩중...</div>;
+    }
+
 
     return (
         <div className="relative container">
@@ -283,40 +323,50 @@ export default function WaitingRoom() {
                 <button onClick={dataDelever}> data</button>
             </div> */}
             <div className="user-list-container mx-auto">
-                <ul>
-                    {users.map((user) => (
-                        <li key={user.id}>
-                            <div className="flex w-full mx-10 justify-between gap-20 items-center">
+            <ul>
+                {users.map((user) => (
+                    <li key={user.userId}>
+                        <div className="flex w-full mx-10 justify-between gap-20 items-center">
                             <div className="flex-1 text-xl">
-                                {user.orderNum}. <span className={user.id === currentUser?.id ? 'font-bold' : ''}>{user.nickname}</span>
+                                {user.orderNum}. <span className={user.userId === currentUser?.userId ? 'font-bold' : ''}>{user.nickname}</span>
                             </div>
-                                <div className="flex-1 flex justify-center">
-                                    <p className={user.status === '대기중' ? 'status-wait' : 'status-ready'}>
-                                        {user.status}
-                                    </p>
-                                </div>
+                            <div className="flex-1 flex justify-center">
+                                <p className={user.userStatus === '대기중' ? 'status-wait' : 'status-ready'}>
+                                    {user.userStatus}
+                                </p>
                             </div>
-                        </li>
-                    ))}
-                </ul>
-                {/* <div>
-                    {isHost ? ( 
-                        <button
-                            onClick={handleStart}
-                            disabled={users.slice(1).some(user => user.status === '대기중')}
-                            className={`${users.slice(1).every(user => user.status === '준비완료') ? 'bgame-btn' : 'not-yet cursor-not-allowed'}`}
-                        >
-                            시작하기
-                        </button>
-                    ) : (
-                        <button
+                        </div>
+                    </li>
+                ))}
+            </ul>
+                <div className="mt-6 flex justify-center">
+                    {currentUser && users.length > 0 && (
+                        users.find(u => u.userId === currentUser.userId)?.orderNum === 1 ? (
+                            <button
+                                onClick={handleStart}
+                                disabled={!users.every(user => user.orderNum === 1 || user.userStatus === '준비완료')}
+                                className={`px-6 py-3 rounded-lg ${
+                                    users.every(user => user.orderNum === 1 || user.userStatus === '준비완료')
+                                    ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                                    : 'bg-gray-300 cursor-not-allowed text-gray-500'
+                                }`}
+                            >
+                                게임 시작
+                            </button>
+                        ) : (
+                            <button
                             onClick={handleReady}
-                            className={`game-btn ${currentUser?.status === '준비완료' ? 'cancle-btn' : 'game-btn'}`}
+                            className={`px-6 py-3 rounded-lg ${
+                                currentUser?.userStatus === '준비완료'
+                                ? 'bg-red-500 hover:bg-red-600 text-white'
+                                : 'bg-green-500 hover:bg-green-600 text-white'
+                            }`}
                         >
-                            {currentUser?.status === '준비완료' ? '준비취소' : '준비완료'}
+                            {currentUser?.userStatus === '준비완료' ? '준비 취소' : '준비 완료'}
                         </button>
+                        )
                     )}
-                </div> */}
+                </div>
             </div>
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
                 <p>{errorMessage}</p>
