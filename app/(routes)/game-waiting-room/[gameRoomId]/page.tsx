@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 import { useWebSocket } from '@/app/hooks/useWebSocket';
 import { useParams, useRouter } from 'next/navigation';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
 // import { ParticipantsInfo } from '@/app/types/ParticipantsInfo';
 import { ParticipantsInfo, createInitialUser } from '@/app/types/Game';
 import '@/app/css/waiting-room/root.css'
@@ -28,7 +29,7 @@ export default function WaitingRoom() {
     const [shouldConnect, setShouldConnect] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const { stompClient, setStompClient, isConnected } = useWebSocket(gameRoomId);
-    const { userStatus, setUserStatus } = useState<'준비 완료' | '대기중' >('대기중');
+    // const { userStatus, setUserStatus } = useState<'준비 완료' | '대기중' >('대기중');
     
     const handleMessageReceived = useCallback((data: ParticipantsInfo[]) => {
         if (!data) return;
@@ -122,7 +123,10 @@ export default function WaitingRoom() {
                     setIsLoading(false);
                     
                 } catch (error) {
-                    console.error('Error setting up connection:', error);
+                    console.error('연결 설정 중 오류가 발생했습니다:', error);
+                    setIsLoading(false);
+                    setErrorMessage("연결 중 오류가 발생했습니다. 페이지를 새로고침해 주세요.");
+                    setIsModalOpen(true);
                 }
             };
 
@@ -285,7 +289,7 @@ export default function WaitingRoom() {
     }, [gameRoomId, stompClient, setStompClient, subscriptionIds, router]);
 
     if (isLoading) {
-        return <div className="flex justify-center items-center h-screen">로딩중...</div>;
+        return <LoadingSpinner message="방에 입장중입니다" />;
     }
 
 

@@ -14,6 +14,7 @@
     "@types/socket.io-client": "^1.4.36",
     "@types/sockjs-client": "^1.5.4",
     "@types/stompjs": "^2.3.9",
+    "clsx": "^2.1.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "jwt-decode": "^4.0.0",
@@ -26,7 +27,8 @@
     "socket.io-client": "^4.8.1",
     "sockjs": "^0.3.24",
     "sockjs-client": "^1.6.1",
-    "stomp": "^0.1.1"
+    "stomp": "^0.1.1",
+    "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
