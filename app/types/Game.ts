@@ -1,15 +1,24 @@
-export type UserStatus = '대기중' | '준비완료'
-
-export interface User {
-    id : number;
-    nickName: string;
-    status: UserStatus;
+export interface ParticipantsInfo {
+    orderNum: number;
+    userId: string;
+    nickname: string;
+    gameType: 'Basic' | 'Private' | 'Contest';
+    currentRoomId: number;
+    userStatus : UserStatus;
 }
 
-export type GameType = 'Basic' | 'Contest'
+export type UserStatus = '대기중' | '준비완료';
 
-export interface WaitingRoom {
-    id: string;
-    gameType: GameType;
-    users: User[];
-}
+export const createInitialUser = (
+    userId: string,
+    nickname: string,
+    gameRoomId: string,
+    gameType: 'Basic' | 'Private' | 'Contest' = 'Basic'
+): ParticipantsInfo => ({
+    orderNum: 1,
+    userId,
+    nickname,
+    gameType,
+    currentRoomId: parseInt(gameRoomId),
+    userStatus: '대기중'
+});

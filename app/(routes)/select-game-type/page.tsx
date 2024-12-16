@@ -16,7 +16,7 @@ export default function Component() {
     const router = useRouter();
     const [userInfo, setUserInfo] = useState({ token: '', userId: '', nickname: '' });
     //localhost
-    const NEXT_PUBLIC_SOCKET_URL=process.env.NEXT_PUBLIC_SOCKET_URL
+    const NEXT_PUBLIC_WEBSOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL;
 
     
     useEffect(() => {
@@ -73,13 +73,18 @@ export default function Component() {
 
             sessionStorage.setItem('currentRoomId', data.roomId.toString());
             sessionStorage.setItem('gameType', gameType);
+            sessionStorage.setItem('shouldTriggerUserJoined', 'true');
 
             const stompClient = new StompJs.Client({
                 //localhost
-                brokerURL: NEXT_PUBLIC_SOCKET_URL
-                ,connectHeaders: {
+                brokerURL: NEXT_PUBLIC_WEBSOCKET_URL,
+                // brokerURL: 'http://192.168.1.6/ws',
+                connectHeaders: {
                     Authorization: `Bearer ${userInfo.token}`
-                }
+                },
+                reconnectDelay: 5000,
+                heartbeatIncoming: 4000,
+                heartbeatOutgoing: 4000,
             });
             
             stompClient.onConnect = (frame) => {
@@ -97,18 +102,18 @@ export default function Component() {
                 router.push(`/game/waiting/${data.roomId}`);
             };
             
-            stompClient.onWebSocketError = (error) => {
-                console.error('WebSocket Error:', error);
-                setErrorMessage("웹소켓 연결 중 오류가 발생했습니다.");
-                setIsModalOpen(true);
-            };
+            // stompClient.onWebSocketError = (error) => {
+            //     console.error('WebSocket Error:', error);
+            //     setErrorMessage("웹소켓 연결 중 오류가 발생했습니다.");
+            //     setIsModalOpen(true);
+            // };
     
-            stompClient.onStompError = (frame) => {
-                console.error('STOMP Error:', frame.headers['message']);
-                console.error('Additional details:', frame.body);
-                setErrorMessage("STOMP 연결 중 오류가 발생했습니다.");
-                setIsModalOpen(true);
-            };
+            // stompClient.onStompError = (frame) => {
+            //     console.error('STOMP Error:', frame.headers['message']);
+            //     console.error('Additional details:', frame.body);
+            //     setErrorMessage("STOMP 연결 중 오류가 발생했습니다.");
+            //     setIsModalOpen(true);
+            // };
     
             stompClient.activate();
     
