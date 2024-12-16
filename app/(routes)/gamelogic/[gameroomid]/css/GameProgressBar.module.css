@@ -1,0 +1,12 @@
+.container {
+    @apply fixed top-0 left-0 right-0 flex justify-between items-center bg-white px-5 mt-14;
+    @apply max-w-screen-lg mx-auto;
+}
+
+.exitButton {
+    @apply text-[#5189c1] p-2 rounded-full hover:bg-gray-100 transition-colors duration-200;
+}
+
+.turnCounter {
+    @apply text-[#5189c1] font-semibold;
+}

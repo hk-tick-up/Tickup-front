@@ -1,0 +1,65 @@
+.container {
+    /* @apply h-screen; */
+    @apply overflow-y-auto;
+}
+
+.content {
+    @apply max-w-7xl mx-auto py-4
+    /* sm:px-6 lg:px-8 */
+    ;
+}
+
+/* 텍스트 스타일  */
+.text-medium {
+    @apply font-semibold text-lg;
+}
+.text-amount-large {
+    @apply font-bold text-2xl pt-1;
+}
+
+/* 금액 텍스트 스타일 */
+.text-profit-positive-large {
+    @apply text-red-600 font-bold text-lg;
+}
+.text-profit-negative-large {
+    @apply text-blue-500 font-bold text-lg;
+}
+.text-profit-positive {
+    @apply text-red-600 font-bold;
+}
+.text-profit-negative {
+    @apply text-blue-500 font-bold;
+}
+.text-sub{
+    @apply text-sm text-gray-500;
+}
+.investment-profit {
+    @apply mt-1 text-sm;
+}
+
+/* 카드 스타일 */
+.investment-card {
+    @apply bg-[#EEF4F9] shadow overflow-hidden rounded-2xl p-5 my-5;
+}
+
+.investment-item{
+    @apply flex items-center py-3 first:pt-0 last:pb-0;
+
+}
+
+.investment-image {
+    @apply items-center justify-center mr-4;
+}
+
+.investment-name {
+    @apply text-lg font-medium text-gray-900;
+}
+
+.investment-amount {
+    @apply mt-1 text-sm text-gray-600;
+}
+
+
+.no-investments {
+    @apply text-gray-500;
+}
