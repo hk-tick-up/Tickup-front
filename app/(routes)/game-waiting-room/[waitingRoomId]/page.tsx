@@ -394,9 +394,11 @@ export default function WaitingRoom() {
             <ul>
                 {users.map((user) => (
                     <li key={user.userId}>
-                        <div className="flex w-full mx-10 justify-between gap-20 items-center">
+                        {/* <div className="flex w-full mx-10 justify-between gap-20 items-center"> */}
+                            
+                        <div className={user.userId === currentUser?.userId ? 'user-highlight' : 'user-none-highlight'}>
                             <div className="flex-1 text-xl">
-                                {user.orderNum}. <span className={user.userId === currentUser?.userId ? 'font-bold' : ''}>{user.nickname}</span>
+                                <span >{user.nickname}</span>
                             </div>
                             <div className="flex-1 flex justify-center">
                                 <p className={user.userStatus === '대기중' ? 'status-wait' : 'status-ready'}>
@@ -415,8 +417,8 @@ export default function WaitingRoom() {
                                 disabled={!users.every(user => user.orderNum === 1 || user.userStatus === '준비완료')}
                                 className={`px-6 py-3 rounded-lg ${
                                     users.every(user => user.orderNum === 1 || user.userStatus === '준비완료')
-                                    ? 'bg-blue-500 hover:bg-blue-600 text-white'
-                                    : 'bg-gray-300 cursor-not-allowed text-gray-500'
+                                    ? 'start-btn'
+                                    : 'start-btn-gray'
                                 }`}
                             >
                                 게임 시작
@@ -426,8 +428,8 @@ export default function WaitingRoom() {
                             onClick={handleReady}
                             className={`px-6 py-3 rounded-lg ${
                                 currentUser?.userStatus === '준비완료'
-                                ? 'bg-red-500 hover:bg-red-600 text-white'
-                                : 'bg-green-500 hover:bg-green-600 text-white'
+                                ? 'cancle-btn'
+                                : 'ready-btn'
                             }`}
                         >
                             {currentUser?.userStatus === '준비완료' ? '준비 취소' : '준비 완료'}
