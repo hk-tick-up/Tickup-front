@@ -57,12 +57,12 @@ export default function WaitingRoom() {
         const token = sessionStorage.getItem('bearer');
         const code = sessionStorage.getItem('gameRoomCode');
         const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
-        const storedWaitingRoomId = sessionStorage.getItem('waitingRoomId');
+        // const storedWaitingRoomId = sessionStorage.getItem('waitingRoomId');
 
-        if (!storedWaitingRoomId || storedWaitingRoomId !== waitingRoomId) {
-            console.log('Updating stored waiting room ID');
-            sessionStorage.setItem('waitingRoomId', waitingRoomId);
-        }    
+        // if (!storedWaitingRoomId || storedWaitingRoomId !== waitingRoomId) {
+        //     console.log('Updating stored waiting room ID');
+        //     sessionStorage.setItem('waitingRoomId', waitingRoomId);
+        // }    
 
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');

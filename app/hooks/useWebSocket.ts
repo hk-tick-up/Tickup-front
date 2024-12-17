@@ -58,7 +58,6 @@ export const useWebSocket = (waitingRoomId: string, onMessageReceived?: (data: a
             const newSubscription = client.subscribe(
                 `/topic/waiting-room/${waitingRoomId}`,
                 (message) => {
-                    console.log('Received message:', message.body);
                     try {
                         const parsedData = JSON.parse(message.body);
                         onMessageReceived?.(parsedData);
@@ -76,7 +75,7 @@ export const useWebSocket = (waitingRoomId: string, onMessageReceived?: (data: a
                     gameType: storedGameType,
                     waitingRoomId: waitingRoomId
                 })
-            })
+            });
             
             setSubscriptions([newSubscription]);
         },
@@ -125,7 +124,7 @@ export const useWebSocket = (waitingRoomId: string, onMessageReceived?: (data: a
                 stompClient.deactivate();
             }
         };
-    }, []);
+    }, [initializeWebSocket]);
 
     const sendMessage = useCallback((destination: string, body: any) => {
         if (stompClient?.active) {

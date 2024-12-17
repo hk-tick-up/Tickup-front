@@ -69,15 +69,15 @@ export default function Component() {
     
             const data = await response.json();
 
-            if (!data || !data.id) {  // waitingRoomId 대신 id 사용
+            if (!data || !data.waitingRoomId) {  // waitingRoomId 대신 id 사용
                 throw new Error('방 생성에 에러가 발생했습니다. 다시 시도해주세요.');
             }
 
-            sessionStorage.setItem('waitingRoomId', data.id.toString());
+            sessionStorage.setItem('waitingRoomId', data.waitingRoomId.toString());
             sessionStorage.setItem('gameRoomCode', data.gameRoomCode);
             sessionStorage.setItem('gameType', data.gameType);
 
-            return data.id;
+            return data.waitingRoomId;
         } catch (error) {
             console.error("방 생성 중 오류 발생:", error);
             throw error;
