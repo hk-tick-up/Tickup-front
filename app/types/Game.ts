@@ -3,22 +3,40 @@ export interface ParticipantsInfo {
     userId: string;
     nickname: string;
     gameType: 'Basic' | 'Private' | 'Contest';
-    currentRoomId: number;
-    userStatus : UserStatus;
+    waitingRoomId: number;
+    userStatus: UserStatus;
 }
 
 export type UserStatus = '대기중' | '준비완료';
 
+export interface InitGameRoom {
+    gameRoomsId: number;
+    totalTurns: number;
+    currentTurn: number;
+    currentEndTime: string;
+}
+
+export interface GameStartRequest {
+    gameRoomId: string;
+    participants: ParticipantsInfo[];
+}
+
+export interface GameStartMessage {
+    type: 'START_GAME';
+    gameRoomId: string;
+    gameRoomsId: number;
+}
+
 export const createInitialUser = (
     userId: string,
     nickname: string,
-    gameRoomId: string,
+    waitingRoomId: string,
     gameType: 'Basic' | 'Private' | 'Contest' = 'Basic'
 ): ParticipantsInfo => ({
     orderNum: 1,
     userId,
     nickname,
     gameType,
-    currentRoomId: parseInt(gameRoomId),
+    waitingRoomId: parseInt(waitingRoomId),
     userStatus: '대기중'
 });

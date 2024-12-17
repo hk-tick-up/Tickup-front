@@ -16,8 +16,8 @@ const nextConfig: NextConfig = {
         destination: '/select-game-type/play-with-friends',
       },
       {
-        source: '/game/waiting/:gameRoomId',
-        destination: '/game-waiting-room/:gameRoomId',
+        source: '/game/waiting/:waitingRoomId',
+        destination: '/game-waiting-room/:waitingRoomId',
       },
       {
         source: '/game/waiting',
