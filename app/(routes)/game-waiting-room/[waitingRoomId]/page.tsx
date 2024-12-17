@@ -395,10 +395,11 @@ export default function WaitingRoom() {
                 {users.map((user) => (
                     <li key={user.userId}>
                         {/* <div className="flex w-full mx-10 justify-between gap-20 items-center"> */}
-                            
+                            {/* <div> */}
+                                
+                            {/* </div> */}
                         <div className={user.userId === currentUser?.userId ? 'user-highlight' : 'user-none-highlight'}>
-                            <div className="flex-1 text-xl">
-                                <span >{user.nickname}</span>
+                            <div className="flex-1"> <span className='font-custom'>{user.nickname}</span>
                             </div>
                             <div className="flex-1 flex justify-center">
                                 <p className={user.userStatus === '대기중' ? 'status-wait' : 'status-ready'}>
@@ -409,7 +410,7 @@ export default function WaitingRoom() {
                     </li>
                 ))}
             </ul>
-                <div className="mt-6 flex justify-center">
+                <div className="ready-btn-position">
                     {currentUser && users.length > 0 && (
                         users.find(u => u.userId === currentUser.userId)?.orderNum === 1 ? (
                             <button
