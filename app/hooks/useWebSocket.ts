@@ -2,26 +2,21 @@ import { useState, useEffect, useCallback } from 'react';
 import * as StompJs from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 
-export const useWebSocket = (gameRoomId: string, onMessageReceived?: (data: any) => void) =>  {
+export const useWebSocket = (waitingRoomId: string, onMessageReceived?: (data: any) => void) =>  {
     const [stompClient, setStompClient] = useState<StompJs.Client | null>(null);
     const [isConnected, setIsConnected] = useState(false);
     const [error, setError] = useState<Error | null>(null);
     const [subscriptions, setSubscriptions] = useState<StompJs.StompSubscription[]>([]);
 
-    // const userId = sessionStorage.getItem('id');
-    // const nickname = sessionStorage.getItem('nickname');
-    // const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
-    // const currentRoomId = sessionStorage.getItem('currentRoomId');
-
     const initializeWebSocket = useCallback(() => {
         const userId = typeof window !== 'undefined' ? sessionStorage.getItem('id') : null;
         const nickname = typeof window !== 'undefined' ? sessionStorage.getItem('nickname') : null;
         const storedGameType = typeof window !== 'undefined' ? sessionStorage.getItem('gameType') as 'Basic' | 'Private' : 'Basic';
-        const currentRoomId = typeof window !== 'undefined' ? sessionStorage.getItem('currentRoomId') : null;
+        const storedWaitingRoomId = typeof window !== 'undefined' ? sessionStorage.getItem('waitingRoomId') : null;
         const token = typeof window !== 'undefined' ? sessionStorage.getItem('bearer') : null;
 
         const SOCKET_URL = process.env.NEXT_PUBLIC_WEBSOCKET_URL || "ws://192.168.1.6:8007/ws";
-        // const token = sessionStorage.getItem('bearer');
+
 
         if (!token) {
             setError(new Error('Authentication token not found'));
@@ -36,14 +31,13 @@ export const useWebSocket = (gameRoomId: string, onMessageReceived?: (data: any)
         brokerURL: SOCKET_URL,
         connectHeaders: {
             'Authorization': `Bearer ${token}`,
-            'gameRoomId': gameRoomId
+            'waitingRoomId': waitingRoomId
         },
         debug: (str) => {
             console.log('STOMP: ' + str);
         },
 
         reconnectDelay: 5000,
-
         heartbeatIncoming: 25000,
         heartbeatOutgoing: 25000,
         connectionTimeout: 30000,
@@ -51,7 +45,6 @@ export const useWebSocket = (gameRoomId: string, onMessageReceived?: (data: any)
             console.log('STOMP 연결 성공');
             setIsConnected(true);
             setError(null);
-
              // 기존 구독이 있다면 제거
             subscriptions.forEach(sub => {
                 try {
@@ -63,7 +56,7 @@ export const useWebSocket = (gameRoomId: string, onMessageReceived?: (data: any)
 
              // 새로운 구독 설정
             const newSubscription = client.subscribe(
-                `/topic/waiting-room/${gameRoomId}`,
+                `/topic/waiting-room/${waitingRoomId}`,
                 (message) => {
                     console.log('Received message:', message.body);
                     try {
@@ -76,12 +69,12 @@ export const useWebSocket = (gameRoomId: string, onMessageReceived?: (data: any)
             );
 
             client.publish({
-                destination: `/app/waiting-room/${currentRoomId}`,
+                destination: `/app/waiting-room/${waitingRoomId}`,
                 body: JSON.stringify({
                     userId: userId,
                     nickname: nickname,
                     gameType: storedGameType,
-                    currentRoomId: currentRoomId
+                    waitingRoomId: waitingRoomId
                 })
             })
             
@@ -112,7 +105,7 @@ export const useWebSocket = (gameRoomId: string, onMessageReceived?: (data: any)
             setError(error instanceof Error ? error : new Error('Unknown error during activation'));
         }
 
-    }, [gameRoomId]);
+    }, [waitingRoomId]);
 
  // 컴포넌트 마운트 시에만 연결 초기화
     useEffect(() => {

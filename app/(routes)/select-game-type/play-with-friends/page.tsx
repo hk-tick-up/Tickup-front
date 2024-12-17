@@ -27,7 +27,8 @@ export default function Component() {
         const nickname = sessionStorage.getItem('nickname');
 
         if(!token || !userId || !nickname ){ 
-            throw new Error("로그인이 필요합니다.");
+            setErrorMessage("로그인이 필요합니다.");
+            setIsModalOpen(true);
             router.push('/signin');
             return;
         }
@@ -53,7 +54,9 @@ export default function Component() {
                 credentials: "include",
                 body: JSON.stringify(requestBody)
             });
-    
+        
+            // const responseText = await response.text();
+
             if (!response.ok) {
                 if (response.status === 401) {
                     sessionStorage.clear();
@@ -66,19 +69,15 @@ export default function Component() {
     
             const data = await response.json();
 
-            if (!data || !data.id) {
+            if (!data || !data.id) {  // waitingRoomId 대신 id 사용
                 throw new Error('방 생성에 에러가 발생했습니다. 다시 시도해주세요.');
             }
 
-            const roomId = data.id;
-            const roomCode = data.gameRoomCode;
-            const gameType = data.gameType;
+            sessionStorage.setItem('waitingRoomId', data.id.toString());
+            sessionStorage.setItem('gameRoomCode', data.gameRoomCode);
+            sessionStorage.setItem('gameType', data.gameType);
 
-            sessionStorage.setItem('currentRoomId', roomId);
-            sessionStorage.setItem('gameRoomCode', roomCode);
-            sessionStorage.setItem('gameType', gameType);
-
-            return roomId;
+            return data.id;
         } catch (error) {
             console.error("방 생성 중 오류 발생:", error);
             throw error;
@@ -113,15 +112,15 @@ export default function Component() {
     
             const data = await response.json();
     
-            if (!data || !data.roomId) {
+            if (!data || !data.waitingRoomId) {
                 throw new Error("존재하지 않는 방입니다.");
             }
 
-            sessionStorage.setItem('currentRoomId', data.roomId.toString());
+            sessionStorage.setItem('waitingRoomId', data.waitingRoomId.toString());
             sessionStorage.setItem('gameRoomCode', gameRoomCode);
             sessionStorage.setItem('gameType', 'Private');
     
-            router.push(`/game/waiting/${data.roomId}`);
+            router.push(`/game/waiting/${data.waitingRoomId}`);
             
         } catch (error) {
             console.error("방 입장 중 오류:", error);
@@ -133,10 +132,10 @@ export default function Component() {
     const handleCreateRoom = async () => {
         try {
             console.log('방 생성 시작...');
-            const roomId = await createRoom();
-            if (roomId) {
-                console.log(`/game/waiting/${roomId}로 이동 중...`);
-                router.push(`/game/waiting/${roomId}`);
+            const waitingRoomId = await createRoom();
+            if (waitingRoomId) {
+                console.log(`/game/waiting/${waitingRoomId}로 이동 중...`);
+                router.push(`/game/waiting/${waitingRoomId}`);
             } else {
                 throw new Error('이동할 수 없습니다. 다시 시도해주세요.');
             }

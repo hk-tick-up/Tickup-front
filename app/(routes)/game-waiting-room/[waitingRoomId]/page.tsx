@@ -5,7 +5,7 @@ import { useWebSocket } from '@/app/hooks/useWebSocket';
 import { useParams, useRouter } from 'next/navigation';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 // import { ParticipantsInfo } from '@/app/types/ParticipantsInfo';
-import { ParticipantsInfo, createInitialUser } from '@/app/types/Game';
+import { ParticipantsInfo, createInitialUser, InitGameRoom, GameStartRequest, GameStartMessage } from '@/app/types/Game';
 import '@/app/css/waiting-room/root.css'
 import '@/app/css/waiting-room/game-waiting-room.css'
 import Modal from '../../../components/Modal'
@@ -25,10 +25,11 @@ export default function WaitingRoom() {
     const [subscriptionIds, setSubscriptionIds] = useState<string[]>([]);
     const router = useRouter();
     const params = useParams();
-    const gameRoomId = params.gameRoomId as string;
+    const waitingRoomId = params.waitingRoomId as string;
     const [shouldConnect, setShouldConnect] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
-    const { stompClient, setStompClient, isConnected } = useWebSocket(gameRoomId);
+    const { stompClient, setStompClient, isConnected, error } = useWebSocket(waitingRoomId);
+
     // const { userStatus, setUserStatus } = useState<'준비 완료' | '대기중' >('대기중');
     
     const handleMessageReceived = useCallback((data: ParticipantsInfo[]) => {
@@ -56,7 +57,12 @@ export default function WaitingRoom() {
         const token = sessionStorage.getItem('bearer');
         const code = sessionStorage.getItem('gameRoomCode');
         const storedGameType = sessionStorage.getItem('gameType') as 'Basic' | 'Private';
-        const currentRoomId = sessionStorage.getItem('currentRoomId');
+        const storedWaitingRoomId = sessionStorage.getItem('waitingRoomId');
+
+        if (!storedWaitingRoomId || storedWaitingRoomId !== waitingRoomId) {
+            console.log('Updating stored waiting room ID');
+            sessionStorage.setItem('waitingRoomId', waitingRoomId);
+        }    
 
         if (!userId || !nickname || !token) {
             alert('로그인이 필요합니다.');
@@ -72,7 +78,7 @@ export default function WaitingRoom() {
         const initialUser = createInitialUser(
             userId,
             nickname,
-            gameRoomId,
+            waitingRoomId, 
             storedGameType || 'Basic',
         );
         initialUser.userStatus = '대기중';
@@ -90,7 +96,7 @@ export default function WaitingRoom() {
                     setSubscriptionIds([]);
 
                     const subscription = stompClient.subscribe(
-                        `/topic/waiting-room/${gameRoomId}`,
+                        `/topic/waiting-room/${waitingRoomId}`,
                         (message) => {
                             const participantsList: ParticipantsInfo[] = JSON.parse(message.body);
                             const updatedList = participantsList.map(user => ({
@@ -116,7 +122,7 @@ export default function WaitingRoom() {
                     await new Promise(resolve => setTimeout(resolve, 10)); // 연결 안정화를 위한 짧은 대기
                     
                     stompClient.publish({
-                        destination: `/app/waiting-room/${gameRoomId}`,
+                        destination: `/app/waiting-room/${waitingRoomId}`,
                         body: JSON.stringify(initialUser)
                     });
 
@@ -146,7 +152,7 @@ export default function WaitingRoom() {
                 setSubscriptionIds([]);
             }
         };
-    }, [ isConnected, shouldConnect, gameRoomId, gameType]);
+    }, [ isConnected, shouldConnect, waitingRoomId, gameType]);
 
     const handleReady = useCallback(() => {
         if (!stompClient?.active || !currentUser) return;
@@ -166,7 +172,7 @@ export default function WaitingRoom() {
         );
         
         stompClient.publish({
-            destination: `/app/waiting-room/${gameRoomId}/status`,
+            destination: `/app/waiting-room/${waitingRoomId}/status`,
             body: JSON.stringify({
                 userId: currentUser.userId,
                 userStatus: newStatus
@@ -174,22 +180,80 @@ export default function WaitingRoom() {
         });
 
 
-    }, [stompClient, currentUser, gameRoomId]);
+    }, [stompClient, currentUser, waitingRoomId]);
 
-    const handleStart = useCallback(() => {
-        if (!stompClient?.active || !currentUser) return;
-        if (!users.every(user => user.orderNum === 1 || user.userStatus === '준비완료')) return;
+    const handleStart = useCallback(async() => {
+        if(!stompClient?.activate || !currentUser ) return;
+        // if(!users.every(user=>user.orderNum === 1 && user.userStatus === '준비 완료')) return;
+        try {
+            const participantsResponse = await fetch (
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/participants/${waitingRoomId}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('bearer')}`
+                    }
+                }
+                
+            );
+            if(!participantsResponse.ok) {
+                throw new Error('Failed to fetsh participants');
+            }
 
-        stompClient.publish({
-            destination: `/app/waiting-room/${gameRoomId}/start`,
-            body: JSON.stringify({
-                type: 'START_GAME',
-                gameRoomId
-            })
-        });
-    },  [stompClient, currentUser, users, gameRoomId]);
+            const participants = await participantsResponse.json();
 
+            const gameLogicRequest = {
+                gameType: sessionStorage.getItem('gameType') || 'Basic',
+                players: participants.map(p => ({
+                    userId: p.userId,
+                    nickname: p.nickname
+                }))
+            };
+
+            const gameLogicResponse = await fetch(
+                `${process.env.NEXT_PUBLIC_GAME_LOGIC_API_URL}/api/v1/gamelogic`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${sessionStorage.getItem('bearer')}`
+                    },
+                    body: JSON.stringify(gameLogicRequest)
+                }
+            );
     
+            if (!gameLogicResponse.ok) {
+                throw new Error('Failed to initialize game');
+            }
+
+            const gameData: InitGameRoom = await gameLogicResponse.json();
+
+            sessionStorage.setItem('gameRoomId', gameData.gameRoomsId.toString());
+
+            const gameRoomId = gameData.gameRoomsId;
+
+            stompClient.publish({
+                destination: `/app/waiting-room/${gameRoomId}/start`,
+                body: JSON.stringify({
+                    type: 'START_GAME',
+                    gameRoomId,
+                    gameRoomsId: gameData.gameRoomsId,
+                    participants: participants
+                })
+            });
+            router.push(`/gameroom/${gameData.gameRoomsId}`);
+
+            
+
+        }catch (error) {
+            console.error('Error starting game:', error);
+        setErrorMessage('게임 시작 중 오류가 발생했습니다.');
+        setIsModalOpen(true);
+        }
+
+    },  [stompClient, currentUser, users, waitingRoomId]);
+
 
     const copyRoomCode = async () => {
         if (gameRoomCode) {
@@ -225,7 +289,7 @@ export default function WaitingRoom() {
         
         try {
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/leave/${gameRoomId}`,
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/leave/${waitingRoomId}`,
                 {
                     method: "PUT",
                     headers: {
@@ -244,11 +308,11 @@ export default function WaitingRoom() {
             if (stompClient?.active) {
 
                 stompClient.publish({
-                    destination: `/app/waiting-room/leave/${gameRoomId}`,
+                    destination: `/app/waiting-room/leave/${waitingRoomId}`,
                     body: JSON.stringify({
                         type: 'LEAVE_ROOM',
                         userId: userId,
-                        gameRoomId: gameRoomId
+                        waitingRoomId: waitingRoomId
                     })
                 });
     
@@ -261,7 +325,7 @@ export default function WaitingRoom() {
                 setStompClient(null);
             }
     
-            sessionStorage.removeItem('currentRoomId');
+            sessionStorage.removeItem('waitingRoomId');
             sessionStorage.removeItem('gameRoomCode');
             router.push('/game/together');
     
@@ -282,11 +346,11 @@ export default function WaitingRoom() {
             setErrorMessage("서버 연결 중 오류가 발생했습니다. 다시 시도해주세요.");
             setIsModalOpen(true);
             
-            sessionStorage.removeItem('currentRoomId');
+            sessionStorage.removeItem('waitingRoomId');
             sessionStorage.removeItem('gameRoomCode');
             router.push('/game/together');
         }
-    }, [gameRoomId, stompClient, setStompClient, subscriptionIds, router]);
+    }, [waitingRoomId, stompClient, setStompClient, subscriptionIds, router]);
 
     if (isLoading) {
         return <LoadingSpinner message="방에 입장중입니다" />;
@@ -304,7 +368,7 @@ export default function WaitingRoom() {
             <div className="room-code">
                 {gameType === 'Basic' ? (
                     <span className="font-[Freesentation-9Black]">
-                        No.{gameRoomId}
+                        No.{waitingRoomId}
                     </span>
                 ) : (
                     gameRoomCode && (

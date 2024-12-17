@@ -67,11 +67,11 @@ export default function Component() {
             const data = await response.json();
             const gameType = data.gameType
 
-            if (!data || !data.roomId) {
+            if (!data || !data.waitingRoomId) {
                 throw new Error('방 정보를 받을 수 없습니다.');
             }
 
-            sessionStorage.setItem('currentRoomId', data.roomId.toString());
+            sessionStorage.setItem('waitingRoomId', data.waitingRoomId.toString());
             sessionStorage.setItem('gameType', gameType);
             sessionStorage.setItem('shouldTriggerUserJoined', 'true');
 
@@ -89,17 +89,17 @@ export default function Component() {
             
             stompClient.onConnect = (frame) => {
                 console.log('STOMP 연결 성공:', frame);
-                stompClient.subscribe(`/topic/waiting-room/${data.roomId}`, (message) => {
+                stompClient.subscribe(`/topic/waiting-room/${data.waitingRoomId}`, (message) => {
                     console.log('메시지 수신:', message.body);
                 });
     
                 stompClient.publish({
-                    destination: `/app/waiting-room/${data.roomId}/join`,
+                    destination: `/app/waiting-room/${data.waitingRoomId}/join`,
                     body: JSON.stringify({ userId: userInfo.userId, nickname: userInfo.nickname })
                 });
     
                 // 웹소켓 연결 성공 후 페이지 이동
-                router.push(`/game/waiting/${data.roomId}`);
+                router.push(`/game/waiting/${data.waitingRoomId}`);
             };
             
             // stompClient.onWebSocketError = (error) => {
