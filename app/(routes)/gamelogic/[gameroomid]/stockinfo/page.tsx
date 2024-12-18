@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useEffect } from 'react';
@@ -57,11 +58,12 @@ export default function StockInfo() {
                     setSelectedCategory(Object.keys(update.companyTurnResponse)[0]);
                 }
 
-                setChartHistory((prevHistory) => {
+                setChartHistory((prevHistory: any) => {
                     const newHistory = { ...prevHistory };
                     Object.entries(update.companyTurnResponse).forEach(([ticker, data]) => {
+                        const stockdata = data as {stockPrice:number};
                         if (!newHistory[ticker]) newHistory[ticker] = [];
-                        newHistory[ticker] = [...(newHistory[ticker] || []), data.stockPrice];
+                        newHistory[ticker] = [...(newHistory[ticker] || []), stockdata.stockPrice];
                         if (newHistory[ticker].length > 10) {
                             newHistory[ticker] = newHistory[ticker].slice(-10);
                         }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
@@ -32,9 +33,10 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     useEffect(() => {
         if (!clientRef.current) {
             console.log("Initializing WebSocket connection...");
-            const socket = new SockJS('http://localhost:8080/ws', null, {
-                withCredentials: true,
-            });
+            // const socket = new SockJS('http://localhost:8080/ws', null, {
+            //     withCredentials: true,
+            // });
+            const socket = new SockJS('http://localhost:8080/ws', null);
 
             const client = new Client({
                 webSocketFactory: () => socket as WebSocket,
@@ -86,7 +88,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
                 try {
                     const data = JSON.parse(message.body);
                     console.log('Received rankings update:', data);
-                    setRankings(data);
+                    setRankings(data, []);
                 } catch (error) {
                     console.error('Error processing rankings message:', error);
                 }

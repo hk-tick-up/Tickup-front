@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react'
 import '@/app/css/waiting-room/root.css'
 import '@/app/css/waiting-room/loading.css'

@@ -6,6 +6,7 @@ interface RankingResponse {
     userName: string;
     rank: number;
     returnRate: number;
+    profileImage: string;
 }
 
 interface RankingStore {
