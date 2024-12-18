@@ -26,15 +26,6 @@ const AcceptRequest = ({found}:Props) => {
     }
   };
 
-  const deleteFriend = (e:BaseSyntheticEvent) => {
-    e.preventDefault();
-  }
-  const acceptFriend = (e:BaseSyntheticEvent) => {
-    e.preventDefault();
-  }
-  const declineFriend = (e:BaseSyntheticEvent) => {
-    e.preventDefault();
-  }
   const requestFriend = (e:BaseSyntheticEvent) => {
     e.preventDefault();
     axios.post(`${base_url}/friends`,{
@@ -70,7 +61,6 @@ const AcceptRequest = ({found}:Props) => {
       { found.status === "FRIEND" && <div>
         <p>친구 상태 입니다.</p>
       </div> }
-      {/* 추후 친구 차단 기능 추가 */}
       { found.status === "REQUEST" && <div>
         <p>친구 요청이 존재합니다.</p>
       </div> }

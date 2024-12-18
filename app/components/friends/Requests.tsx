@@ -36,52 +36,49 @@ const Requests = () => {
     })
   }
   
-    const acceptRequest = (e:BaseSyntheticEvent, targetId:string) => {
-      e.preventDefault();
+  const acceptRequest = (e:BaseSyntheticEvent, targetId:string) => {
+    e.preventDefault();
+    const header = {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("bearer")}`
+      }
+    };
+    // axios 명령어, 링크 변경
+    const requestBody = {
+      friendId : targetId
+    };
+    axios.post(`${base_url}/friend-requests`, requestBody, header)
+    .then(response => {
+      console.log(response.data);
+
+      e.target.innerText = "내 친구";
+      e.target.disabled = true;
+      window.location.reload();
+    }).catch(error=>{
+      console.error(error);
+    })
+  }
   
-      console.log(`try to accept request to ${targetId}`);
-  
-      const header = {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("bearer")}`
-        }
-      };
-      // axios 명령어, 링크 변경
-      const requestBody = {
-        friendId : targetId
-      };
-      axios.post(`${base_url}/friend-requests`, requestBody, header)
-      .then(response => {
-        console.log(response.data);
-  
-        e.target.innerText = "내 친구";
-        e.target.disabled = true;
-        window.location.reload();
-      }).catch(error=>{
-        console.error(error);
-      })
-    }
-    
-    const declineRequest = (e:BaseSyntheticEvent, targetId:string) => {
-      e.preventDefault();
-  
-      console.log(`try to delete request to ${targetId}`);
-  
-      const header = {
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("bearer")}`
-        }
-      };
-      // axios 명령어, 링크 변경
-      axios.delete(`${base_url}/friend-requests/${targetId}`, header)
-      .then(response => {
-        console.log(response.data);
-        e.target.innerText = "요청 거절";
-        e.target.disabled = true;
-      }).catch(error=>{
-        console.error(error);
-      })
-    }
+  const declineRequest = (e:BaseSyntheticEvent, targetId:string) => {
+    e.preventDefault();
+
+    console.log(`try to delete request to ${targetId}`);
+
+    const header = {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("bearer")}`
+      }
+    };
+    // axios 명령어, 링크 변경
+    axios.delete(`${base_url}/friend-requests/${targetId}`, header)
+    .then(response => {
+      console.log(response.data);
+      e.target.innerText = "요청 거절";
+      e.target.disabled = true;
+    }).catch(error=>{
+      console.error(error);
+    })
+  }
 
   return (
     <div title="받은 요청 목록">
