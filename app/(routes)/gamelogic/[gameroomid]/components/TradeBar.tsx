@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styles from '../css/TradeBar.module.css';
+import { usePathname } from 'next/navigation';
 
 interface TradeBarProps {
     onTradeComplete: (data: any) => void; // 거래 완료 후 데이터를 부모로 전달
@@ -12,7 +13,8 @@ export default function TradeBar({ onTradeComplete, selectedTicker }: TradeBarPr
     const [quantity, setQuantity] = useState(1);
     const [notification, setNotification] = useState<{ message: string; success: boolean } | null>(null);
 
-    const gameRoomId = 1;
+    const pathname = usePathname();
+    const gameRoomId = pathname.split('/')[2];
 
     const openModal = (type: 'buy' | 'sell') => {
         setTradeType(type); 
@@ -29,14 +31,14 @@ export default function TradeBar({ onTradeComplete, selectedTicker }: TradeBarPr
         setQuantity((prev) => Math.max(1, prev + change));
     };
 
-    const BASE_URL = 'http://localhost:8080';
+    const NEXT_PUBLIC_GAME_LOGIC_API_URL = process.env.NEXT_PUBLIC_GAME_LOGIC_API_URL;
 
     const handleTrade = async () => {
         if (!tradeType) return;
 
-        const url = `${BASE_URL}/api/v1/${gameRoomId}/trade`;
+        const url = `${NEXT_PUBLIC_GAME_LOGIC_API_URL}/api/v1/gamelogic/${gameRoomId}/trade`;
         const payload = {
-            userId: '1',
+            userId: sessionStorage.getItem('id'),
             ticker: selectedTicker,
             shares: quantity,
             tradeType: tradeType.toUpperCase(), // 서버에서 `BUY`/`SELL` 형식으로 처리

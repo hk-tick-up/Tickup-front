@@ -41,15 +41,20 @@ export const InvestmentProvider = ({ children }: { children: React.ReactNode }) 
 
     const fetchInvestments = useCallback(async (gameRoomId: string) => {
         try {
-            const BASE_URL = 'http://localhost:8080';
-            const token = sessionStorage.getItem('jwtToken');
+            const BASE_URL = process.env.NEXT_PUBLIC_GAME_LOGIC_API_URL;
+            const token = sessionStorage.getItem('bearer');
+            const userId = sessionStorage.getItem('id');
 
             if (!token) {
                 throw new Error('JWT token not found');
             }
 
+            if(!userId) {
+                throw new Error('User ID not found');
+            }
+
             const response = await fetch(
-                `${BASE_URL}/api/v1/gamelogic/${gameRoomId}/trade/investments`,
+                `${BASE_URL}/api/v1/gamelogic/${gameRoomId}/trade/investments?userId=${userId}`,
                 {
                     method: 'GET',
                     headers: {

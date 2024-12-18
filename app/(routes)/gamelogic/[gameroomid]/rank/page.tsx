@@ -16,8 +16,8 @@ export default function RankingPage() {
     useEffect(() => {
         const fetchRankings = async () => {
             try {
-                const BASE_URL = 'http://localhost:8080';
-                const token = sessionStorage.getItem('jwtToken');
+                const BASE_URL = process.env.NEXT_PUBLIC_GAME_LOGIC_API_URL;
+                const token = sessionStorage.getItem('bearer');
                 const response = await fetch(`${BASE_URL}/api/v1/gamelogic/${gameRoomId}/rankings`, {
                     method: 'GET',
                     headers: {

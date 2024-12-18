@@ -220,12 +220,12 @@ export default function GameProgressBar({ gameRoomId }: { gameRoomId: string }) 
     const [remainingTime, setRemainingTime] = useState<number>(0);
     const { stompClient } = useWebSocket();
     const { fetchInvestments } = useInvestments();
-
+    const NEXT_PUBLIC_GAME_LOGIC_API_URL = process.env.NEXT_PUBLIC_GAME_LOGIC_API_URL;
     // 초기 상태 동기화
     useEffect(() => {
         const fetchInitialState = async () => {
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/gamelogic/${gameRoomId}/serverTime`, {
+                const response = await fetch(`${NEXT_PUBLIC_GAME_LOGIC_API_URL}/api/v1/gamelogic/${gameRoomId}/serverTime`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                 });

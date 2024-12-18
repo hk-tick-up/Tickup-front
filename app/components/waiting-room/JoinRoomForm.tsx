@@ -20,11 +20,11 @@ export default function JoinRoomForm({ onJoin }: JoinRoomFormProps) {
         <form onSubmit={handleSubmit}>
         <div className='flex space-x-3 items-center'>
             <input 
-                id="gameRoomCode"
-                value={gameRoomCode} 
-                onChange={(e) => setGameRoomCode(e.target.value)} 
-                placeholder='초대코드를 입력하세요' 
-                type="text" 
+            id="gameRoomCode"
+            value={gameRoomCode} 
+            onChange={(e) => setGameRoomCode(e.target.value)} 
+            placeholder='초대코드를 입력하세요' 
+            type="text" 
             />
             <div>
             <button type="submit" className='join-button'>입장</button>

@@ -255,7 +255,7 @@ export default function WaitingRoom() {
                 })
             });
     
-            router.push(`/gameroom/${gameData.gameRoomsId}/myinvest`);
+            router.push(`/gamelogic/${gameData.gameRoomsId}/myinvest`);
 
         }catch (error) {
         console.error('Error starting game:', error);

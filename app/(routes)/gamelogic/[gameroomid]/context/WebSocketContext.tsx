@@ -32,7 +32,7 @@ export const WebSocketProvider = ({ children }: { children: React.ReactNode }) =
     useEffect(() => {
         if (!clientRef.current) {
             console.log("Initializing WebSocket connection...");
-            const socket = new SockJS('http://localhost:8080/ws', null, {
+            const socket = new SockJS(`${process.env.NEXT_PUBLIC_GAME_LOGIC_API_URL}/ws`, null, {
                 withCredentials: true,
             });
 

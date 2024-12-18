@@ -108,7 +108,7 @@
 //                         }
 //                     },
 //                     {
-//                         Authorization: `Bearer ${sessionStorage.getItem('jwtToken')}`, // JWT 토큰을 헤더에 추가
+//                         Authorization: `Bearer ${sessionStorage.getItem('')}`, // JWT 토큰을 헤더에 추가
 //                     }
 //                 );
 //                 console.log('Successfully subscribed to investment updates');
