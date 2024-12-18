@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from 'next/image'
 import Link from "next/link";
-import '../../css/User/my-page.css';
+import '../../css/user/my-page.css';
 import '../../css/main.css'
 import FooterBlock from '../../components/FooterBlock'
 import BottomNav from '../../components/BottomNav'

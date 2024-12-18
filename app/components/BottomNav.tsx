@@ -18,11 +18,11 @@ const BottomNav = () => {
     return (
         <nav className="fixed nav-main">
             <div className="nav-standardization">
-                <Link href="/learning" className="flex flex-col items-center">
+                <Link href="/study" className="flex flex-col items-center">
                     <Book 
-                    className={`icon-custom ${isActive('/learning') ? 'custom-blue' : 'text-gray-500'}`} 
+                    className={`icon-custom ${isActive('/study') ? 'custom-blue' : 'text-gray-500'}`} 
                     />
-                    <span className={`icon-title-custom ${isActive('/learning') ? 'custom-blue' : 'text-gray-500'}`}>
+                    <span className={`icon-title-custom ${isActive('/study') ? 'custom-blue' : 'text-gray-500'}`}>
                     금융 학습
                     </span>
                 </Link>

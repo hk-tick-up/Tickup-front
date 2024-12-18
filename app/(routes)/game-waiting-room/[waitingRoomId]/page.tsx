@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react'
@@ -205,7 +207,7 @@ export default function WaitingRoom() {
 
             const gameLogicRequest = {
                 gameType: sessionStorage.getItem('gameType') || 'Basic',
-                players: participants.map(p => ({
+                players: participants.map((p: { userId: any; nickname: any; }) => ({
                     userId: p.userId,
                     nickname: p.nickname
                 }))

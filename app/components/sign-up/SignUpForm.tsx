@@ -90,8 +90,6 @@ const SignUpForm = () => {
     const formElement = document.querySelector("form") as HTMLFormElement;
     const password1 = formElement.password;
     const password2 = formElement.passwordCheck;
-    console.log(password1);
-    console.log(password2);
     if(password2.value === password1.value)
       password2.style.color = "black";
     else
@@ -181,23 +179,23 @@ const SignUpForm = () => {
           <div className="input-group">
             <div className="input-title">생년월일</div>
             <div>
-              <input id="birthday" type="date" max={getToday()} min="1990-01-01" required/>
+              <input id="birthday" title="birthday" type="date" max={getToday()} min="1990-01-01" required/>
             </div>
           </div>
 
           <div className="input-group">
             <div className="input-title">성별</div>
             <div className="gender-select">
-                <input type="radio" name="gender" value="MALE" id="gender-male" required />
+                <input type="radio" title="gender" name="gender" value="MALE" id="gender-male" required />
                   <span>남성</span>
-                <input type="radio" name="gender" value="FEMALE" id="gender-female" required />
+                <input type="radio" title="gender" name="gender" value="FEMALE" id="gender-female" required />
                   <span>여성</span>
             </div>
           </div>
 
           <div className="input-group">
             <div className="input-title">직업</div>
-            <select id="job" className="input-field" required>
+            <select id="job" title="job" className="input-field" required>
               <option value="">직업 선택</option>
               <option value="woker">직장인</option>
               <option value="self-employed">자영업</option>

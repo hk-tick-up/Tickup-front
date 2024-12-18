@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import styles from '../css/RankingList.module.css'; // module.css 스타일 가져오기
@@ -27,7 +28,8 @@ interface RankingResponse {
     userId: string,
     userName: string,
     rank: number,
-    returnRate: number
+    returnRate: number,
+    profileImage: string
 }
 
 // 메달 컴포넌트
