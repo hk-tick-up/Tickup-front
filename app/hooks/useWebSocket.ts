@@ -103,7 +103,7 @@ export const useWebSocket = (waitingRoomId: string, onMessageReceived?: (data: a
             console.error('Activation error:', error);
             setError(error instanceof Error ? error : new Error('Unknown error during activation'));
         }
-
+        
     }, [waitingRoomId]);
 
  // 컴포넌트 마운트 시에만 연결 초기화
@@ -121,10 +121,9 @@ export const useWebSocket = (waitingRoomId: string, onMessageReceived?: (data: a
                     }
                 });
                 setSubscriptions([]);
-                stompClient.deactivate();
             }
         };
-    }, [initializeWebSocket]);
+    }, [initializeWebSocket, waitingRoomId]);
 
     const sendMessage = useCallback((destination: string, body: any) => {
         if (stompClient?.active) {

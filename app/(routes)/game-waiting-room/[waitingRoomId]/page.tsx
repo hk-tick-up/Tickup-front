@@ -94,42 +94,44 @@ export default function WaitingRoom() {
                         }
                     });
                     setSubscriptionIds([]);
-
-                    const subscription = stompClient.subscribe(
-                        `/topic/waiting-room/${waitingRoomId}`,
-                        (message) => {
-                            const participantsList: ParticipantsInfo[] = JSON.parse(message.body);
-                            const updatedList = participantsList.map(user => ({
-                                ...user,
-                                userStatus: user.userStatus || '대기중'
-                            }));
-                            
-                            setUsers(updatedList.sort((a, b) => a.orderNum - b.orderNum));
-                            
-                            const currentUserInfo = updatedList.find(u => u.userId === currentUser?.userId);
-                            if (currentUserInfo) {
-                                setCurrentUser(prev => ({
-                                    ...prev!,
-                                    status: currentUserInfo.userStatus
+                    try {
+                        const subscription = stompClient.subscribe(
+                            `/topic/waiting-room/${waitingRoomId}`,
+                            (message) => {
+                                const participantsList: ParticipantsInfo[] = JSON.parse(message.body);
+                                const updatedList = participantsList.map(user => ({
+                                    ...user,
+                                    userStatus: user.userStatus || '대기중'
                                 }));
+                                
+                                setUsers(updatedList.sort((a, b) => a.orderNum - b.orderNum));
+                                
+                                const currentUserInfo = updatedList.find(u => u.userId === currentUser?.userId);
+                                if (currentUserInfo) {
+                                    setCurrentUser(prev => ({
+                                        ...prev!,
+                                        status: currentUserInfo.userStatus
+                                    }));
+                                }
                             }
-                        }
-                    );
-
-                    setSubscriptionIds([subscription.id]);
-
-                    // 초기 사용자 정보 전송
-                    await new Promise(resolve => setTimeout(resolve, 10)); // 연결 안정화를 위한 짧은 대기
+                        );
+                        setSubscriptionIds([subscription.id]);
+                        // 초기 사용자 정보 전송
+                        await new Promise(resolve => setTimeout(resolve, 10)); // 연결 안정화를 위한 짧은 대기
                     
-                    stompClient.publish({
-                        destination: `/app/waiting-room/${waitingRoomId}`,
-                        body: JSON.stringify(initialUser)
-                    });
-
+                        stompClient.publish({
+                            destination: `/app/waiting-room/${waitingRoomId}`,
+                            body: JSON.stringify(initialUser)
+                        });
+                        
                     setIsLoading(false);
+                        
+                    } catch (error) {
+                        setTimeout(()=>setupConnection(),1000)
+                    }
                     
                 } catch (error) {
-                    console.error('연결 설정 중 오류가 발생했습니다:', error);
+                    console.log('연결 설정 중 오류가 발생했습니다:', error);
                     setIsLoading(false);
                     setErrorMessage("연결 중 오류가 발생했습니다. 페이지를 새로고침해 주세요.");
                     setIsModalOpen(true);
@@ -145,6 +147,8 @@ export default function WaitingRoom() {
                 subscriptionIds.forEach(id => {
                     try {
                         stompClient.unsubscribe(id);
+                        
+                        stompClient.deactivate();
                     } catch (error) {
                         console.error('Error unsubscribing:', error);
                     }
@@ -152,7 +156,7 @@ export default function WaitingRoom() {
                 setSubscriptionIds([]);
             }
         };
-    }, [ isConnected, shouldConnect, waitingRoomId, gameType]);
+    }, [ stompClient,isConnected, shouldConnect, waitingRoomId, gameType]);
 
     const handleReady = useCallback(() => {
         if (!stompClient?.active || !currentUser) return;
@@ -182,33 +186,42 @@ export default function WaitingRoom() {
 
     }, [stompClient, currentUser, waitingRoomId]);
 
-    const handleStart = useCallback(async() => {
+    const handleStart = async() => {
         if(!stompClient?.activate || !currentUser ) return;
-        // if(!users.every(user=>user.orderNum === 1 && user.userStatus === '준비 완료')) return;
+
+        const token = sessionStorage.getItem('bearer');
+        const userId = sessionStorage.getItem('id');
+        const nickname = sessionStorage.getItem('nickname');
+
+        if (!token || !userId || !nickname) {
+            setErrorMessage('필요한 인증 정보가 없습니다.');
+            setIsModalOpen(true);
+            router.push('/signin');
+            return;
+        }
+    
         try {
-            const participantsResponse = await fetch (
-                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/participants/${waitingRoomId}`,
+            const startGameResponse = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/waiting-room/${waitingRoomId}/start`,
                 {
-                    method: 'GET',
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('bearer')}`
+                        'Content-Type': 'application/json'
                     }
                 }
-                
             );
-            if(!participantsResponse.ok) {
-                throw new Error('Failed to fetsh participants');
+    
+            if (!startGameResponse.ok) {
+                throw new Error('Failed to start game');
             }
 
-            const participants = await participantsResponse.json();
+            const startGameData = await startGameResponse.json();
 
             const gameLogicRequest = {
                 gameType: sessionStorage.getItem('gameType') || 'Basic',
-                players: participants.map(p => ({
-                    userId: p.userId,
-                    nickname: p.nickname
-                }))
+                players: startGameData.participants.map((participant: any) => (
+                    participant.userId
+                ))
             };
 
             const gameLogicResponse = await fetch(
@@ -217,7 +230,7 @@ export default function WaitingRoom() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${sessionStorage.getItem('bearer')}`
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(gameLogicRequest)
                 }
@@ -227,33 +240,30 @@ export default function WaitingRoom() {
                 throw new Error('Failed to initialize game');
             }
 
-            const gameData: InitGameRoom = await gameLogicResponse.json();
+            const gameData = await gameLogicResponse.json();
 
             sessionStorage.setItem('gameRoomId', gameData.gameRoomsId.toString());
+            sessionStorage.setItem('routeSource', 'waitingRoom');
 
-            const gameRoomId = gameData.gameRoomsId;
 
             stompClient.publish({
-                destination: `/app/waiting-room/${gameRoomId}/start`,
+                destination: `/app/waiting-room/${waitingRoomId}/start`,
                 body: JSON.stringify({
                     type: 'START_GAME',
-                    gameRoomId,
-                    gameRoomsId: gameData.gameRoomsId,
-                    participants: participants
+                    gameRoomId: gameData.gameRoomsId,
+                    participants: startGameData.participants
                 })
             });
-            router.push(`/gameroom/${gameData.gameRoomsId}`);
-
-            
+    
+            router.push(`/gameroom/${gameData.gameRoomsId}/myinvest`);
 
         }catch (error) {
-            console.error('Error starting game:', error);
+        console.error('Error starting game:', error);
         setErrorMessage('게임 시작 중 오류가 발생했습니다.');
         setIsModalOpen(true);
         }
 
-    },  [stompClient, currentUser, users, waitingRoomId]);
-
+    };
 
     const copyRoomCode = async () => {
         if (gameRoomCode) {
