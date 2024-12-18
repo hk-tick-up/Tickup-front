@@ -5,6 +5,7 @@ import styles from '../css/RankingPage.module.css';
 import { useEffect } from 'react';
 import { useRankingStore } from '../lib/store/useRankingStore';
 import { usePathname } from 'next/navigation';
+import { useWebSocket } from '../context/WebSocketContext';
 
 export default function RankingPage() {
     const { getRankings, setRankings } = useRankingStore();
@@ -13,29 +14,29 @@ export default function RankingPage() {
 
     const rankings = getRankings(gameRoomId); // 현재 gameRoomId에 해당하는 랭킹 데이터 가져오기
 
-    useEffect(() => {
-        const fetchRankings = async () => {
-            try {
-                const BASE_URL = process.env.NEXT_PUBLIC_GAME_LOGIC_API_URL;
-                const token = sessionStorage.getItem('bearer');
-                const response = await fetch(`${BASE_URL}/api/v1/gamelogic/${gameRoomId}/rankings`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
+    const {subscribe, unsubscribe} = useWebSocket();
 
-                if (!response.ok) throw new Error('Failed to fetch rankings');
-                const data = await response.json();
-                setRankings(gameRoomId, data); // gameRoomId에 맞는 데이터 저장
+
+    useEffect(() => {
+        const destination = `/topic/gameRoom/${gameRoomId}/rankings`;
+
+        const onRankingUpdate = (message) => {
+            try {
+                const data = JSON.parse(message.body); // 메시지에서 데이터 파싱
+                setRankings(gameRoomId, data); // 랭킹 정보 업데이트
             } catch (error) {
-                console.error('Error fetching rankings:', error);
+                console.error('Error parsing WebSocket message:', error);
             }
         };
 
-        fetchRankings();
-    }, [gameRoomId, setRankings]);
+        // WebSocket 구독 설정
+        subscribe(destination, onRankingUpdate);
+
+        // Clean-up
+        return () => {
+            unsubscribe(destination); // WebSocket 구독 해제
+        };
+    }, [gameRoomId, subscribe, unsubscribe, setRankings]);
 
     return (
         <div className={styles.container}>
