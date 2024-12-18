@@ -39,3 +39,20 @@
     margin: 0 8px 0 0;
 }
 
+.position-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px 0 0 0;
+    font-weight: 500;
+}
+
+.font-gray {
+    color: #6E7072;
+    padding: 5px 0;
+}
+
+.font-blue {
+    color: #286DB1;
+    padding: 5px 0;
+}
