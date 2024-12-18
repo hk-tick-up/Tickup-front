@@ -2,7 +2,7 @@
 import { logout } from "@/app/utils/logout";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { BaseSyntheticEvent, useEffect, useState } from "react";
 
 type friend = {
   id: string;
@@ -31,11 +31,33 @@ const Friends = () => {
     })
   },[]);
 
+  const deleteFriend = (e:BaseSyntheticEvent, friendId: string) => {
+    e.preventDefault();
+    const buttonElement: HTMLButtonElement = e.target;
+    const header = {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("bearer")}`
+      }
+    };
+    axios.delete(`${base_url}/friends/${friendId}`, header)
+    .then(response => {
+      console.log(response.data);
+      buttonElement.innerText = "삭제 완료";
+      buttonElement.disabled = true;
+    }).catch(error => {
+      console.error(error);
+    })
+  }
+
   return (
     <div title="친구 목록">
+      <p>친구 목록</p>
       { friends.length > 0 ?
         friends.map((value, index)=>
-        <div key={index}>친구 닉네임: {value.nickname}</div>
+        <div className="flex flex-row justify-between" key={index}>
+          <p>친구 닉네임: {value.nickname}</p>
+          <button onClick={e => deleteFriend(e, value.id)}>친구 삭제</button>
+        </div>
       ):<p>친구 요청을 보내 보세요</p>}
     </div>
   )
