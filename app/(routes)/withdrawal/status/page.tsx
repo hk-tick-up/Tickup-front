@@ -1,12 +1,14 @@
 'use client';
 
-import { BACKEND_URL } from "@/constants/backend-url";
+// import { BACKEND_URL } from "@/constants/backend-url";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useEffect, useState } from "react"
 
 const WithdrawalStatus = () => {
-  const base_url = `${BACKEND_URL}/api/v1/users`;
+  // const base_url = `${BACKEND_URL}/api/v1/users`;
+  const BACKEND_USER_URL=process.env.NEXT_PUBLIC_BACKEND_USER_URL;
+  const base_url = `${BACKEND_USER_URL}`;
   const router = useRouter();
   const [requestedAt, setRequestedAt] = useState<Date | null>(null); // Date 객체로 저장
   const [deleteAt, setDeleteAt] = useState<Date | null>(null); // Date 객체로 저장
