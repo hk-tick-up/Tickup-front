@@ -1,7 +1,7 @@
 'use client';
 
 import searchOneWord from "@/src/dictionary/search-by-keyword";
-import axios from "axios";
+// import axios from "axios";
 import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useState } from "react";
@@ -20,7 +20,7 @@ interface OneWord{
 export default function ByKeyword({setMode, setResponse}:ComponentProps){
   const [keyword, setKeyword] = useState("");
   // const base_url = "http://localhost:9200/dictionary/_search?pretty";
-  const base_url = process.env.NEXT_PUBLIC_ELASTICSEARCH_URL;
+  // const base_url = process.env.NEXT_PUBLIC_ELASTICSEARCH_URL;
 
   const onKeywordChanged = (e:BaseSyntheticEvent) => {
     setKeyword(e.currentTarget.value);

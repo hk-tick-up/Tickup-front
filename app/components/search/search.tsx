@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ByConsonants from "./byConsonants";
 import ByKeyword from "./byKeyword";
 import SearchResult from "./searchResult";

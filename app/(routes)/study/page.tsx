@@ -1,5 +1,6 @@
 'use client';
 
+import BottomNav from "@/app/components/BottomNav";
 import Search from "@/app/components/search/search"
 // import TodayWord from "@/app/components/search/todayWord"
 // import TodayQuiz from "@/app/components/search/todayQuiz";
@@ -42,6 +43,8 @@ export default function StudyMainpage() {
       {/* {todayWord && <TodayWord data={todayWord}/>}
       {todayQuiz && <TodayQuiz data={todayQuiz}/>}
       <MoveToQuiz/> */}
+      <br/><br/><br/><br/><br/><br/>
+      <BottomNav/>
     </div>
   );
 }
