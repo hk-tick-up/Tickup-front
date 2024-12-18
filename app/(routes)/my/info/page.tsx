@@ -1,9 +1,10 @@
 'use client';
 
-import { BACKEND_URL } from "@/constants/backend-url";
+// import { BACKEND_URL } from "@/constants/backend-url";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { BaseSyntheticEvent, useState } from "react"
+import '../../../css/user/user-info.css';
 
 type User = ({
   id:string,
@@ -15,7 +16,7 @@ type User = ({
 })
 
 export default function MyInfo(){
-  const base_url = `${BACKEND_URL}/api/v1/users`;
+  const base_url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/users`;
   const router = useRouter();
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [user, setUser] = useState<User>({id:"",password:"",nickname:"",age:0,gender:"",job:""});
@@ -145,7 +146,8 @@ export default function MyInfo(){
               </form>
             </div>
           </div>
-        : <div className="flex flex-col items-center">
+        : 
+        <div className="flex flex-col items-center">
             <p>인증 후 정보를 수정할 수 있습니다.</p>
             <form onSubmit={onSubmitPassword} className="border border-black p-2 flex flex-col items-center w-2/3 max-w-xl min-w-xs">
               <div>
@@ -154,8 +156,10 @@ export default function MyInfo(){
               </div>
               <button type="submit" title="입력" className="bg-[#EEF2F5] rounded-[15px] px-[15px] py-[10px] mt-2">정보 수정하기</button>
             </form>
-          </div>
+          </div> 
       }
     </div>
   )
 }
+
+

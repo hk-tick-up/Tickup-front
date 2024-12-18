@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { logout } from "@/app/utils/logout";
-import { BACKEND_URL } from "@/constants/backend-url";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -9,10 +9,14 @@ type friend = {
   nickname: string;
 }
 
+// 친구 목록
 const Friends = () => {
-  const base_url = `${BACKEND_URL}/api/v1/users`;
+  const BACKEND_USER_URL = process.env.NEXT_PUBLIC_BACKEND_USER_URL;
+
+  const base_url = `${BACKEND_USER_URL}`;
   const [friends, setFriends] = useState<Array<friend>>([]);
   const router = useRouter();
+  
   useEffect(()=>{
     const header = {
       headers: {
@@ -23,24 +27,16 @@ const Friends = () => {
     .then(response => {
       setFriends(response.data);
     }).catch(error=>{
-      if(error.status === 401){
-        logout();
-        router.push("/signin?back=true");
-      }
-      else{
-        console.error(error);
-      }
+      console.error(error);
     })
   },[]);
 
   return (
-    <div>
-      <div title="친구 목록">
-        { friends.length > 0 ?
-          friends.map((value, index)=>
-          <div key={index}>친구 닉네임: {value.nickname}</div>
-        ):<p>친구 요청을 보내 보세요</p>}
-      </div>
+    <div title="친구 목록">
+      { friends.length > 0 ?
+        friends.map((value, index)=>
+        <div key={index}>친구 닉네임: {value.nickname}</div>
+      ):<p>친구 요청을 보내 보세요</p>}
     </div>
   )
 }

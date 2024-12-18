@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import {useEffect, useState} from "react";
@@ -15,13 +16,13 @@ interface ReportModalProps {
 
 
 const ReportModal: React.FC<ReportModalProps> = ({ isOpen, onClose }) => {
-    if (!isOpen) return null;
     const [nickname, setNickname] = useState<string | null>("");
 
     useEffect(() => {
         setNickname(sessionStorage.getItem("nickname"));
     }, []);
 
+    if (!isOpen) return null;
 
 
     return (

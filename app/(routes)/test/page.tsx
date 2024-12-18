@@ -1,20 +1,29 @@
-'use client'
-import React, { useState } from 'react';
-import ReportModal from '@/app/components/RePortModal';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client';
 
+import React, { useState, useEffect } from 'react';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
-const test: React.FC = () => {
-    const [isModalOpen, setIsModalOpen] = useState(true);
+export default function LoadingExample() {
+  const [isLoading, setIsLoading] = useState(true);
 
-    const closeModal = () => {
-        console.log('Modal would close here in production');
-    };
+//   useEffect(() => {
+    // 예시: 3초 후에 로딩 상태를 false로 변경
+    // const timer = setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 10000);
 
-    return (
-        <div>
-            <ReportModal isOpen={isModalOpen} onClose={closeModal} />
-        </div>
-    )
+//     return () => clearTimeout(timer);
+//   }, []);
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <h1 className="text-2xl font-bold text-gray-800">로딩이 완료되었습니다!</h1>
+    </div>
+  );
 }
 
-export default test;
