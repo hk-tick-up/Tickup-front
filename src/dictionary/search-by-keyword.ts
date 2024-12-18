@@ -32,7 +32,7 @@ const searchOneWord = async (keyword: string):Promise<OneWord> => {
     }
   }
   try {
-    const response = await axios.post(`${base_url}/_search?pretty`, searchQuery, header);
+    const response = await axios.post(`${base_url}/dictionary/_search?pretty`, searchQuery, header);
     const hits = response.data.hits.hits;
     if (hits.length > 0) {
       const word = hits[0]._source;

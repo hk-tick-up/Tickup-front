@@ -36,7 +36,9 @@ export default function ByConsonants({setMode, setResponse}:ComponentProps) {
   ]);
   const korean = "ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ";
   const english = "abcdefghijklmnopqrstuvwxyz";
-  const base_url = "http://localhost:9200/dictionary/_search?pretty"
+  // const base_url = "http://localhost:9200/dictionary/_search?pretty"
+  const ELASTICSEARCH_URL = process.env.NEXT_PUBLIC_ELASTICSEARCH_URL;
+  const base_url = `${ELASTICSEARCH_URL}/dictionary/_search?pretty`;
 
   const onSwitchLanguage = () => {
     setLanguage(!language);

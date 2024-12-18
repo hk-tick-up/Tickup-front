@@ -2,7 +2,7 @@
 
 import Search from '@/app/components/search/search';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 type Word = {
   word: string;
@@ -18,7 +18,7 @@ type Response = {
   }
 }
 
-export default function SearchResult(){
+const SearchPage = () => {
   const searchParams = useSearchParams();
   // const response = JSON.parse(searchParams.get('data') as string);
   const [response, setResponse] = useState<Response>({
@@ -101,5 +101,13 @@ export default function SearchResult(){
         <div>wrong access</div>
       }
     </>
+  );
+}
+
+export default function SearchPageWrapper() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPage />
+    </Suspense>
   );
 }
