@@ -13,7 +13,8 @@ FROM nginx:alpine
 WORKDIR /app
 
 # Node.js 설치
-RUN apk add --no-cache nodejs npm
+# RUN apk add --no-cache nodejs npm
+FROM node:22-alpine
 
 # Next.js 애플리케이션 복사
 COPY --from=builder /app/next.config.ts ./

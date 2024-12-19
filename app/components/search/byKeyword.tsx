@@ -31,11 +31,11 @@ export default function ByKeyword({setMode, setResponse}:ComponentProps){
     setMode("search");
   }
   return (
-    <div>
-      <form className="flex border border-black p-1 w-fit h-fit">
-        <input onChange={onKeywordChanged} type="text" placeholder="검색할 단어"></input>
+    <div className="w-full h-full">
+      <form className="flex border border-gray rounded-lg p-1 w-full h-full">
+        <input className="w-full" onChange={onKeywordChanged} type="text" placeholder="검색할 단어"></input>
         <button onClick={onSearchClicked} title="searchButton">
-          <div className="bg-black rounded-lg w-9 h-7 flex items-center justify-center m-1">
+          <div className="bg-black rounded-lg w-9 h-7 flex items-center justify-center">
             <Image src="/images/dictionary/ic-search.png" alt="검색버튼" width={20} height={20}/>
           </div>
         </button>

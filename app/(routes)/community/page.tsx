@@ -12,10 +12,17 @@ import Sends from "@/app/components/friends/Sends";
 // import Requests from "@/app/components/friends/requests";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react"
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react"
 
 export default function MyFriends(){
   const [tab, setTab] = useState<string>("friends");
+  const router = useRouter();
+
+    useEffect(()=>{
+      if(!sessionStorage.getItem("id"))
+        router.push("/signin");
+    },[]);
 
   const onClickFriends = () => {
     setTab("friends");
@@ -26,10 +33,6 @@ export default function MyFriends(){
 
   return (
     <div>
-      <p>** 더 필요한 기능</p>
-
-      <p>* 친구/유저 프로필 보기</p>
-
       <div className="border border-black">
         <Find/>
         {/* <div className="flex flex-row space-x-2">

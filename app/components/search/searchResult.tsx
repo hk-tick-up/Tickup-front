@@ -64,23 +64,25 @@ export default function SearchResult({response, setMode, setResponse}:Props){
   
   // 연관단어로 다시 한번 axios해서 단어명, 영문한문, 뜻 수신할 것
   return (
-    <div>SearchResult
-      <p>{response.단어명}</p>
-      <p>{response.영문한문}</p>
+    <div className="flex flex-col items-center">
+      <p className="text-blue-500 font-bold my-2 text-[20px]">{response.단어명}</p>
+      <p className="text-gray-400 font-bold mb-4">{response.영문한문}</p>
       <p>{response.설명}</p>
 
-      {
+      {/* {
         response.연관단어 && <p>연관단어: {response.연관단어}</p>
-      }
+      } */}
       {/* 연관단어 개수에 따라 0~n개 단어 나열 (단어명,영문한문,설명) */}
       {
         // relateWords.map()
         wordInfos && wordInfos.map((v,i)=>
-          <button onClick={searchWord} className="w-full" key={i}>
+          <button onClick={searchWord} className="w-full text-left" key={i}>
             <div>
               <hr/>
-              <p className="word">{v.단어명}</p>
-              <p>{v.영문한문}</p>
+              <div className="flex flex-row gap-x-3 my-2">
+                <p className="word text-5 text-gray-400 font-bold">{v.단어명}</p>
+                <p className="text-5 text-gray-400 font-bold">{v.영문한문}</p>
+              </div>
               <p>{v.설명.split(".")[0]+"."}</p>
             </div>
           </button>

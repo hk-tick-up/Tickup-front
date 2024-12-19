@@ -8,6 +8,7 @@ import FooterBlock from './components/FooterBlock'
 import FooterBlock_v2 from './components/FooterBlockV2'
 import axios from "axios";
 import '@/app/css/main.css'
+import BottomBlank from "./components/BottomBlank";
 // import { BACKEND_URL } from "@/constants/backend-url";
 
 export default function HomePage() {
@@ -115,6 +116,7 @@ export default function HomePage() {
           </section>
         </div>
       </div>
+      <BottomBlank/>
       <BottomNav />
     </>
   )

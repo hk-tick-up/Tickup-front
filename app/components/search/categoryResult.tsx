@@ -33,14 +33,15 @@ export default function CategoryResult ({response, setMode, setResponse}:Props){
   };
 
   return (
-    <div>
-      <p>CategoryResult</p>
+    <div className="w-full h-full">
       {response && Array.isArray(response) && response.map((v,i)=>
-        <button onClick={searchWord} className="border border-black w-full" key={i}>
-          <div>
-            <p className="word">{v.단어명}</p>
-            <p>{v.영문한문}</p>
-            <p>{v.뜻}</p>
+        <button onClick={searchWord} className="w-full mt-2" key={i}>
+          <div className="flex flex-col border border-white border-b-black p-1 pb-3">
+            <div className="flex flex-row gap-x-3 pb-2">
+              <p className="text-blue-500 font-bold word text-left w-fit whitespace-nowrap">{v.단어명}</p>
+              <p className="text-gray-400 font-bold text-left">{v.영문한문}</p>
+            </div>
+            <p className="text-left">{v.뜻}</p>
           </div>
         </button>
       )}

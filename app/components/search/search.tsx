@@ -24,7 +24,7 @@ export default function Search(){
 
   return(
     <div>
-      Search
+      <h1 className="text-[20px] font-bold pb-[10px]">금융 지식 사전</h1>
       <ByKeyword setMode={setMode} setResponse={setSearchResponse as React.Dispatch<React.SetStateAction<ResultBySearch>>} />
       <ByConsonants setMode={setMode} setResponse={setCategoryResponse as React.Dispatch<React.SetStateAction<Array<ResultByCategory>>>} />
       {(mode === "search") && <SearchResult response={searchResponse as ResultBySearch}  setMode={setMode} setResponse={setSearchResponse as React.Dispatch<React.SetStateAction<ResultBySearch>>} />}

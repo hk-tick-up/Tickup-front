@@ -1,5 +1,6 @@
 'use client';
 
+import BottomBlank from "@/app/components/BottomBlank";
 import BottomNav from "@/app/components/BottomNav";
 import Search from "@/app/components/search/search"
 // import TodayWord from "@/app/components/search/todayWord"
@@ -38,12 +39,14 @@ export default function StudyMainpage() {
   }
 
   return(
-    <div>
-      <Search/>
-      {/* {todayWord && <TodayWord data={todayWord}/>}
-      {todayQuiz && <TodayQuiz data={todayQuiz}/>}
-      <MoveToQuiz/> */}
-      <br/><br/><br/><br/><br/><br/>
+    <div className="w-full h-full">
+      <div className="p-[1.5em]">
+        <Search/>
+        {/* {todayWord && <TodayWord data={todayWord}/>}
+        {todayQuiz && <TodayQuiz data={todayQuiz}/>}
+        <MoveToQuiz/> */}
+      </div>
+      <BottomBlank/>
       <BottomNav/>
     </div>
   );

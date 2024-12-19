@@ -88,19 +88,21 @@ export default function ByConsonants({setMode, setResponse}:ComponentProps) {
   }
 
   return (
-    <div className="flex">
-      <button title="switchLanguage" onClick={onSwitchLanguage} className="w-10 h-6 border border-black">가/A</button>
+    <div className="flex space-x-1 my-2">
+      <button title="switchLanguage" onClick={onSwitchLanguage} className="w-10 h-6 border border-gray-100 bg-gray-100 rounded-md">가/A</button>
       
-      {language ? 
-          [...korean].map((element, index)=>(
-            <button key={index} title="category" onClick={onClickSearch} className="w-6 h-6 border border-black">{element}</button>
-          ))
-        :
-          [...english].map((element, index)=>(
-            <button key={index} title="category" onClick={onClickSearch} className="w-6 h-6 border border-black">{element}</button>
-          ))
-        
-      }
+      <div className="flex flex-wrap gap-x-1 gap-y-1">
+        {language ? 
+            [...korean].map((element, index)=>(
+              <button key={index} title="category" onClick={onClickSearch} className="w-6 h-6 border border-gray-100 bg-gray-100 rounded-md">{element}</button>
+            ))
+          :
+            [...english].map((element, index)=>(
+              <button key={index} title="category" onClick={onClickSearch} className="w-6 h-6 border border-gray-100 bg-gray-100 rounded-md">{element}</button>
+            ))
+          
+        }
+      </div>
     </div>
   );
 }
